@@ -1,0 +1,69 @@
+@import "./fonts.scss";
+@import "./reset.scss";
+
+$fontFamily: "Roboto";
+$fontWeight: 400;
+$backgroundColor: #fff;
+$iconTextColor: #000;
+$iconColor: #fff;
+$iconColorDisabled: #444;
+$textColor: #757575;
+$textColorDark: #444;
+$textColorLight: #bbb;
+$textColorBright: #fff;
+$primaryColor: #014455;
+$primaryColorDark: #252525;
+$primaryColorActive: #06aabb;
+$secondaryColor: #ffcc02;
+$secondaryColorActive: #eebb00;
+$panelColor: #f4f4f4;
+$shadowColor: rgb(0 0 0 / 15%);
+
+.light {
+    --main-bg-color: white;
+    --link-color: black;
+}
+
+.dark {
+    --main-bg-color: black;
+    --link-color: white;
+}
+
+a {
+    color: var(--link-color);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+    position: relative;
+}
+
+.debug-border {
+	border: 1px solid #333;
+}
+
+body {
+    color: $textColor;
+    font-family: $fontFamily;
+    font-weight: $fontWeight;
+}
+
+.link {
+    font-size: 24px;
+    display: inline-block;
+    &:hover {
+        
+    }
+}
+
+.main {
+    text-align: center;
+
+    &__test-picture {
+        display: block;
+    }
+}
+
+@import "./media.scss";
