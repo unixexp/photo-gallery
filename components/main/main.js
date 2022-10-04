@@ -1,7 +1,7 @@
 import styles from "./main.module.scss";
 
 import { useSelector, useDispatch } from 'react-redux';
-import { selectTheme, setTheme } from "../../app/appSlice";
+import { selectTheme, setTheme } from "../app/appSlice";
 
 export default function Main({children}) {
 

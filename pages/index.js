@@ -15,6 +15,9 @@ export default function IndexPage() {
                 <Link href="/category1">
                     <a>To category #1</a>
                 </Link>
+                <Link href="/admin">
+                    <button>To admin</button>
+                </Link>
             </Main>
         </Layout>
     );
