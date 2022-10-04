@@ -12,6 +12,10 @@ export default function handle(req, res) {
 
             res.status(200).json({ removed: req.body.name });
 
+        } else {
+
+            res.status(400);
+
         }
 
     }
