@@ -9,36 +9,45 @@ export const authOptions = {
                 username: { label: "Username", type: "text" },
                 password: {  label: "Password", type: "password" }
             },
-            async authorize(credentials, req) {
-                const res = await fetch("http://localhost:3000/api/login", {
-                    method: "POST",
-                    body: JSON.stringify(credentials),
-                    headers: { "Content-Type": "application/json" }
-                })
+            authorize: async function (credentials, req) {
+                try {
+                    const res = await fetch("http://localhost:3000/api/login", {
+                        method: "POST",
+                        body: JSON.stringify(credentials),
+                        headers: { "Content-Type": "application/json" }
+                    })
 
-                const user = await res.json()
+                    const user = await res.json()
 
-                if (res.ok && user) {
-                    console.log(user)
-                    return user
-                } else {
-                    return null
+                    if (res.ok && user) {
+                        return user
+                    } else {
+                        return null
+                    }
+                } catch (e) {
+                    throw new Error(e)
                 }
             }
         })
     ],
-    secret: "ldb+owSLLcGVfirUl/T6FASBzIuKnyp/l4ogQtrXOFM=",
-    session: {
-        strategy: "jwt",
-        maxAge: 30 * 24 * 60 * 60, // 30 days
-        updateAge: 24 * 60 * 60, // 24 hours
-        generateSessionToken: () => {
-          return randomUUID?.() ?? randomBytes(32).toString("hex")
+    secret: process.env.secret,
+    callbacks: {
+        async signIn({ user, account, profile, email, credentials }) {
+            return true
+        },
+        async redirect({ url, baseUrl }) {
+            return baseUrl
+        },
+        async session({ session, user, token }) {
+            // console.log("session")
+            return session
+        },
+        async jwt({ token, user }) {
+            // console.log(token)
+            // console.log(user)
+            return token
         }
-      },
-      jwt: {
-        maxAge: 60 * 60 * 24 * 30
-      }
+    }
 }
 
 export default NextAuth(authOptions);

@@ -5,11 +5,12 @@
     "start": "next start"
   },
   "dependencies": {
+    "@material-ui/core": "^4.12.4",
+    "@material-ui/icons": "^4.11.3",
     "@reduxjs/toolkit": "^1.8.5",
+    "jsonwebtoken": "^8.5.1",
     "next": "^12.3.0",
     "next-auth": "^4.12.2",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
     "react-redux": "^8.0.4"
   },
   "devDependencies": {

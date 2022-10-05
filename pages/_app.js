@@ -1,11 +1,11 @@
 import "../styles/global.scss";
 import { Provider } from 'react-redux'
+import { SessionProvider } from "next-auth/react"
 import store from "../components/app/store"
 
 import Head from "next/head";
 
 export default function App({ Component, pageProps }) {
-
     return (
         <>
             <Head>
@@ -13,7 +13,9 @@ export default function App({ Component, pageProps }) {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <Provider store={store}>
-                <Component {...pageProps} />
+                <SessionProvider session={pageProps.session}>
+                    <Component {...pageProps} />
+                </SessionProvider>
             </Provider>
         </>
     );
