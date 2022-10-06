@@ -2,6 +2,8 @@ import React from "react"
 
 import { makeStyles } from "@material-ui/core/styles"
 
+import { useState, useEffect } from "react"
+
 import Select from "@material-ui/core/Select"
 import FormControl from "@material-ui/core/FormControl"
 import MenuItem from "@material-ui/core/MenuItem"
@@ -9,6 +11,8 @@ import IconButton from "@material-ui/core/IconButton"
 import MoreIcon from "@material-ui/icons/MoreVert"
 import AppBar from "@material-ui/core/AppBar"
 import Menu from "@material-ui/core/Menu"
+
+import { getGalleryAPIService } from "../../services/gallery-api-service-factory"
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -19,23 +23,19 @@ const useStyles = makeStyles((theme) => ({
         alignItems: "center"
     },
     categorySelector: {
-        display: "flex",
-        alignItems: "baseline",
-        width: "100%",
-        color: theme.palette.primary.contrastText
-    },
-    selector: {
         width: "100%",
         margin: "0 10px",
-        color: theme.palette.primary.light
+        color: theme.palette.primary.contrastText
     }
 }))
 
-export default function AdminToolbar() {
+export default function AdminFeatures() {
 
-    const classes = useStyles();
+    const galleryAPIService = getGalleryAPIService()
 
-    const [menuParent, setMenuParent] = React.useState(null);
+    const classes = useStyles()
+    const [menuParent, setMenuParent] = useState(null)
+    const [categories, setCategories] = useState([])
 
     const handleMenuOpen = (event) => {
         setMenuParent(event.currentTarget)
@@ -45,19 +45,20 @@ export default function AdminToolbar() {
         setMenuParent(null)
     }
 
+    useEffect(() => {
+        galleryAPIService.getCategories().then((data) => {
+            setCategories(data)
+        })
+    }, [])
+
     return (
         <div>
             <AppBar position="relative">
                 <FormControl variant="outlined" size="small" className={classes.formControl}>
                     <div className={classes.categoryBlock}>
-                        <div className={classes.categorySelector}>
-                            <div>Category</div>
-                            <Select className={classes.selector}>
-                                <MenuItem value={10}>Вечерний Киев 1972 года</MenuItem>
-                                <MenuItem value={20}>Category #2</MenuItem>
-                                <MenuItem value={30}>Category #3</MenuItem>
-                            </Select>
-                        </div>
+                        <Select className={classes.categorySelector}>
+                            { renderCategories(categories) }
+                        </Select>
                         <IconButton onClick={handleMenuOpen}>
                             <MoreIcon />
                         </IconButton>
@@ -67,6 +68,18 @@ export default function AdminToolbar() {
             { renderMenu({menuParent, handleMenuClose}) }
         </div>
     )
+
+}
+
+function renderCategories(categories) {
+
+    return categories.map(category => {
+        return (
+            <MenuItem value={category.id}>
+                {category.name}
+            </MenuItem>
+        )
+    })
 
 }
 

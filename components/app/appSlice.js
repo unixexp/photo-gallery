@@ -12,6 +12,6 @@ export const appSlice = createSlice({
     }
 });
 
-export const selectTheme = (state) => state.app.theme;
-export const { setTheme } = appSlice.actions;
-export default appSlice.reducer;
+export const selectTheme = (state) => state.app.theme
+export const { setTheme } = appSlice.actions
+export default appSlice.reducer

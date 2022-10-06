@@ -2,7 +2,7 @@ import { useSession } from "next-auth/react"
 
 import Layout from "../components/layout/layout"
 import Container from "../components/container/container"
-import AdminToolbar from "../components/admin-toolbar/admin-toolbar"
+import AdminFeatures from "../components/admin-features/admin-features"
 
 export default function AdminPage() {
 
@@ -11,7 +11,7 @@ export default function AdminPage() {
     return (
         <Layout>
             <Container>
-                <AdminToolbar />
+                <AdminFeatures />
             </Container>
         </Layout>
     );
