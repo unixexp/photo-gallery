@@ -59,11 +59,12 @@ export default function Toolbar() {
 
     const handleOpenRemoveCategoryDialog = () => {
         handleMenuClose()
+        // Prevent errors with remove undefined category
         const _index = categories.findIndex(cat => cat.id === categoryId)
         if (_index != -1)
             galleryAPIService.removeCategory(categoryId).then(() => {
                 const newCategories = categories.filter(cat => cat.id !== categoryId)
-                // Prevent to select removed category
+                // Prevent errors select removed category
                 if (newCategories.length) {
                     dispatch(setCategoryId(newCategories[0].id))
                 } else {
