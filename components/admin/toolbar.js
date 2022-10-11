@@ -3,6 +3,7 @@ import React from "react"
 import { makeStyles } from "@material-ui/core/styles"
 
 import { useState, useEffect } from "react"
+import { useSelector, useDispatch } from "react-redux"
 
 import Select from "@material-ui/core/Select"
 import FormControl from "@material-ui/core/FormControl"
@@ -13,6 +14,7 @@ import AppBar from "@material-ui/core/AppBar"
 import Menu from "@material-ui/core/Menu"
 
 import { getGalleryAPIService } from "../../services/gallery-api-service-factory"
+import { selectCategoryId, setCategoryId } from "./adminSlice"
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -29,9 +31,12 @@ const useStyles = makeStyles((theme) => ({
     }
 }))
 
-export default function AdminFeatures() {
+export default function Toolbar() {
 
     const galleryAPIService = getGalleryAPIService()
+
+    const categoryId = useSelector(selectCategoryId)
+    const dispatch = useDispatch()
 
     const classes = useStyles()
     const [menuParent, setMenuParent] = useState(null)
@@ -45,9 +50,15 @@ export default function AdminFeatures() {
         setMenuParent(null)
     }
 
+    const handleCategoryChange = (event) => {
+        dispatch(setCategoryId(event.target.value))
+    }
+
     useEffect(() => {
         galleryAPIService.getCategories().then((data) => {
             setCategories(data)
+            if (data.length)
+                dispatch(setCategoryId(data[0].id))
         })
     }, [])
 
@@ -56,7 +67,9 @@ export default function AdminFeatures() {
             <AppBar position="relative">
                 <FormControl variant="outlined" size="small" className={classes.formControl}>
                     <div className={classes.categoryBlock}>
-                        <Select className={classes.categorySelector}>
+                        <Select value={categoryId}
+                                className={classes.categorySelector}
+                                onClick={handleCategoryChange}>
                             { renderCategories(categories) }
                         </Select>
                         <IconButton onClick={handleMenuOpen}>
@@ -75,7 +88,8 @@ function renderCategories(categories) {
 
     return categories.map(category => {
         return (
-            <MenuItem value={category.id}>
+            <MenuItem key={category.id}
+                    value={category.id}>
                 {category.name}
             </MenuItem>
         )
@@ -95,8 +109,8 @@ function renderMenu({menuParent, handleMenuClose}) {
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <MenuItem>Add</MenuItem>
-            <MenuItem>Remove</MenuItem>
+            <MenuItem key="add">Add</MenuItem>
+            <MenuItem key="remove">Remove</MenuItem>
         </Menu>
     )
 
