@@ -54,13 +54,23 @@ export default function Toolbar() {
         dispatch(setCategoryId(event.target.value))
     }
 
+    const handleOpenRemoveCategoryDialog = () => {
+        handleMenuClose()
+        if (categoryId !== null)
+            galleryAPIService.removeCategory(categoryId).then(() => update())
+    }
+
     useEffect(() => {
+        update()
+    }, [])
+
+    const update = () => {
         galleryAPIService.getCategories().then((data) => {
             setCategories(data)
             if (data.length)
                 dispatch(setCategoryId(data[0].id))
         })
-    }, [])
+    }
 
     return (
         <div>
@@ -78,7 +88,7 @@ export default function Toolbar() {
                     </div>
                 </FormControl>
             </AppBar>
-            { renderMenu({menuParent, handleMenuClose}) }
+            { renderMenu({menuParent, handleMenuClose, handleOpenRemoveCategoryDialog}) }
         </div>
     )
 
@@ -97,7 +107,7 @@ function renderCategories(categories) {
 
 }
 
-function renderMenu({menuParent, handleMenuClose}) {
+function renderMenu({menuParent, handleMenuClose, handleOpenRemoveCategoryDialog}) {
 
     const isMenuOpen = Boolean(menuParent)
 
@@ -110,7 +120,9 @@ function renderMenu({menuParent, handleMenuClose}) {
             onClose={handleMenuClose}
         >
             <MenuItem key="add">Add</MenuItem>
-            <MenuItem key="remove">Remove</MenuItem>
+            <MenuItem key="remove"
+                    onClick={handleOpenRemoveCategoryDialog}
+            >Remove</MenuItem>
         </Menu>
     )
 
