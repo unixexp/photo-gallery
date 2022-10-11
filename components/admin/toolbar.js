@@ -60,7 +60,6 @@ export default function Toolbar() {
     const handleOpenRemoveCategoryDialog = () => {
         handleMenuClose()
         setRemoveCategoryAlertDialogIsOpened(true)
-        // handleRemoveCategoryConfirm()
     }
 
     const handleRemoveCategoryConfirm = () => {
@@ -76,7 +75,12 @@ export default function Toolbar() {
                     dispatch(setCategoryId(''))
                 }
                 update()
+                setRemoveCategoryAlertDialogIsOpened(false)
             })
+    }
+
+    const handleRemoveCategoryCancel = () => {
+        setRemoveCategoryAlertDialogIsOpened(false)
     }
 
     useEffect(() => {
@@ -109,8 +113,8 @@ export default function Toolbar() {
                 title="Alert!"
                 contentText="Delete this category with photos?"
                 isOpened={removeCategoryAlertDialogIsOpened}
-                handleOK={null}
-                handleCancel={null}
+                handleOK={handleRemoveCategoryConfirm}
+                handleClose={handleRemoveCategoryCancel}
             />
             { renderMenu({menuParent, handleMenuClose, handleOpenRemoveCategoryDialog}) }
         </div>
