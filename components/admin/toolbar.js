@@ -1,5 +1,3 @@
-import React from "react"
-
 import { makeStyles } from "@material-ui/core/styles"
 
 import { useState, useEffect } from "react"
@@ -12,6 +10,7 @@ import IconButton from "@material-ui/core/IconButton"
 import MoreIcon from "@material-ui/icons/MoreVert"
 import AppBar from "@material-ui/core/AppBar"
 import Menu from "@material-ui/core/Menu"
+import AlertDialog from "../dialogs/alert-dialog"
 
 import { getGalleryAPIService } from "../../services/gallery-api-service-factory"
 import { selectCategoryId, setCategoryId } from "./adminSlice"
@@ -40,6 +39,7 @@ export default function Toolbar() {
 
     const classes = useStyles()
     const [menuParent, setMenuParent] = useState(null)
+    const [removeCategoryAlertDialogIsOpened, setRemoveCategoryAlertDialogIsOpened] = useState(false)
     const [categories, setCategories] = useState([])
 
     const handleMenuOpen = (event) => {
@@ -59,6 +59,11 @@ export default function Toolbar() {
 
     const handleOpenRemoveCategoryDialog = () => {
         handleMenuClose()
+        setRemoveCategoryAlertDialogIsOpened(true)
+        // handleRemoveCategoryConfirm()
+    }
+
+    const handleRemoveCategoryConfirm = () => {
         // Prevent errors with remove undefined category
         const _index = categories.findIndex(cat => cat.id === categoryId)
         if (_index != -1)
@@ -100,6 +105,13 @@ export default function Toolbar() {
                     </div>
                 </FormControl>
             </AppBar>
+            <AlertDialog
+                title="Alert!"
+                contentText="Delete this category with photos?"
+                isOpened={removeCategoryAlertDialogIsOpened}
+                handleOK={null}
+                handleCancel={null}
+            />
             { renderMenu({menuParent, handleMenuClose, handleOpenRemoveCategoryDialog}) }
         </div>
     )

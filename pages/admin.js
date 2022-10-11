@@ -12,8 +12,6 @@ export async function getServerSideProps(context) {
 
 export default function AdminPage() {
 
-    const { data: session } = useSession();
-
     return (
         <Layout>
             <Container>
