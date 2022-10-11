@@ -51,13 +51,26 @@ export default function Toolbar() {
     }
 
     const handleCategoryChange = (event) => {
-        dispatch(setCategoryId(event.target.value))
+        const _index = categories.findIndex(cat => cat.id === event.target.value)
+        if (_index != -1)
+            dispatch(setCategoryId(event.target.value))
+
     }
 
     const handleOpenRemoveCategoryDialog = () => {
         handleMenuClose()
-        if (categoryId !== null)
-            galleryAPIService.removeCategory(categoryId).then(() => update())
+        const _index = categories.findIndex(cat => cat.id === categoryId)
+        if (_index != -1)
+            galleryAPIService.removeCategory(categoryId).then(() => {
+                const newCategories = categories.filter(cat => cat.id !== categoryId)
+                // Prevent to select removed category
+                if (newCategories.length) {
+                    dispatch(setCategoryId(newCategories[0].id))
+                } else {
+                    dispatch(setCategoryId(''))
+                }
+                update()
+            })
     }
 
     useEffect(() => {
@@ -67,8 +80,6 @@ export default function Toolbar() {
     const update = () => {
         galleryAPIService.getCategories().then((data) => {
             setCategories(data)
-            if (data.length)
-                dispatch(setCategoryId(data[0].id))
         })
     }
 
