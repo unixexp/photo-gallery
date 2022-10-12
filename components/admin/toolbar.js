@@ -126,11 +126,13 @@ export default function Toolbar() {
     })
 
     const update = ({selectCategoryId}) => {
+        console.log("getCategories");
         galleryAPIService.getCategories().then((data) => {
+            console.log("setCategories");
             setCategories(data)
-            if (selectCategoryId) {
-                dispatch(setCategoryId(selectCategoryId))
-            }
+            //if (selectCategoryId) {
+            //    dispatch(setCategoryId(selectCategoryId))
+            //}
         })
     }
 
@@ -189,6 +191,7 @@ export default function Toolbar() {
                     handleOpenAddCategoryDialog
                 })
             }
+            { console.log("Component re-rendered") }
         </div>
     )
 
