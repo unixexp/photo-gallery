@@ -8,27 +8,36 @@ import FormControl from "@material-ui/core/FormControl"
 import MenuItem from "@material-ui/core/MenuItem"
 import IconButton from "@material-ui/core/IconButton"
 import MoreIcon from "@material-ui/icons/MoreVert"
+import CheckIcon from "@material-ui/icons/CheckOutlined"
 import AppBar from "@material-ui/core/AppBar"
 import Menu from "@material-ui/core/Menu"
 import AlertDialog from "../dialogs/alert-dialog"
 import InputDialog from "../dialogs/input-dialog"
+import TextField from "@material-ui/core/TextField"
 
 import { getGalleryAPIService } from "../../services/gallery-api-service-factory"
 import { selectCategoryId, setCategoryId } from "./adminSlice"
 
 const useStyles = makeStyles((theme) => ({
+
     formControl: {
-        padding: "10px"
+        padding: "5px 10px 10px 10px"
     },
+
     categoryBlock: {
         display: "flex",
         alignItems: "center"
     },
+
     categorySelector: {
         width: "100%",
-        margin: "0 10px",
+        color: theme.palette.primary.contrastText
+    },
+
+    descriptionFieldInput: {
         color: theme.palette.primary.contrastText
     }
+
 }))
 
 export default function Toolbar() {
@@ -43,6 +52,7 @@ export default function Toolbar() {
     const [removeCategoryAlertDialogIsOpened, setRemoveCategoryAlertDialogIsOpened] = useState(false)
     const [addCategoryDialogIsOpened, setAddCategoryDialogIsOpened] = useState(false)
     const [categories, setCategories] = useState([])
+    const [categoryDescription, setCategoryDescription] = useState("")
 
     const handleMenuOpen = (event) => {
         setMenuParent(event.currentTarget)
@@ -106,15 +116,21 @@ export default function Toolbar() {
         setAddCategoryDialogIsOpened(false)
     }
 
+    const handleCategoryDescriptionChange = (event) => {
+        setCategoryDescription(event.target.value)
+    }
+
     useEffect(() => {
+        console.log("useEffect")
         update({})
-    }, [])
+    })
 
     const update = ({selectCategoryId}) => {
         galleryAPIService.getCategories().then((data) => {
             setCategories(data)
-            if (selectCategoryId)
+            if (selectCategoryId) {
                 dispatch(setCategoryId(selectCategoryId))
+            }
         })
     }
 
@@ -130,6 +146,23 @@ export default function Toolbar() {
                         </Select>
                         <IconButton onClick={handleMenuOpen}>
                             <MoreIcon />
+                        </IconButton>
+                    </div>
+                    <div className={classes.categoryBlock}>
+                        <TextField
+                            InputProps={{
+                                className: classes.descriptionFieldInput
+                            }}
+                            minRows={4}
+                            maxRows={4}
+                            variant="outlined"
+                            multiline
+                            value={categoryDescription}
+                            fullWidth
+                            onChange={handleCategoryDescriptionChange}
+                        />
+                        <IconButton onClick={handleMenuOpen}>
+                            <CheckIcon />
                         </IconButton>
                     </div>
                 </FormControl>

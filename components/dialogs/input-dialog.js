@@ -42,7 +42,6 @@ export default function InputDialog({
                     <TextField
                         autoFocus
                         margin="dense"
-                        id={label}
                         label={label}
                         type="text"
                         fullWidth
