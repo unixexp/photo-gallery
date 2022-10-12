@@ -11,6 +11,7 @@ import MoreIcon from "@material-ui/icons/MoreVert"
 import AppBar from "@material-ui/core/AppBar"
 import Menu from "@material-ui/core/Menu"
 import AlertDialog from "../dialogs/alert-dialog"
+import InputDialog from "../dialogs/input-dialog"
 
 import { getGalleryAPIService } from "../../services/gallery-api-service-factory"
 import { selectCategoryId, setCategoryId } from "./adminSlice"
@@ -40,6 +41,7 @@ export default function Toolbar() {
     const classes = useStyles()
     const [menuParent, setMenuParent] = useState(null)
     const [removeCategoryAlertDialogIsOpened, setRemoveCategoryAlertDialogIsOpened] = useState(false)
+    const [addCategoryDialogIsOpened, setAddCategoryDialogIsOpened] = useState(false)
     const [categories, setCategories] = useState([])
 
     const handleMenuOpen = (event) => {
@@ -83,6 +85,26 @@ export default function Toolbar() {
         setRemoveCategoryAlertDialogIsOpened(false)
     }
 
+    const handleOpenAddCategoryDialog = () => {
+        handleMenuClose()
+        setAddCategoryDialogIsOpened(true)
+    }
+
+    const handleAddCategoryConfirm = (categoryName) => {
+        if (categoryName && /\S+/.test(categoryName)) {
+            galleryAPIService.addCategory(categoryName).then(() => {
+                update()
+                setAddCategoryDialogIsOpened(false)
+            })
+        } else {
+            alert("Category name must contain alphabet symbols or(and) numbers")
+        }
+    }
+
+    const handleAddCategoryCancel = () => {
+        setAddCategoryDialogIsOpened(false)
+    }
+
     useEffect(() => {
         update()
     }, [])
@@ -116,7 +138,21 @@ export default function Toolbar() {
                 handleOK={handleRemoveCategoryConfirm}
                 handleClose={handleRemoveCategoryCancel}
             />
-            { renderMenu({menuParent, handleMenuClose, handleOpenRemoveCategoryDialog}) }
+            <InputDialog
+                title="Add new category"
+                label="Category name"
+                isOpened={addCategoryDialogIsOpened}
+                handleOK={handleAddCategoryConfirm}
+                handleClose={handleAddCategoryCancel}
+            />
+            {
+                renderMenu({
+                    menuParent,
+                    handleMenuClose,
+                    handleOpenRemoveCategoryDialog,
+                    handleOpenAddCategoryDialog
+                })
+            }
         </div>
     )
 
@@ -135,8 +171,14 @@ function renderCategories(categories) {
 
 }
 
-function renderMenu({menuParent, handleMenuClose, handleOpenRemoveCategoryDialog}) {
+function renderMenu(props) {
 
+    const {
+        menuParent,
+        handleMenuClose,
+        handleOpenRemoveCategoryDialog,
+        handleOpenAddCategoryDialog
+    } = props
     const isMenuOpen = Boolean(menuParent)
 
     return (
@@ -147,9 +189,13 @@ function renderMenu({menuParent, handleMenuClose, handleOpenRemoveCategoryDialog
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <MenuItem key="add">Add</MenuItem>
-            <MenuItem key="remove"
-                    onClick={handleOpenRemoveCategoryDialog}
+            <MenuItem
+                key="add"
+                onClick={handleOpenAddCategoryDialog}    
+            >Add</MenuItem>
+            <MenuItem
+                key="remove"
+                onClick={handleOpenRemoveCategoryDialog}
             >Remove</MenuItem>
         </Menu>
     )

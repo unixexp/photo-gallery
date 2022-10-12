@@ -56,6 +56,23 @@ export default class DummyGalleryAPIService {
         }
     }
 
+    addCategory = async (name) => {
+        try {
+            await new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    const newCategory = {id: uuidv4(), name: name, description: ""}
+                    DummyGalleryAPIService.categories = [
+                        ...DummyGalleryAPIService.categories,
+                        newCategory
+                    ]
+                    resolve()
+                }, 300)
+            })
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
     getPhotos = async () => {
         let data = []
         try {

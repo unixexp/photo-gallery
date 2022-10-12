@@ -1,9 +1,8 @@
-import { useState } from "react"
-
 import Dialog from "@material-ui/core/Dialog"
 import DialogTitle from "@material-ui/core/DialogTitle"
 import DialogContent from "@material-ui/core/DialogContent"
 import DialogContentText from "@material-ui/core/DialogContentText"
+import DialogActions from "@material-ui/core/DialogActions"
 import Button from "@material-ui/core/Button"
 
 export default function AlertDialog({ title, contentText, isOpened, handleOK, handleClose }) {
@@ -21,10 +20,10 @@ export default function AlertDialog({ title, contentText, isOpened, handleOK, ha
                     <DialogContentText>
                         { contentText }
                     </DialogContentText>
-                    <div style={{display: "flex", justifyContent: "space-between"}}>
+                    <DialogActions>
                         <Button onClick={handleOK}>Ok</Button>
                         <Button onClick={handleClose}>Cancel</Button>
-                    </div>
+                    </DialogActions>
                 </DialogContent>
             </Dialog>
         </div>
