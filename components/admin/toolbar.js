@@ -61,7 +61,8 @@ export default function Toolbar() {
 
     const handleOpenRemoveCategoryDialog = () => {
         handleMenuClose()
-        setRemoveCategoryAlertDialogIsOpened(true)
+        if (categoryId)
+            setRemoveCategoryAlertDialogIsOpened(true)
     }
 
     const handleRemoveCategoryConfirm = () => {
