@@ -58,14 +58,14 @@ export default class DummyGalleryAPIService {
 
     addCategory = async (name) => {
         try {
-            await new Promise((resolve, reject) => {
+            return await new Promise((resolve, reject) => {
                 setTimeout(() => {
                     const newCategory = {id: uuidv4(), name: name, description: ""}
                     DummyGalleryAPIService.categories = [
                         ...DummyGalleryAPIService.categories,
                         newCategory
                     ]
-                    resolve()
+                    resolve(newCategory)
                 }, 300)
             })
         } catch (e) {

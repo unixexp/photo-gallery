@@ -25,6 +25,7 @@ export default function InputDialog({
 
     const callOkHandler = () => {
         handleOK(value)
+        setValue('')
     }
 
     return (

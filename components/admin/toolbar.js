@@ -76,7 +76,7 @@ export default function Toolbar() {
                 } else {
                     dispatch(setCategoryId(''))
                 }
-                update()
+                update({})
                 setRemoveCategoryAlertDialogIsOpened(false)
             })
     }
@@ -92,8 +92,8 @@ export default function Toolbar() {
 
     const handleAddCategoryConfirm = (categoryName) => {
         if (categoryName && /\S+/.test(categoryName)) {
-            galleryAPIService.addCategory(categoryName).then(() => {
-                update()
+            galleryAPIService.addCategory(categoryName).then((cat) => {
+                update({selectCategoryId: cat.id})
                 setAddCategoryDialogIsOpened(false)
             })
         } else {
@@ -106,12 +106,14 @@ export default function Toolbar() {
     }
 
     useEffect(() => {
-        update()
+        update({})
     }, [])
 
-    const update = () => {
+    const update = ({selectCategoryId}) => {
         galleryAPIService.getCategories().then((data) => {
             setCategories(data)
+            if (selectCategoryId)
+                dispatch(setCategoryId(selectCategoryId))
         })
     }
 
