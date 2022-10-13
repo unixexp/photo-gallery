@@ -53,8 +53,7 @@ export default function Toolbar() {
     const [addCategoryDialogIsOpened, setAddCategoryDialogIsOpened] = useState(false)
     const [newCategoryId, setNewCategoryId] = useState(null)
     const [categories, setCategories] = useState([])
-    const [categoryName, setCategoryName] = useState("")
-    const [categoryDescription, setCategoryDescription] = useState("")
+    const [category, setCategory] = useState(null)
 
     const handleCategoryChange = (id) => {
         if (id) {
@@ -120,15 +119,13 @@ export default function Toolbar() {
     }
 
     const handleCategoryDescriptionChange = (event) => {
-        setCategoryDescription(event.target.value)
+        setCategory((cat) => {
+            return {...cat, description: event.target.value}
+        })
     }
 
     const handleCategoryUpdate = () => {
-        galleryAPIService.updateCategory({
-            id: categoryId,
-            name: categoryName,
-            description: categoryDescription
-        })
+        galleryAPIService.updateCategory(category)
     }
 
     useEffect(() => {
@@ -138,21 +135,16 @@ export default function Toolbar() {
 
     useEffect(() => {
         console.log("useEffect after categories updated")
-        if (newCategoryId != null) {
-            handleCategoryChange(newCategoryId)
-            setNewCategoryId(null)
-        }
-        return () => setNewCategoryId(null)
+        handleCategoryChange(newCategoryId)
     }, [categories])
 
     useEffect(() => {
         const _index = categories.findIndex(cat => cat.id === categoryId)
         if (_index != -1) {
-            setCategoryName(categories[_index].name)
-            setCategoryDescription(categories[_index].description)
+            setCategory(categories[_index])
         } else {
-            setCategoryName("")
-            setCategoryDescription("")
+            console.log("NULL")
+            setCategory(null)
         }
     }, [categoryId])
 
@@ -166,6 +158,7 @@ export default function Toolbar() {
 
     return (
         <div>
+            { console.log(newCategoryId) }
             <AppBar position="relative">
                 <FormControl variant="outlined" size="small" className={classes.formControl}>
                     <div className={classes.categoryBlock}>
@@ -187,7 +180,7 @@ export default function Toolbar() {
                             maxRows={4}
                             variant="outlined"
                             multiline
-                            value={categoryDescription}
+                            value={category ? category.description : ""}
                             fullWidth
                             onChange={handleCategoryDescriptionChange}
                         />
