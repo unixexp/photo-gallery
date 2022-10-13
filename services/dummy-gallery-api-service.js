@@ -75,6 +75,23 @@ export default class DummyGalleryAPIService {
         }
     }
 
+    updateCategory = async (category) => {
+        try {
+            await new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    const _index = DummyGalleryAPIService.categories.findIndex(cat => cat.id === category.id)
+                    if (_index == -1) {
+                        reject("Category not found!")
+                    } else {
+                        DummyGalleryAPIService.categories[_index] = category
+                    }
+                }, 600)
+            })
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
     getPhotos = async () => {
         let data = []
         try {

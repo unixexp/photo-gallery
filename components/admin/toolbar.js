@@ -53,6 +53,7 @@ export default function Toolbar() {
     const [addCategoryDialogIsOpened, setAddCategoryDialogIsOpened] = useState(false)
     const [newCategoryId, setNewCategoryId] = useState(null)
     const [categories, setCategories] = useState([])
+    const [categoryName, setCategoryName] = useState("")
     const [categoryDescription, setCategoryDescription] = useState("")
 
     const handleCategoryChange = (id) => {
@@ -64,7 +65,6 @@ export default function Toolbar() {
         } else {
             if (id != 0) {
                 dispatch(setCategoryId(""))
-                setCategoryDescription("")
             }
         }
     }
@@ -123,6 +123,14 @@ export default function Toolbar() {
         setCategoryDescription(event.target.value)
     }
 
+    const handleCategoryUpdate = () => {
+        galleryAPIService.updateCategory({
+            id: categoryId,
+            name: categoryName,
+            description: categoryDescription
+        })
+    }
+
     useEffect(() => {
         console.log("useEffect after mount")
         update()
@@ -136,6 +144,17 @@ export default function Toolbar() {
         }
         return () => setNewCategoryId(null)
     }, [categories])
+
+    useEffect(() => {
+        const _index = categories.findIndex(cat => cat.id === categoryId)
+        if (_index != -1) {
+            setCategoryName(categories[_index].name)
+            setCategoryDescription(categories[_index].description)
+        } else {
+            setCategoryName("")
+            setCategoryDescription("")
+        }
+    }, [categoryId])
 
     const update = () => {
         console.log("getCategories");
@@ -172,7 +191,7 @@ export default function Toolbar() {
                             fullWidth
                             onChange={handleCategoryDescriptionChange}
                         />
-                        <IconButton onClick={handleMenuOpen}>
+                        <IconButton onClick={handleCategoryUpdate}>
                             <CheckIcon />
                         </IconButton>
                     </div>
