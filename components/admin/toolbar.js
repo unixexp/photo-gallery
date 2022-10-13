@@ -51,8 +51,23 @@ export default function Toolbar() {
     const [menuParent, setMenuParent] = useState(null)
     const [removeCategoryAlertDialogIsOpened, setRemoveCategoryAlertDialogIsOpened] = useState(false)
     const [addCategoryDialogIsOpened, setAddCategoryDialogIsOpened] = useState(false)
+    const [newCategoryId, setNewCategoryId] = useState(null)
     const [categories, setCategories] = useState([])
     const [categoryDescription, setCategoryDescription] = useState("")
+
+    const handleCategoryChange = (id) => {
+        if (id) {
+            const _index = categories.findIndex(cat => cat.id === id)
+            if (_index != -1) {
+                dispatch(setCategoryId(id))
+            }
+        } else {
+            if (id != 0) {
+                dispatch(setCategoryId(""))
+                setCategoryDescription("")
+            }
+        }
+    }
 
     const handleMenuOpen = (event) => {
         setMenuParent(event.currentTarget)
@@ -60,13 +75,6 @@ export default function Toolbar() {
 
     const handleMenuClose = () => {
         setMenuParent(null)
-    }
-
-    const handleCategoryChange = (event) => {
-        const _index = categories.findIndex(cat => cat.id === event.target.value)
-        if (_index != -1)
-            dispatch(setCategoryId(event.target.value))
-
     }
 
     const handleOpenRemoveCategoryDialog = () => {
@@ -81,8 +89,8 @@ export default function Toolbar() {
         if (_index != -1)
             galleryAPIService.removeCategory(categoryId).then(() => {
                 setRemoveCategoryAlertDialogIsOpened(false)
-                dispatch(setCategoryId(''))
-                update({})
+                handleCategoryChange()
+                update()
             })
     }
 
@@ -99,7 +107,8 @@ export default function Toolbar() {
         if (categoryName && /\S+/.test(categoryName)) {
             galleryAPIService.addCategory(categoryName).then((cat) => {
                 setAddCategoryDialogIsOpened(false)
-                update({selectedCategoryId: cat.id})
+                setNewCategoryId(cat.id)
+                update()
             })
         } else {
             alert("Category name must contain alphabet symbols or(and) numbers")
@@ -114,20 +123,25 @@ export default function Toolbar() {
         setCategoryDescription(event.target.value)
     }
 
-    console.log("Effect has been planed")
     useEffect(() => {
-        console.log("useEffect")
-        update({})
+        console.log("useEffect after mount")
+        update()
     }, [])
 
-    const update = ({selectedCategoryId}) => {
+    useEffect(() => {
+        console.log("useEffect after categories updated")
+        if (newCategoryId != null) {
+            handleCategoryChange(newCategoryId)
+            setNewCategoryId(null)
+        }
+        return () => setNewCategoryId(null)
+    }, [categories])
+
+    const update = () => {
         console.log("getCategories");
         galleryAPIService.getCategories().then((data) => {
-            console.log("setCategories");
+            console.log("setCategories state");
             setCategories(data)
-            if (selectedCategoryId && selectedCategoryId !== categoryId) {
-                dispatch(setCategoryId(selectedCategoryId))
-            }
         })
     }
 
@@ -138,7 +152,7 @@ export default function Toolbar() {
                     <div className={classes.categoryBlock}>
                         <Select value={categoryId}
                                 className={classes.categorySelector}
-                                onClick={handleCategoryChange}>
+                                onClick={e => handleCategoryChange(e.target.value)}>
                             { renderCategories(categories) }
                         </Select>
                         <IconButton onClick={handleMenuOpen}>
