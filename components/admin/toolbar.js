@@ -80,15 +80,9 @@ export default function Toolbar() {
         const _index = categories.findIndex(cat => cat.id === categoryId)
         if (_index != -1)
             galleryAPIService.removeCategory(categoryId).then(() => {
-                const newCategories = categories.filter(cat => cat.id !== categoryId)
-                // Prevent errors select removed category
-                if (newCategories.length) {
-                    dispatch(setCategoryId(newCategories[0].id))
-                } else {
-                    dispatch(setCategoryId(''))
-                }
-                update({})
                 setRemoveCategoryAlertDialogIsOpened(false)
+                dispatch(setCategoryId(''))
+                update({})
             })
     }
 
@@ -104,8 +98,8 @@ export default function Toolbar() {
     const handleAddCategoryConfirm = (categoryName) => {
         if (categoryName && /\S+/.test(categoryName)) {
             galleryAPIService.addCategory(categoryName).then((cat) => {
-                update({selectCategoryId: cat.id})
                 setAddCategoryDialogIsOpened(false)
+                update({selectedCategoryId: cat.id})
             })
         } else {
             alert("Category name must contain alphabet symbols or(and) numbers")
@@ -120,19 +114,20 @@ export default function Toolbar() {
         setCategoryDescription(event.target.value)
     }
 
+    console.log("Effect has been planed")
     useEffect(() => {
         console.log("useEffect")
         update({})
-    })
+    }, [])
 
-    const update = ({selectCategoryId}) => {
+    const update = ({selectedCategoryId}) => {
         console.log("getCategories");
         galleryAPIService.getCategories().then((data) => {
             console.log("setCategories");
             setCategories(data)
-            //if (selectCategoryId) {
-            //    dispatch(setCategoryId(selectCategoryId))
-            //}
+            if (selectedCategoryId && selectedCategoryId !== categoryId) {
+                dispatch(setCategoryId(selectedCategoryId))
+            }
         })
     }
 
@@ -191,7 +186,7 @@ export default function Toolbar() {
                     handleOpenAddCategoryDialog
                 })
             }
-            { console.log("Component re-rendered") }
+            { console.log("Component rendered") }
         </div>
     )
 

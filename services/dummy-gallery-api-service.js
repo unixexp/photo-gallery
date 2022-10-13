@@ -25,7 +25,9 @@ export default class DummyGalleryAPIService {
         let data = []
         try {
             data = await new Promise((resolve, reject) => {
-                setTimeout(() => {resolve(DummyGalleryAPIService.categories)}, 500)
+                setTimeout(() => {
+                    resolve(DummyGalleryAPIService.categories)
+                }, 500)
             })
         } catch (e) {
             console.log(e)
