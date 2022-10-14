@@ -26,7 +26,7 @@ export default function getPhotos(req, res) {
                 }
             })
         }).then((files) => {
-            res.status(200).json({ data: files })
+            res.status(200).json({ files: files })
         }).catch((err) => {
             res.status(500).json({ error: err })
         })
