@@ -1,4 +1,3 @@
-import { ShoppingCartSharp } from "@material-ui/icons";
 import { v4 as uuidv4} from "uuid";
 
 export default class DummyGalleryAPIService {
@@ -10,6 +9,9 @@ export default class DummyGalleryAPIService {
         {id: 1, name: "Category 1", description: "Category 1 description"},
         {id: 2, name: "Category 2", description: "Category 2 description"}
     ]
+
+    // MOCK photo path
+    static PHOTOS_PATH = "/data/photos/categories"
 
     // MOCK photo list
     static photos = [
@@ -95,6 +97,7 @@ export default class DummyGalleryAPIService {
                         reject("Category not found!")
                     } else {
                         DummyGalleryAPIService.categories[_index] = category
+                        resolve()
                     }
                 }, 600)
             })
@@ -103,17 +106,19 @@ export default class DummyGalleryAPIService {
         }
     }
 
-    getPhotos = async () => {
-        let data = []
+    getPhotos = async (categoryId, page, onPage) => {
+        const categoryPath = path.join(DummyGalleryAPIService.PHOTOS_PATH, categoryId.toString())
         try {
-            data = await new Promise((resolve, reject) => {
-                setTimeout(() => {resolve(DummyGalleryAPIService.photos)}, 200)
+            return await new Promise((resolve, reject) => {
+                resolve(null)
             })
         } catch (e) {
             console.log(e)
-        } finally {
-            return data
         }
+    }
+
+    getPhotosPath = () => {
+        return DummyGalleryAPIService.PHOTOS_PATH
     }
 
 }

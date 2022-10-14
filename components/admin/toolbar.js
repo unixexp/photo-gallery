@@ -129,12 +129,10 @@ export default function Toolbar() {
     }
 
     useEffect(() => {
-        console.log("useEffect after mount")
         update()
     }, [])
 
     useEffect(() => {
-        console.log("useEffect after categories updated")
         handleCategoryChange(newCategoryId)
     }, [categories])
 
@@ -143,22 +141,18 @@ export default function Toolbar() {
         if (_index != -1) {
             setCategory(categories[_index])
         } else {
-            console.log("NULL")
             setCategory(null)
         }
     }, [categoryId])
 
     const update = () => {
-        console.log("getCategories");
         galleryAPIService.getCategories().then((data) => {
-            console.log("setCategories state");
             setCategories(data)
         })
     }
 
     return (
         <div>
-            { console.log(newCategoryId) }
             <AppBar position="relative">
                 <FormControl variant="outlined" size="small" className={classes.formControl}>
                     <div className={classes.categoryBlock}>
@@ -212,7 +206,6 @@ export default function Toolbar() {
                     handleOpenAddCategoryDialog
                 })
             }
-            { console.log("Component rendered") }
         </div>
     )
 

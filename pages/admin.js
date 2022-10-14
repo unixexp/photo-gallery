@@ -3,6 +3,7 @@ import { useSession } from "next-auth/react"
 import Layout from "../components/layout/layout"
 import Container from "../components/container/container"
 import Toolbar from "../components/admin/toolbar"
+import PhotoEditor from "../components/admin/photo-editor"
 
 export async function getServerSideProps(context) {
     return {
@@ -16,6 +17,7 @@ export default function AdminPage() {
         <Layout>
             <Container>
                 <Toolbar />
+                <PhotoEditor />
             </Container>
         </Layout>
     );
