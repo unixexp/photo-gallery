@@ -11,7 +11,7 @@ export default class DummyGalleryAPIService {
     ]
 
     // MOCK photo path
-    static PHOTOS_PATH = "/data/photos/categories"
+    static PHOTOS_PATH = "/data/photos"
 
     // MOCK photo list
     static photos = [
