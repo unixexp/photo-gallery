@@ -1,3 +1,16 @@
+import { db } from "../../../../../../services/db"
+
+export default function getCategoryMainPhoto(req, res) {
+
+    if (req.method === "GET") {
+        const { id: categoryId } = req.query;
+
+        res.status(200).json({ data: db })
+    }
+
+}
+
+/*
 import path from "path"
 
 import { getGalleryAPIService } from "../../../../../services/gallery-api-service-factory"
@@ -26,3 +39,4 @@ export default function getPhotos(req, res) {
     }
 
 }
+*/

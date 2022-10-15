@@ -2,6 +2,10 @@ import { v4 as uuidv4} from "uuid";
 
 export default class DummyGalleryAPIService {
 
+    constructor(){
+        this.number = Math.floor(Math.random() * 100)
+    }
+
     static photos = []
 
     // MOCK category list
