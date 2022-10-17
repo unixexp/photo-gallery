@@ -1,8 +1,6 @@
 datasource db {
-    // provider = "mysql"
-    // url      = env("DATABASE_URL")
-    provider = "sqlite"
-    url      = "file:../photo-gallery.db"
+    provider = "mysql"
+    url      = env("DATABASE_URL")
 }
 
 generator client {
@@ -10,7 +8,7 @@ generator client {
 }
 
 model Category {
-  id        Bytes     @id
+  id        Bytes     @db.VarBinary(16) @id
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime? @map("updated_at")
   name      String    @unique
@@ -20,7 +18,7 @@ model Category {
 }
 
 model Photo {
-  id        Bytes     @id
+  id        Bytes     @db.VarBinary(16) @id
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime? @map("updated_at")
   main      String?
