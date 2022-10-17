@@ -1,16 +1,12 @@
 datasource db {
-    provider = "sqlite"
+  provider = "sqlite"
     url      = "file:../photo-gallery.db"
-}
-
-generator client {
-    provider = "prisma-client-js"
 }
 
 model Category {
   id        Bytes     @id
   createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime? @map("updated_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
   name      String    @unique
   mainPhoto String?   @map("main_photo")
 
@@ -20,7 +16,7 @@ model Category {
 model Photo {
   id        Bytes     @id
   createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime? @map("updated_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
   main      String?
   thumbnail String?
 

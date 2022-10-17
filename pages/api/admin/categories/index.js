@@ -1,54 +1,56 @@
+import { prisma } from "~/lib/db"
 import {
-    v4 as uuidV4,
-    parse as uuidParse,
-    stringify as uuidStringify
-} from "uuid";
-import { prisma } from "../../../../lib/db"
+    convertUUIDBufferedToString,
+    makeUUIDBuffered,
+    resultOK,
+    resultError
+} from "~/lib/util"
 
 export default async function getCategories(req, res) {
 
     if (req.method === "GET") {
 
         let result = null
+
         try {
             result = await prisma.Category.findMany()
         } catch (e) {
             await prisma.$disconnect()
             console.log(e)
-            res.status(500).json({error: "Error get categories"})
+            res.status(500).json(resultError())
             return
         }
 
         const data = result.map((entry) => {
-            entry.id = uuidStringify(new Uint8Array(entry.id))
+            entry.id = convertUUIDBufferedToString(entry.id)
             return entry
         })
 
-        res.status(200).json({data: data})
+        res.status(200).json(resultOK(data))
         
     } else if (req.method === "POST") {
 
         const category = {
             data: {
-                id: Buffer.from(uuidParse(uuidV4())),
+                id: makeUUIDBuffered(),
                 name: req.body.name
             }
         }
+        let result = null
 
-        let result = null;
         try {
             result = await prisma.Category.create(category)
         } catch (e) {
             await prisma.$disconnect()
             console.log(e)
-            res.status(500).json({error: "Error create category"})
+            res.status(500).json(resultError("Error create category"))
             return
         }
 
         const data = { ...result }
-        data.id = uuidStringify(new Uint8Array(data.id))
+        data.id = convertUUIDBufferedToString(data.id)
 
-        res.status(200).json({data: data})
+        res.status(200).json(resultOK(data))
 
     }
 

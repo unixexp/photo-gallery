@@ -19,5 +19,8 @@
     "fs": "^0.0.1-security",
     "prisma": "^4.4.0",
     "sass": "^1.55.0"
+  },
+  "exports": {
+    "lib": "./lib"
   }
 }
