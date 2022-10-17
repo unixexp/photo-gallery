@@ -1,11 +1,12 @@
-import { db } from "../../../../../../services/db"
+import { prisma } from "../../../../../../lib/db"
 
-export default function getCategoryMainPhoto(req, res) {
+export default async function getCategoryMainPhoto(req, res) {
 
     if (req.method === "GET") {
-        const { id: categoryId } = req.query;
 
-        res.status(200).json({ data: db })
+        const categories = await prisma.Category.findMany()
+
+        res.status(200).json({ main: categories })
     }
 
 }

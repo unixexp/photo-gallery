@@ -1,3 +1,7 @@
+Remove prisma/migration dir, then run
+# npx prisma migrate dev
+# ./snippets/init-dummy.js
+
 API ROUTES:
 
 Get all photo UUIDs by category
