@@ -5,6 +5,8 @@ import Container from "../components/container/container"
 import Toolbar from "../components/admin/toolbar"
 import PhotoEditor from "../components/admin/photo-editor"
 
+// import { GalleryAPIServiceFactory } from "~/services/gallery-api-service-factory"
+
 export async function getServerSideProps(context) {
     return {
       props: {}

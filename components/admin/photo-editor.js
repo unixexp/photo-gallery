@@ -10,7 +10,7 @@ export default function PhotoEditor() {
     const categoryId = useSelector(selectCategoryId)
 
     useEffect(() => {
-        galleryAPIService.getPhotos(categoryId).then((data) => console.log(data))
+        // galleryAPIService.getPhotos(categoryId).then((data) => console.log(data))
     }, [categoryId])
 
     return (

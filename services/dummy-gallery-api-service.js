@@ -1,9 +1,11 @@
 import path from "path"
 import { v4 as uuidv4} from "uuid";
+import GalleryAPIService from "./gallery-api-service";
 
-export default class DummyGalleryAPIService {
+export default class DummyGalleryAPIService extends GalleryAPIService {
 
     constructor(){
+        super()
         this.photos = []
         // MOCK category list
         this.categories = [
