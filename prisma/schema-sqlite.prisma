@@ -1,6 +1,6 @@
 datasource db {
   provider = "sqlite"
-    url      = "file:../photo-gallery.db"
+  url      = "file:../photo-gallery.db"
 }
 
 model Category {
