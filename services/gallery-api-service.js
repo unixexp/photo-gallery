@@ -1,6 +1,11 @@
+import path from "path"
 import { v4 as uuidv4} from "uuid";
 
 export default class GalleryAPIService {
+
+    constructor(){
+        this.number = Math.floor(Math.random() * 100)
+    }
 
     static photos = []
 

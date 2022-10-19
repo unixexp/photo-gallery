@@ -9,3 +9,11 @@ export function getGalleryAPIService() {
         return new GalleryAPIService()
     }
 }
+
+const GalleryAPIServiceFactory = (function () {
+    let instance
+
+    
+})()
+
+export default GalleryAPIServiceFactory
