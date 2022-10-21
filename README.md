@@ -15,7 +15,7 @@ DATABASE_URL="mysql://photo-gallery::******@@localhost:3306/photo-gallery"
 
 Remove prisma/migration dir is it exists, then run
 
-# npx prisma migrate dev --schema prisma/schema-mysql.prisma
+# npx prisma migrate dev --schema prisma/schema-sqlite.prisma
 
 Add dummy records for categories and photos
 # node ./snippets/init-dummy.js

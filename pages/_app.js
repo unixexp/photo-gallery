@@ -1,12 +1,11 @@
 import "../styles/global.scss";
 import { Provider } from 'react-redux'
-import { SessionProvider } from "next-auth/react"
 import store from "../components/app/store"
 import { GalleryAPIServiceFactory } from "~/services/gallery-api-service-factory";
 
 import Head from "next/head";
 
-// export const galleryAPIService = GalleryAPIServiceFactory.getInstance()
+const galleryAPIService = GalleryAPIServiceFactory.getInstance()
 
 export default function App({ Component, pageProps }) {
 
@@ -17,9 +16,7 @@ export default function App({ Component, pageProps }) {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <Provider store={store}>
-                <SessionProvider session={pageProps.session}>
-                    <Component {...pageProps} />
-                </SessionProvider>
+                <Component {...pageProps} galleryAPIService={galleryAPIService} />
             </Provider>
         </>
     );

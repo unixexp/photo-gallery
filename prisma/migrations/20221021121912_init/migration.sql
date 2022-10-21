@@ -4,6 +4,7 @@ CREATE TABLE "categories" (
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" DATETIME,
     "name" TEXT NOT NULL,
+    "description" TEXT,
     "main_photo" TEXT
 );
 

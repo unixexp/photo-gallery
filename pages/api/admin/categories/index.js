@@ -15,13 +15,14 @@ export default async function getCategories(req, res) {
         try {
             result = await prisma.Category.findMany()
         } catch (e) {
-            await prisma.$disconnect()
             console.log(e)
             res.status(500).json(resultError())
             return
         }
 
         const data = result.map((entry) => {
+            entry.createdAt = null
+            entry.updatedAt = null
             entry.id = convertUUIDBufferedToString(entry.id)
             return entry
         })
@@ -41,7 +42,6 @@ export default async function getCategories(req, res) {
         try {
             result = await prisma.Category.create(category)
         } catch (e) {
-            await prisma.$disconnect()
             console.log(e)
             res.status(500).json(resultError("Error create category"))
             return

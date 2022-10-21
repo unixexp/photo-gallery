@@ -15,7 +15,6 @@ import AlertDialog from "../dialogs/alert-dialog"
 import InputDialog from "../dialogs/input-dialog"
 import TextField from "@material-ui/core/TextField"
 
-import { getGalleryAPIService } from "../../services/gallery-api-service-factory"
 import { selectCategoryId, setCategoryId } from "./adminSlice"
 
 const useStyles = makeStyles((theme) => ({
@@ -40,9 +39,7 @@ const useStyles = makeStyles((theme) => ({
 
 }))
 
-export default function Toolbar() {
-
-    const galleryAPIService = getGalleryAPIService()
+export default function Toolbar({ galleryAPIService, categoriesSSR }) {
 
     const categoryId = useSelector(selectCategoryId)
     const dispatch = useDispatch()
@@ -52,7 +49,7 @@ export default function Toolbar() {
     const [removeCategoryAlertDialogIsOpened, setRemoveCategoryAlertDialogIsOpened] = useState(false)
     const [addCategoryDialogIsOpened, setAddCategoryDialogIsOpened] = useState(false)
     const [newCategoryId, setNewCategoryId] = useState(null)
-    const [categories, setCategories] = useState([])
+    const [categories, setCategories] = useState(categoriesSSR)
     const [category, setCategory] = useState(null)
 
     const handleCategoryChange = (id) => {
@@ -127,10 +124,6 @@ export default function Toolbar() {
     const handleCategoryUpdate = () => {
         galleryAPIService.updateCategory(category)
     }
-
-    useEffect(() => {
-        update()
-    }, [])
 
     useEffect(() => {
         handleCategoryChange(newCategoryId)

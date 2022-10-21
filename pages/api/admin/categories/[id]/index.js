@@ -54,7 +54,6 @@ export default async function getCategories(req, res) {
                 data: {...category, id: convertUUIDStringToBuffered(id)}
             })
         } catch (e) {
-            await prisma.$disconnect()
             console.log(e)
             res.status(500).json(resultError())
             return
@@ -74,9 +73,9 @@ export default async function getCategories(req, res) {
             result = await prisma.Category.findUnique({ where: { id: convertUUIDStringToBuffered(id) } })
             if (!result) {
                 res.status(404).json(resultError("Category not found"))
+                return
             }
         } catch (e) {
-            await prisma.$disconnect()
             console.log(e)
             res.status(500).json(resultError())
             return
@@ -85,7 +84,6 @@ export default async function getCategories(req, res) {
         try {
             result = await prisma.Category.delete({ where: { id: convertUUIDStringToBuffered(id) } })
         } catch (e) {
-            await prisma.$disconnect()
             console.log(e)
             res.status(500).json(resultError())
             return

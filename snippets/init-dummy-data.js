@@ -3,11 +3,25 @@ import { PrismaClient } from "@prisma/client";
 
 function main() {
 
-    const prisma = new PrismaClient()
+    const prisma = new PrismaClient({
+        datasources: {
+            db: {
+                url: "file:../photo-gallery.db"
+            }
+        }
+    })
 
     const categories = [
-        { id: Buffer.from(uuidParse("755d2eda-77ec-4456-9d0f-f6597ea8dda1")), name: "Category 1" },
-        { id: Buffer.from(uuidParse("5d03f72c-489c-4bcc-8b9f-d3e54e1a5e4a")), name: "Category 2" }
+        {
+            id: Buffer.from(uuidParse("755d2eda-77ec-4456-9d0f-f6597ea8dda1")),
+            name: "Category 1",
+            description: "Category 1 description"
+        },
+        {
+            id: Buffer.from(uuidParse("5d03f72c-489c-4bcc-8b9f-d3e54e1a5e4a")),
+            name: "Category 2",
+            description: "Category 2 description"
+        }
     ]
 
     let result = null;

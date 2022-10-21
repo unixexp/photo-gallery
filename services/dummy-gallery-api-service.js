@@ -48,6 +48,7 @@ export default class DummyGalleryAPIService extends GalleryAPIService {
             })
         } catch (e) {
             console.log(e)
+            return []
         } finally {
             return data
         }

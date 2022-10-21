@@ -1,12 +1,9 @@
-import { getGalleryAPIService } from "../../services/gallery-api-service-factory"
-
 import { useEffect } from "react"
 import { useSelector } from "react-redux"
 import { selectCategoryId } from "./adminSlice"
 
-export default function PhotoEditor() {
+export default function PhotoEditor({galleryAPIService}) {
 
-    const galleryAPIService = getGalleryAPIService()
     const categoryId = useSelector(selectCategoryId)
 
     useEffect(() => {

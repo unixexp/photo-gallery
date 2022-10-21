@@ -5,7 +5,7 @@ import Layout from "../components/layout/layout";
 import Main from "../components/main/main";
 import Link from "next/link";
 
-export default function IndexPage() {
+export default function IndexPage({ galleryAPIService }) {
 
     const [categories, setCategories] = useState([])
 
@@ -14,11 +14,9 @@ export default function IndexPage() {
     }, [])
 
     const update = () => {
-        /* 
         galleryAPIService.getCategories().then((data) => {
             setCategories(data)
         })
-        */
     }
 
     return (
@@ -36,7 +34,7 @@ export default function IndexPage() {
             </Main>
             {
                 categories.map(cat => {
-                    return <div>{cat.name}</div>
+                    return <div key={cat.name}>{cat.name}</div>
                 })
             }
         </Layout>
