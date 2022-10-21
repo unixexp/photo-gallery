@@ -21,9 +21,8 @@ export default class MainGalleryAPIService extends GalleryAPIService {
     getCategories = async () => {
         let data = []
         try {
-            const response = await fetch(
-                this.makeAPIUrl("/admin/categories"),
-                { method: "GET" })
+            const path = this.makeAPIUrl("/admin/categories")
+            const response = await fetch(path, { method: "GET" })
             const json = await response.json()
             data = json.response
         } catch (e) {
@@ -107,7 +106,7 @@ export default class MainGalleryAPIService extends GalleryAPIService {
     }
 
     makeAPIUrl = (url) => {
-        return path.join(this.SERVER_URL_API, url)
+        return new URL(url, this.SERVER_URL_API)
     }
 
 }
