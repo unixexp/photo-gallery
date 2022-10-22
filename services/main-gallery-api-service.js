@@ -48,19 +48,19 @@ export default class MainGalleryAPIService extends GalleryAPIService {
     }
 
     addCategory = async (name) => {
+        let data = null
         try {
-            return await new Promise((resolve, reject) => {
-                setTimeout(() => {
-                    const newCategory = {id: uuidv4(), name: name, description: ""}
-                    this.categories = [
-                        ...this.categories,
-                        newCategory
-                    ]
-                    resolve(newCategory)
-                }, 300)
+            const path = this.makeAPIUrl(`/api/admin/categories`)
+            const response = await fetch(path, {
+                method: "POST",
+                
             })
+            const json = await response.json()
+            data = json.response
         } catch (e) {
             console.log(e)
+        } finally {
+            return data
         }
     }
 
