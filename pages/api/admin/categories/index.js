@@ -43,14 +43,18 @@ export default async function getCategories(req, res) {
             result = await prisma.Category.create(category)
         } catch (e) {
             console.log(e)
-            res.status(500).json(resultError("Error create category"))
+            if (e.code === "P2002") {
+                res.status(409).json(resultError("Category already exists"))
+            } else {
+                res.status(500).json(resultError("Error create category"))
+            }
             return
         }
 
         const data = { ...result }
         data.id = convertUUIDBufferedToString(data.id)
 
-        res.status(200).json(resultOK(data))
+        res.status(201).json(resultOK(data))
 
     }
 

@@ -101,10 +101,15 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
 
     const handleAddCategoryConfirm = (categoryName) => {
         if (categoryName && /\S+/.test(categoryName)) {
-            galleryAPIService.addCategory(categoryName).then((cat) => {
-                setAddCategoryDialogIsOpened(false)
-                setNewCategoryId(cat.id)
-                update()
+            galleryAPIService.addCategory(categoryName).then((data) => {
+                if (data.result === "ok") {
+                    setAddCategoryDialogIsOpened(false)
+                    setNewCategoryId(data.response.id)
+                    update()
+                } else {
+                    setAddCategoryDialogIsOpened(false)
+                    alert(data.error)
+                }
             })
         } else {
             alert("Category name must contain alphabet symbols or(and) numbers")
@@ -140,7 +145,11 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
 
     const update = () => {
         galleryAPIService.getCategories().then((data) => {
-            setCategories(data)
+            if (data.result === "ok") {
+                setCategories(data.response)
+            } else {
+                alert(data.error)
+            }
         })
     }
 

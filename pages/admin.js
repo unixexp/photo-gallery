@@ -8,23 +8,29 @@ import { GalleryAPIServiceFactory } from "~/services/gallery-api-service-factory
 export async function getServerSideProps(context) {
 
     const galleryAPIService = GalleryAPIServiceFactory.getInstance()
-    const categories = await galleryAPIService.getCategories()
+    const categoriesData = await galleryAPIService.getCategories()
+    let categories = []
+
+    if (categoriesData.result === "ok")
+        categories = categoriesData.response
+
 
     return {
-      props: {
-        categories: categories
-      }
+        props: {
+            categoriesSSR: categories
+        }
     }
+
 }
 
-export default function AdminPage({ galleryAPIService, categories }) {
+export default function AdminPage({ galleryAPIService, categoriesSSR }) {
 
     return (
         <Layout>
             <Container>
                 <Toolbar
                     galleryAPIService={galleryAPIService}
-                    categoriesSSR={ categories }
+                    categoriesSSR={ categoriesSSR }
                 />
                 <PhotoEditor galleryAPIService={galleryAPIService}/>
             </Container>

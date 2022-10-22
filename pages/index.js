@@ -15,7 +15,9 @@ export default function IndexPage({ galleryAPIService }) {
 
     const update = () => {
         galleryAPIService.getCategories().then((data) => {
-            setCategories(data)
+            if (data.result === "ok") {
+                setCategories(data.response)
+            }
         })
     }
 
