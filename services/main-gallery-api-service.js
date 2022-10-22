@@ -6,7 +6,7 @@ export default class MainGalleryAPIService extends GalleryAPIService {
 
     constructor(){
         super()
-        this.SERVER_URL_API = "http://localhost:3000/api"
+        this.API_SERVER = "http://localhost:3000"
 
         this.categories = []
         this.photos = []
@@ -21,7 +21,7 @@ export default class MainGalleryAPIService extends GalleryAPIService {
     getCategories = async () => {
         let data = []
         try {
-            const path = this.makeAPIUrl("/admin/categories")
+            const path = this.makeAPIUrl("/api/admin/categories")
             const response = await fetch(path, { method: "GET" })
             const json = await response.json()
             data = json.response
@@ -106,7 +106,8 @@ export default class MainGalleryAPIService extends GalleryAPIService {
     }
 
     makeAPIUrl = (url) => {
-        return new URL(url, this.SERVER_URL_API)
+        const converted = new URL(url, this.API_SERVER)
+        return converted.href
     }
 
 }
