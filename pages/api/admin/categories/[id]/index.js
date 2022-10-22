@@ -89,7 +89,7 @@ export default async function getCategories(req, res) {
             return
         }
 
-        res.status(200).json(resultOK)
+        res.status(200).json(resultOK())
 
     }
 

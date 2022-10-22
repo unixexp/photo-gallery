@@ -34,24 +34,16 @@ export default class MainGalleryAPIService extends GalleryAPIService {
     }
 
     removeCategory = async (id) => {
+        let data = null
         try {
-            await new Promise((resolve, reject) => {
-                setTimeout(() => {
-                    const _index = this.categories.findIndex((cat) => cat.id === id)
-                    if (_index != -1) {
-                        const newCategories = [
-                            ...this.categories.slice(0, _index),
-                            ...this.categories.slice(_index + 1)
-                        ]
-                        this.categories = newCategories
-                        resolve()
-                    } else {
-                        reject(`Category with ${id} not found!`)
-                    }
-                }, 500)
-            })
+            const path = this.makeAPIUrl(`/api/admin/categories/${id}`)
+            const response = await fetch(path, { method: "DELETE" })
+            const json = await response.json()
+            data = json.response
         } catch (e) {
             console.log(e)
+        } finally {
+            return data
         }
     }
 
