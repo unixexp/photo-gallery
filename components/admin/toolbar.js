@@ -48,7 +48,7 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
     const [menuParent, setMenuParent] = useState(null)
     const [removeCategoryAlertDialogIsOpened, setRemoveCategoryAlertDialogIsOpened] = useState(false)
     const [addCategoryDialogIsOpened, setAddCategoryDialogIsOpened] = useState(false)
-    const [newCategoryId, setNewCategoryId] = useState(null)
+    const [updatedCategoryId, setUpdatedCategoryId] = useState(null)
     const [categories, setCategories] = useState(categoriesSSR)
     const [category, setCategory] = useState(null)
 
@@ -104,7 +104,7 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
             galleryAPIService.addCategory(categoryName).then((data) => {
                 if (data.result === "ok") {
                     setAddCategoryDialogIsOpened(false)
-                    setNewCategoryId(data.response.id)
+                    setUpdatedCategoryId(data.response.id)
                     update()
                 } else {
                     setAddCategoryDialogIsOpened(false)
@@ -127,11 +127,25 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
     }
 
     const handleCategoryUpdate = () => {
-        galleryAPIService.updateCategory(category)
+        galleryAPIService.updateCategory(category).then((data) => {
+            if (data.result === "ok") {
+                const updated = data.response
+                const _index = categories.findIndex(cat => cat.id === updated.id)
+                if (_index != -1)
+                    setUpdatedCategoryId(updated.id)
+                    setCategories((prevCategories) => {
+                        const newCategories = [...prevCategories]
+                        newCategories[_index] = updated
+                        return newCategories
+                    })
+            } else {
+                alert(data.error)
+            }
+        })
     }
 
     useEffect(() => {
-        handleCategoryChange(newCategoryId)
+        handleCategoryChange(updatedCategoryId)
     }, [categories])
 
     useEffect(() => {
@@ -176,7 +190,13 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
                             maxRows={4}
                             variant="outlined"
                             multiline
-                            value={category ? category.description : ""}
+                            value={
+                                category
+                                    ? category.description != null
+                                        ? category.description
+                                        : ""
+                                    : ""
+                            }
                             fullWidth
                             onChange={handleCategoryDescriptionChange}
                         />

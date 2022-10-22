@@ -21,9 +21,14 @@ export default async function getCategories(req, res) {
         }
 
         const data = result.map((entry) => {
-            entry.createdAt = null
-            entry.updatedAt = null
+            if (entry.createdAt != null)
+                entry.createdAt = entry.createdAt.toISOString()
+
+            if (entry.updatedAt != null)    
+                entry.updatedAt = entry.updatedAt.toISOString()
+
             entry.id = convertUUIDBufferedToString(entry.id)
+
             return entry
         })
 

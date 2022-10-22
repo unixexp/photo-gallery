@@ -1,3 +1,4 @@
+import { CategoryOutlined } from "@material-ui/icons"
 import { prisma } from "~/lib/db"
 import {
     convertUUIDStringToBuffered,
@@ -49,6 +50,12 @@ export default async function getCategories(req, res) {
         }
 
         try {
+            if (category.createAt != null)
+                category.createAt = new Date(category.createdAt)
+
+            if (category.updatedAt != null)
+                category.updatedAt = new Date(category.updatedAt)
+
             result = await prisma.Category.update({
                 where: { id: convertUUIDStringToBuffered(id) },
                 data: {...category, id: convertUUIDStringToBuffered(id)}

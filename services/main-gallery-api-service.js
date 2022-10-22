@@ -38,7 +38,7 @@ export default class MainGalleryAPIService extends GalleryAPIService {
     }
 
     updateCategory = async (category) => {
-        const path = this.getRouteURL("categories")
+        const path = `${this.getRouteURL("categories")}/${category.id}`
         const response = await fetch(path, {
             method: "PUT",
             headers: {
