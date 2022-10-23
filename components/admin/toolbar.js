@@ -48,6 +48,7 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
     const [menuParent, setMenuParent] = useState(null)
     const [removeCategoryAlertDialogIsOpened, setRemoveCategoryAlertDialogIsOpened] = useState(false)
     const [addCategoryDialogIsOpened, setAddCategoryDialogIsOpened] = useState(false)
+    const [editCategoryNameDialogIsOpened, setEditCategoryNameDialogIsOpened] = useState(false)
     const [updatedCategoryId, setUpdatedCategoryId] = useState(null)
     const [categories, setCategories] = useState(categoriesSSR)
 
@@ -117,6 +118,15 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
 
     const handleAddCategoryCancel = () => {
         setAddCategoryDialogIsOpened(false)
+    }
+
+    const handleOpenEditCategoryNameDialog = () => {
+        handleMenuClose()
+        setEditCategoryNameDialogIsOpened(true)
+    }
+
+    const handleEditCategoryNameCancel = () => {
+        setEditCategoryNameDialogIsOpened(false)
     }
 
     const handleCategoryDescriptionChange = (event) => {
@@ -217,12 +227,20 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
                 handleOK={handleAddCategoryConfirm}
                 handleClose={handleAddCategoryCancel}
             />
+            <InputDialog
+                title="Change category name"
+                label="Category name"
+                isOpened={editCategoryNameDialogIsOpened}
+                handleOK={() => console.log("ok")}
+                handleClose={handleEditCategoryNameCancel}
+            />
             {
                 renderMenu({
                     menuParent,
                     handleMenuClose,
                     handleOpenRemoveCategoryDialog,
-                    handleOpenAddCategoryDialog
+                    handleOpenAddCategoryDialog,
+                    handleOpenEditCategoryNameDialog
                 })
             }
         </div>
@@ -249,7 +267,8 @@ function renderMenu(props) {
         menuParent,
         handleMenuClose,
         handleOpenRemoveCategoryDialog,
-        handleOpenAddCategoryDialog
+        handleOpenAddCategoryDialog,
+        handleOpenEditCategoryNameDialog
     } = props
     const isMenuOpen = Boolean(menuParent)
 
@@ -265,6 +284,10 @@ function renderMenu(props) {
                 key="add"
                 onClick={handleOpenAddCategoryDialog}    
             >Add</MenuItem>
+            <MenuItem
+                key="change-name"
+                onClick={handleOpenEditCategoryNameDialog}    
+            >Edit</MenuItem>
             <MenuItem
                 key="remove"
                 onClick={handleOpenRemoveCategoryDialog}
