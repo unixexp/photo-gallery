@@ -26,12 +26,16 @@ const useStyles = makeStyles((theme) => ({
 
     categoryBlock: {
         display: "flex",
-        alignItems: "center"
+        paddingBottom: "4px"
     },
 
     categorySelector: {
         width: "100%",
         color: theme.palette.primary.contrastText
+    },
+
+    descriptionBlock: {
+        display: "flex"
     },
 
     descriptionFieldInput: {
@@ -41,8 +45,7 @@ const useStyles = makeStyles((theme) => ({
     mainImageContainer: {
         display: "flex",
         justifyContent: "center",
-        width: "400px",
-        height: "100%",
+        alignItems: "center",
         border: `1px solid ${theme.palette.primary.dark}`,
         borderRadius: "4px",
         marginRight: "4px"
@@ -269,7 +272,7 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
                             <MoreIcon />
                         </IconButton>
                     </div>
-                    <div className={classes.categoryBlock}>
+                    <div className={classes.descriptionBlock}>
                         { renderMainImage({classes}) }
                         <TextField
                             InputProps={{
