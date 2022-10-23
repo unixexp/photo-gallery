@@ -9,6 +9,7 @@ import MenuItem from "@material-ui/core/MenuItem"
 import IconButton from "@material-ui/core/IconButton"
 import MoreIcon from "@material-ui/icons/MoreVert"
 import CheckIcon from "@material-ui/icons/CheckOutlined"
+import CloudUploadOutlinedIcon from "@material-ui/icons/CloudUploadOutlined"
 import AppBar from "@material-ui/core/AppBar"
 import Menu from "@material-ui/core/Menu"
 import AlertDialog from "../dialogs/alert-dialog"
@@ -35,9 +36,80 @@ const useStyles = makeStyles((theme) => ({
 
     descriptionFieldInput: {
         color: theme.palette.primary.contrastText
+    },
+
+    mainImageContainer: {
+        display: "flex",
+        justifyContent: "center",
+        width: "400px",
+        height: "100%",
+        border: `1px solid ${theme.palette.primary.dark}`,
+        borderRadius: "4px",
+        marginRight: "4px"
     }
 
 }))
+
+function renderMainImage({ classes }) {
+
+    return (
+        <div className={classes.mainImageContainer}>
+            <IconButton>
+                <CloudUploadOutlinedIcon />
+            </IconButton>
+        </div>
+    )
+
+}
+
+function renderCategories(categories) {
+
+    return categories.map(category => {
+        return (
+            <MenuItem key={category.id}
+                    value={category.id}>
+                {category.name}
+            </MenuItem>
+        )
+    })
+
+}
+
+function renderMenu(props) {
+
+    const {
+        menuParent,
+        handleMenuClose,
+        handleOpenRemoveCategoryDialog,
+        handleOpenAddCategoryDialog,
+        handleOpenEditCategoryNameDialog
+    } = props
+    const isMenuOpen = Boolean(menuParent)
+
+    return (
+        <Menu
+            anchorEl={menuParent}
+            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+            open={isMenuOpen}
+            onClose={handleMenuClose}
+        >
+            <MenuItem
+                key="add"
+                onClick={handleOpenAddCategoryDialog}    
+            >Add</MenuItem>
+            <MenuItem
+                key="change-name"
+                onClick={handleOpenEditCategoryNameDialog}    
+            >Edit</MenuItem>
+            <MenuItem
+                key="remove"
+                onClick={handleOpenRemoveCategoryDialog}
+            >Remove</MenuItem>
+        </Menu>
+    )
+
+}
 
 export default function Toolbar({ galleryAPIService, categoriesSSR }) {
 
@@ -198,6 +270,7 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
                         </IconButton>
                     </div>
                     <div className={classes.categoryBlock}>
+                        { renderMainImage({classes}) }
                         <TextField
                             InputProps={{
                                 className: classes.descriptionFieldInput
@@ -253,55 +326,6 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
                 })
             }
         </div>
-    )
-
-}
-
-function renderCategories(categories) {
-
-    return categories.map(category => {
-        return (
-            <MenuItem key={category.id}
-                    value={category.id}>
-                {category.name}
-            </MenuItem>
-        )
-    })
-
-}
-
-function renderMenu(props) {
-
-    const {
-        menuParent,
-        handleMenuClose,
-        handleOpenRemoveCategoryDialog,
-        handleOpenAddCategoryDialog,
-        handleOpenEditCategoryNameDialog
-    } = props
-    const isMenuOpen = Boolean(menuParent)
-
-    return (
-        <Menu
-            anchorEl={menuParent}
-            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-            open={isMenuOpen}
-            onClose={handleMenuClose}
-        >
-            <MenuItem
-                key="add"
-                onClick={handleOpenAddCategoryDialog}    
-            >Add</MenuItem>
-            <MenuItem
-                key="change-name"
-                onClick={handleOpenEditCategoryNameDialog}    
-            >Edit</MenuItem>
-            <MenuItem
-                key="remove"
-                onClick={handleOpenRemoveCategoryDialog}
-            >Remove</MenuItem>
-        </Menu>
     )
 
 }
