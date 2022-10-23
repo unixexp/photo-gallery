@@ -15,7 +15,7 @@ import AlertDialog from "../dialogs/alert-dialog"
 import InputDialog from "../dialogs/input-dialog"
 import TextField from "@material-ui/core/TextField"
 
-import { selectCategoryId, setCategoryId } from "./adminSlice"
+import { selectCategory, setCategory } from "./adminSlice"
 
 const useStyles = makeStyles((theme) => ({
 
@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Toolbar({ galleryAPIService, categoriesSSR }) {
 
-    const categoryId = useSelector(selectCategoryId)
+    const category = useSelector(selectCategory)
     const dispatch = useDispatch()
 
     const classes = useStyles()
@@ -50,17 +50,16 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
     const [addCategoryDialogIsOpened, setAddCategoryDialogIsOpened] = useState(false)
     const [updatedCategoryId, setUpdatedCategoryId] = useState(null)
     const [categories, setCategories] = useState(categoriesSSR)
-    const [category, setCategory] = useState(null)
 
     const handleCategoryChange = (id) => {
         if (id) {
             const _index = categories.findIndex(cat => cat.id === id)
             if (_index != -1) {
-                dispatch(setCategoryId(id))
+                dispatch(setCategory(categories[_index]))
             }
         } else {
             if (id != 0) {
-                dispatch(setCategoryId(""))
+                dispatch(setCategory(null))
             }
         }
     }
@@ -75,19 +74,19 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
 
     const handleOpenRemoveCategoryDialog = () => {
         handleMenuClose()
-        if (categoryId)
+        if (category != null)
             setRemoveCategoryAlertDialogIsOpened(true)
     }
 
     const handleRemoveCategoryConfirm = () => {
         // Prevent errors with remove undefined category
-        const _index = categories.findIndex(cat => cat.id === categoryId)
-        if (_index != -1)
-            galleryAPIService.removeCategory(categoryId).then(() => {
+        if (category != null) {
+            galleryAPIService.removeCategory(category.id).then(() => {
                 setRemoveCategoryAlertDialogIsOpened(false)
                 handleCategoryChange()
                 update()
             })
+        }
     }
 
     const handleRemoveCategoryCancel = () => {
@@ -121,9 +120,8 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
     }
 
     const handleCategoryDescriptionChange = (event) => {
-        setCategory((cat) => {
-            return {...cat, description: event.target.value}
-        })
+        if (category != null)
+            dispatch(setCategory({...category, description: event.target.value}))
     }
 
     const handleCategoryUpdate = () => {
@@ -149,13 +147,8 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
     }, [categories])
 
     useEffect(() => {
-        const _index = categories.findIndex(cat => cat.id === categoryId)
-        if (_index != -1) {
-            setCategory(categories[_index])
-        } else {
-            setCategory(null)
-        }
-    }, [categoryId])
+        setCategory(category)
+    }, [category])
 
     const update = () => {
         galleryAPIService.getCategories().then((data) => {
@@ -172,7 +165,11 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
             <AppBar position="relative">
                 <FormControl variant="outlined" size="small" className={classes.formControl}>
                     <div className={classes.categoryBlock}>
-                        <Select value={categoryId}
+                        <Select value={
+                                    category != null
+                                        ? category.id
+                                        : ''
+                                }
                                 className={classes.categorySelector}
                                 onClick={e => handleCategoryChange(e.target.value)}>
                             { renderCategories(categories) }
@@ -191,7 +188,7 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
                             variant="outlined"
                             multiline
                             value={
-                                category
+                                category != null
                                     ? category.description != null
                                         ? category.description
                                         : ""
