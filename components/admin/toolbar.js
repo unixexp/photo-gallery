@@ -99,6 +99,10 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
         setAddCategoryDialogIsOpened(true)
     }
 
+    const handleAddCategoryCancel = () => {
+        setAddCategoryDialogIsOpened(false)
+    }
+
     const handleAddCategoryConfirm = (categoryName) => {
         if (categoryName && /\S+/.test(categoryName)) {
             galleryAPIService.addCategory(categoryName).then((data) => {
@@ -116,17 +120,26 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
         }
     }
 
-    const handleAddCategoryCancel = () => {
-        setAddCategoryDialogIsOpened(false)
-    }
-
     const handleOpenEditCategoryNameDialog = () => {
         handleMenuClose()
-        setEditCategoryNameDialogIsOpened(true)
+        if (category)
+            setEditCategoryNameDialogIsOpened(true)
     }
 
     const handleEditCategoryNameCancel = () => {
         setEditCategoryNameDialogIsOpened(false)
+    }
+
+    const handleEditCategoryNameConfirm = (categoryName) => {
+        if (categoryName && /\S+/.test(categoryName)) {
+            if (category != null) {
+                setEditCategoryNameDialogIsOpened(false)
+                const modified = { ...category, name: categoryName }
+                handleCategoryUpdate(modified)
+            }
+        } else {
+            alert("Category name must contain alphabet symbols or(and) numbers")
+        }
     }
 
     const handleCategoryDescriptionChange = (event) => {
@@ -134,8 +147,8 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
             dispatch(setCategory({...category, description: event.target.value}))
     }
 
-    const handleCategoryUpdate = () => {
-        galleryAPIService.updateCategory(category).then((data) => {
+    const handleCategoryUpdate = (modified) => {
+        galleryAPIService.updateCategory(modified).then((data) => {
             if (data.result === "ok") {
                 const updated = data.response
                 const _index = categories.findIndex(cat => cat.id === updated.id)
@@ -155,10 +168,6 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
     useEffect(() => {
         handleCategoryChange(updatedCategoryId)
     }, [categories])
-
-    useEffect(() => {
-        setCategory(category)
-    }, [category])
 
     const update = () => {
         galleryAPIService.getCategories().then((data) => {
@@ -207,7 +216,7 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
                             fullWidth
                             onChange={handleCategoryDescriptionChange}
                         />
-                        <IconButton onClick={handleCategoryUpdate}>
+                        <IconButton onClick={() => handleCategoryUpdate(category)}>
                             <CheckIcon />
                         </IconButton>
                     </div>
@@ -231,7 +240,7 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
                 title="Change category name"
                 label="Category name"
                 isOpened={editCategoryNameDialogIsOpened}
-                handleOK={() => console.log("ok")}
+                handleOK={handleEditCategoryNameConfirm}
                 handleClose={handleEditCategoryNameCancel}
             />
             {
