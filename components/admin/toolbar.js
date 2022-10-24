@@ -1,75 +1,43 @@
-import { makeStyles } from "@material-ui/core/styles"
-
 import { useState, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
 
-import Select from "@material-ui/core/Select"
-import FormControl from "@material-ui/core/FormControl"
-import MenuItem from "@material-ui/core/MenuItem"
-import IconButton from "@material-ui/core/IconButton"
-import MoreIcon from "@material-ui/icons/MoreVert"
-import CheckIcon from "@material-ui/icons/CheckOutlined"
-import CloudUploadOutlinedIcon from "@material-ui/icons/CloudUploadOutlined"
-import AppBar from "@material-ui/core/AppBar"
-import Menu from "@material-ui/core/Menu"
+import Select from "@mui/material/Select"
+import FormControl from "@mui/material/FormControl"
+import MenuItem from "@mui/material/MenuItem"
+import IconButton from "@mui/material/IconButton"
+import AppBar from "@mui/material/AppBar"
+import Menu from "@mui/material/Menu"
+import TextField from "@mui/material/TextField"
+import MoreIcon from "@mui/icons-material/MoreVert"
+import CheckIcon from "@mui/icons-material/CheckOutlined"
+import CloudUploadOutlinedIcon from "@mui/icons-material/CloudUploadOutlined"
+
 import AlertDialog from "../dialogs/alert-dialog"
 import InputDialog from "../dialogs/input-dialog"
 import LoadImageDialog from "../dialogs/load-image-dialog"
-import TextField from "@material-ui/core/TextField"
 
 import { selectCategory, setCategory } from "./adminSlice"
 
-const useStyles = makeStyles((theme) => ({
+function renderMainImage({ category }) {
 
-    formControl: {
-        padding: "5px 10px 10px 10px"
-    },
-
-    categoryBlock: {
-        display: "flex",
-        paddingBottom: "4px"
-    },
-
-    categorySelector: {
-        width: "100%",
-        color: theme.palette.primary.contrastText
-    },
-
-    descriptionBlock: {
-        display: "flex"
-    },
-
-    descriptionFieldInput: {
-        color: theme.palette.primary.contrastText
-    },
-
-    mainImageContainer: {
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        border: `1px solid ${theme.palette.primary.dark}`,
-        borderRadius: "4px",
-        marginRight: "4px"
-    },
-
-    mainImageButton: {
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100%",
-        cursor: "pointer"
-    },
-
-    updateButtonContainer: {
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center"
+    const styles = {
+        mainImageContainer: {
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            // border: `1px solid ${theme.palette.primary.dark}`,
+            borderRadius: "4px",
+            marginRight: "4px"
+        },
+    
+        mainImageButton: {
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100%",
+            cursor: "pointer"
+        }
     }
-
-}))
-
-function renderMainImage({ classes, category }) {
-
     const [loadImageDialogIsOpened, setloadImageDialogIsOpened] = useState(false)
 
     const handleOpenLoadImageDialog = (event) => {
@@ -85,9 +53,9 @@ function renderMainImage({ classes, category }) {
     }
 
     return (
-        <div className={classes.mainImageContainer}>
+        <div style={styles.mainImageContainer}>
             <div
-                className={classes.mainImageButton}
+                style={styles.mainImageButton}
                 onClick={(event) => {handleOpenLoadImageDialog(event)}}>
                     <IconButton>
                         <CloudUploadOutlinedIcon />
@@ -107,7 +75,8 @@ function renderCategories(categories) {
 
     return categories.map(category => {
         return (
-            <MenuItem key={category.id}
+            <MenuItem
+                    key={category.id}
                     value={category.id}>
                 {category.name}
             </MenuItem>
@@ -154,10 +123,39 @@ function renderMenu(props) {
 
 export default function Toolbar({ galleryAPIService, categoriesSSR }) {
 
+    const styles = {
+        formContainer: {
+            padding: "5px 10px 10px 10px"
+        },
+    
+        categoryBlock: {
+            display: "flex",
+            paddingBottom: "4px"
+        },
+    
+        categorySelector: {
+            width: "100%",
+            // color: theme.palette.primary.contrastText
+        },
+    
+        descriptionBlock: {
+            display: "flex"
+        },
+    
+        descriptionFieldInput: {
+            // color: theme.palette.primary.contrastText
+        },
+
+        updateButtonContainer: {
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center"
+        }
+    }
+
     const category = useSelector(selectCategory)
     const dispatch = useDispatch()
 
-    const classes = useStyles()
     const [menuParent, setMenuParent] = useState(null)
     const [removeCategoryAlertDialogIsOpened, setRemoveCategoryAlertDialogIsOpened] = useState(false)
     const [addCategoryDialogIsOpened, setAddCategoryDialogIsOpened] = useState(false)
@@ -295,48 +293,50 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
     return (
         <div>
             <AppBar position="relative">
-                <FormControl variant="outlined" size="small" className={classes.formControl}>
-                    <div className={classes.categoryBlock}>
-                        <Select value={
-                                    category != null
-                                        ? category.id
-                                        : ''
-                                }
-                                className={classes.categorySelector}
-                                onClick={e => handleCategoryChange(e.target.value)}>
-                            { renderCategories(categories) }
-                        </Select>
-                        <IconButton onClick={handleMenuOpen}>
-                            <MoreIcon />
-                        </IconButton>
-                    </div>
-                    <div className={classes.descriptionBlock}>
-                        { renderMainImage({classes, category}) }
-                        <TextField
-                            InputProps={{
-                                className: classes.descriptionFieldInput
-                            }}
-                            minRows={4}
-                            maxRows={4}
-                            variant="outlined"
-                            multiline
-                            value={
-                                category != null
-                                    ? category.description != null
-                                        ? category.description
-                                        : ""
-                                    : ""
-                            }
-                            fullWidth
-                            onChange={handleCategoryDescriptionChange}
-                        />
-                        <div className={classes.updateButtonContainer}>
-                            <IconButton onClick={() => handleCategoryUpdate(category)}>
-                                <CheckIcon />
+                <div style={styles.formContainer}>
+                    <FormControl style={{minWidth: "100%"}} variant="outlined" size="small">
+                        <div style={styles.categoryBlock}>
+                            <Select value={
+                                        category != null
+                                            ? category.id
+                                            : ''
+                                    }
+                                    style={styles.categorySelector}
+                                    onChange={e => handleCategoryChange(e.target.value)}>
+                                { renderCategories(categories) }
+                            </Select>
+                            <IconButton onClick={handleMenuOpen}>
+                                <MoreIcon />
                             </IconButton>
                         </div>
-                    </div>
-                </FormControl>
+                        <div style={styles.descriptionBlock}>
+                            { renderMainImage({category}) }
+                            <TextField
+                                InputProps={{
+                                    style: styles.descriptionFieldInput
+                                }}
+                                minRows={4}
+                                maxRows={4}
+                                variant="outlined"
+                                multiline
+                                value={
+                                    category != null
+                                        ? category.description != null
+                                            ? category.description
+                                            : ""
+                                        : ""
+                                }
+                                fullWidth
+                                onChange={handleCategoryDescriptionChange}
+                            />
+                            <div style={styles.updateButtonContainer}>
+                                <IconButton onClick={() => handleCategoryUpdate(category)}>
+                                    <CheckIcon />
+                                </IconButton>
+                            </div>
+                        </div>
+                    </FormControl>
+                </div>
             </AppBar>
             <AlertDialog
                 title="Alert!"

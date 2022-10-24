@@ -1,9 +1,9 @@
 import { useState } from "react"
 
-import Dialog from "@material-ui/core/Dialog"
-import DialogContent from "@material-ui/core/DialogContent"
-import DialogActions from "@material-ui/core/DialogActions"
-import Button from "@material-ui/core/Button"
+import Dialog from "@mui/material/Dialog"
+import DialogContent from "@mui/material/DialogContent"
+import DialogActions from "@mui/material/DialogActions"
+import Button from "@mui/material/Button"
 
 export default function LoadImageDialog({isOpened, handleOK, handleClose}) {
 

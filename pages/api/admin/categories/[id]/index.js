@@ -1,4 +1,3 @@
-import { CategoryOutlined } from "@material-ui/icons"
 import { prisma } from "~/lib/db"
 import {
     convertUUIDStringToBuffered,
