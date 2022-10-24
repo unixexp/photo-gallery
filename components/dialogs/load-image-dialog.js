@@ -5,14 +5,10 @@ import DialogContent from "@material-ui/core/DialogContent"
 import DialogActions from "@material-ui/core/DialogActions"
 import Button from "@material-ui/core/Button"
 
-export default function LoadImageDialog({
-        isOpened,
-        handleOK,
-        handleClose
-    }) {
+export default function LoadImageDialog({isOpened, handleOK, handleClose}) {
 
     const callOkHandler = () => {
-        handleOK(value)
+        handleOK()
     }
 
     return (

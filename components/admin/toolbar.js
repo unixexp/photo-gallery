@@ -50,25 +50,53 @@ const useStyles = makeStyles((theme) => ({
         border: `1px solid ${theme.palette.primary.dark}`,
         borderRadius: "4px",
         marginRight: "4px"
+    },
+
+    mainImageButton: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100%",
+        cursor: "pointer"
+    },
+
+    updateButtonContainer: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center"
     }
 
 }))
 
-function renderMainImage({ classes }) {
+function renderMainImage({ classes, category }) {
 
     const [loadImageDialogIsOpened, setloadImageDialogIsOpened] = useState(false)
 
-    
+    const handleOpenLoadImageDialog = (event) => {
+        setloadImageDialogIsOpened(true)
+    }
+
+    const handleLoadImageDialogConfirm = () => {
+        setloadImageDialogIsOpened(false)
+    }
+
+    const handleLoadImageDialogCancel = () => {
+        setloadImageDialogIsOpened(false)
+    }
 
     return (
         <div className={classes.mainImageContainer}>
-            <IconButton>
-                <CloudUploadOutlinedIcon />
-            </IconButton>
+            <div
+                className={classes.mainImageButton}
+                onClick={(event) => {handleOpenLoadImageDialog(event)}}>
+                    <IconButton>
+                        <CloudUploadOutlinedIcon />
+                    </IconButton>
+            </div>
             <LoadImageDialog
                 isOpened={loadImageDialogIsOpened}
-                handleOK={() => {}}
-                handleClose={() => {}}
+                handleOK={handleLoadImageDialogConfirm}
+                handleClose={handleLoadImageDialogCancel}
             />
         </div>
     )
@@ -109,7 +137,7 @@ function renderMenu(props) {
         >
             <MenuItem
                 key="add"
-                onClick={handleOpenAddCategoryDialog}    
+                onClick={handleOpenAddCategoryDialog}
             >Add</MenuItem>
             <MenuItem
                 key="change-name"
@@ -283,7 +311,7 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
                         </IconButton>
                     </div>
                     <div className={classes.descriptionBlock}>
-                        { renderMainImage({classes}) }
+                        { renderMainImage({classes, category}) }
                         <TextField
                             InputProps={{
                                 className: classes.descriptionFieldInput
@@ -302,9 +330,11 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
                             fullWidth
                             onChange={handleCategoryDescriptionChange}
                         />
-                        <IconButton onClick={() => handleCategoryUpdate(category)}>
-                            <CheckIcon />
-                        </IconButton>
+                        <div className={classes.updateButtonContainer}>
+                            <IconButton onClick={() => handleCategoryUpdate(category)}>
+                                <CheckIcon />
+                            </IconButton>
+                        </div>
                     </div>
                 </FormControl>
             </AppBar>
