@@ -14,6 +14,7 @@ import AppBar from "@material-ui/core/AppBar"
 import Menu from "@material-ui/core/Menu"
 import AlertDialog from "../dialogs/alert-dialog"
 import InputDialog from "../dialogs/input-dialog"
+import LoadImageDialog from "../dialogs/load-image-dialog"
 import TextField from "@material-ui/core/TextField"
 
 import { selectCategory, setCategory } from "./adminSlice"
@@ -55,11 +56,20 @@ const useStyles = makeStyles((theme) => ({
 
 function renderMainImage({ classes }) {
 
+    const [loadImageDialogIsOpened, setloadImageDialogIsOpened] = useState(false)
+
+    
+
     return (
         <div className={classes.mainImageContainer}>
             <IconButton>
                 <CloudUploadOutlinedIcon />
             </IconButton>
+            <LoadImageDialog
+                isOpened={loadImageDialogIsOpened}
+                handleOK={() => {}}
+                handleClose={() => {}}
+            />
         </div>
     )
 
