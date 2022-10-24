@@ -25,8 +25,6 @@ function renderMainImage({ category }) {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            // border: `1px solid ${theme.palette.primary.dark}`,
-            borderRadius: "4px",
             marginRight: "4px"
         },
     
@@ -134,16 +132,11 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
         },
     
         categorySelector: {
-            width: "100%",
-            // color: theme.palette.primary.contrastText
+            width: "100%"
         },
     
         descriptionBlock: {
             display: "flex"
-        },
-    
-        descriptionFieldInput: {
-            // color: theme.palette.primary.contrastText
         },
 
         updateButtonContainer: {
@@ -312,9 +305,6 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
                         <div style={styles.descriptionBlock}>
                             { renderMainImage({category}) }
                             <TextField
-                                InputProps={{
-                                    style: styles.descriptionFieldInput
-                                }}
                                 minRows={4}
                                 maxRows={4}
                                 variant="outlined"
