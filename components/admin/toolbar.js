@@ -18,7 +18,7 @@ import LoadImageDialog from "../dialogs/load-image-dialog"
 
 import { selectCategory, setCategory } from "./adminSlice"
 
-function renderMainImage({ category }) {
+function renderMainImageSelector({ category }) {
 
     const styles = {
         mainImageContainer: {
@@ -63,6 +63,7 @@ function renderMainImage({ category }) {
                 isOpened={loadImageDialogIsOpened}
                 handleOK={handleLoadImageDialogConfirm}
                 handleClose={handleLoadImageDialogCancel}
+                image={category != null ? category.mainPhoto : null}
             />
         </div>
     )
@@ -303,7 +304,7 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
                             </IconButton>
                         </div>
                         <div style={styles.descriptionBlock}>
-                            { renderMainImage({category}) }
+                            { renderMainImageSelector({category}) }
                             <TextField
                                 minRows={4}
                                 maxRows={4}

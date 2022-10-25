@@ -1,11 +1,19 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 import Dialog from "@mui/material/Dialog"
 import DialogContent from "@mui/material/DialogContent"
 import DialogActions from "@mui/material/DialogActions"
+import Card from "@mui/material/Card"
+import CardMedia from "@mui/material/CardMedia"
 import Button from "@mui/material/Button"
 
-export default function LoadImageDialog({isOpened, handleOK, handleClose}) {
+export default function LoadImageDialog({isOpened, handleOK, handleClose, image}) {
+
+    const [loadedImage, setLoadedImage] = useState(image)
+
+    useEffect(() => {
+        setLoadedImage(image)
+    }, [image])
 
     const callOkHandler = () => {
         handleOK()
@@ -18,6 +26,9 @@ export default function LoadImageDialog({isOpened, handleOK, handleClose}) {
                 onClose={handleClose}
             >
                 <DialogContent>
+                    <Card>
+                        {renderCardMedia({loadedImage, setLoadedImage})}
+                    </Card>
                     <DialogActions>
                         <Button onClick={callOkHandler}>Ok</Button>
                         <Button onClick={handleClose}>Cancel</Button>
@@ -26,5 +37,25 @@ export default function LoadImageDialog({isOpened, handleOK, handleClose}) {
             </Dialog>
         </div>
     )
+
+}
+
+function renderCardMedia({loadedImage, setLoadedImage}) {
+
+    if (loadedImage != null) {
+        return (
+            <CardMedia
+                component="img"
+                height="250"
+                image={loadedImage}
+            />
+        )
+    } else {
+        return (
+            <div>
+                Click to load image
+            </div>
+        )
+    }
 
 }
