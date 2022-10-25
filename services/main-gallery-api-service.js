@@ -49,6 +49,15 @@ export default class MainGalleryAPIService extends GalleryAPIService {
         return await response.json()
     }
 
+    getCategoryMainPhoto = async (category) => {
+        // Todo: implement loading photos from backend API by categoryId
+        if (category != null) {
+            return category.mainPhoto
+        } else {
+            return null
+        }
+    }
+
     getRouteURL = (route) => {
         const url = new URL(this.API_ROUTES[route], this.API_SERVER)
         return url.href
