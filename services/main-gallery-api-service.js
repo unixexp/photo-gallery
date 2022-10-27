@@ -1,6 +1,7 @@
 import path from "path"
 import { v4 as uuidv4} from "uuid";
 import GalleryAPIService from "./gallery-api-service";
+import { formatString } from "~/lib/util"
 
 export default class MainGalleryAPIService extends GalleryAPIService {
 
@@ -9,7 +10,8 @@ export default class MainGalleryAPIService extends GalleryAPIService {
         this.API_SERVER = "http://localhost:3000"
         this.PHOTOS_PATH = "/data/photos"
         this.API_ROUTES = {
-            categories: "/api/admin/categories"
+            categories: "/api/admin/categories",
+            categoriesPhotosMain: "/api/admin/categories/<id>/photos/main/<name>"
         }
     }
 
@@ -56,6 +58,12 @@ export default class MainGalleryAPIService extends GalleryAPIService {
         } else {
             return null
         }
+    }
+
+    uploadCategoryMainPhoto = async (category, uploadable) => {
+        const modified = formatString(this.getRouteURL("categoriesPhotosMain"), {id: category.id, name: category.name})
+        console.log(modified)
+        return {result: "ok", response: null}
     }
 
     getRouteURL = (route) => {

@@ -1,12 +1,19 @@
-import { prisma } from "../../../../../../lib/db"
+import { prisma } from "~/lib/db"
+import {
+    resultOK,
+    resultError
+} from "~/lib/util"
 
 export default async function getCategoryMainPhoto(req, res) {
 
     if (req.method === "GET") {
 
-        const categories = await prisma.Category.findMany()
+        res.status(200).json(resultOK())
 
-        res.status(200).json({ main: categories })
+    } else if (req.method === "POST") {
+
+        res.status(201).json(resultOK())
+
     }
 
 }

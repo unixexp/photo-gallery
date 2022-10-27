@@ -36,7 +36,7 @@ function renderMainImageSelector({ category, galleryAPIService }) {
             cursor: "pointer"
         }
     }
-    const [loadImageDialogIsOpened, setloadImageDialogIsOpened] = useState(false)
+    const [loadImageDialogIsOpened, setLoadImageDialogIsOpened] = useState(false)
     const [mainPhoto, setMainPhoto] = useState(null)
 
     useEffect(() => {
@@ -48,15 +48,19 @@ function renderMainImageSelector({ category, galleryAPIService }) {
     }, [category])
 
     const handleOpenLoadImageDialog = (event) => {
-        setloadImageDialogIsOpened(true)
+        if (category != null)
+            setLoadImageDialogIsOpened(true)
     }
 
-    const handleLoadImageDialogConfirm = () => {
-        setloadImageDialogIsOpened(false)
+    const handleLoadImageDialogConfirm = (uploadable) => {
+        setLoadImageDialogIsOpened(false)
+        galleryAPIService.uploadCategoryMainPhoto(category, uploadable).then(data => {
+            console.log(data)
+        })
     }
 
     const handleLoadImageDialogCancel = () => {
-        setloadImageDialogIsOpened(false)
+        setLoadImageDialogIsOpened(false)
     }
 
     return (

@@ -10,13 +10,25 @@ import Button from "@mui/material/Button"
 export default function LoadImageDialog({isOpened, handleOK, handleClose, image}) {
 
     const [loadedImage, setLoadedImage] = useState(image)
+    const [uploadable, setUploadable] = useState(null)
 
     useEffect(() => {
         setLoadedImage(image)
     }, [image])
 
+    useEffect(() => {
+        if (uploadable != null)
+            setLoadedImage(URL.createObjectURL(uploadable))
+    }, [uploadable])
+
     const callOkHandler = () => {
-        handleOK()
+        handleOK(uploadable)
+    }
+
+    const callCloseHandler = () => {
+        setUploadable(null)
+        setLoadedImage(image)
+        handleClose()
     }
 
     return (
@@ -27,11 +39,11 @@ export default function LoadImageDialog({isOpened, handleOK, handleClose, image}
             >
                 <DialogContent>
                     <Card>
-                        {renderCardMedia({loadedImage, setLoadedImage})}
+                        {renderCardMedia({loadedImage, setUploadable})}
                     </Card>
                     <DialogActions>
                         <Button onClick={callOkHandler}>Ok</Button>
-                        <Button onClick={handleClose}>Cancel</Button>
+                        <Button onClick={callCloseHandler}>Cancel</Button>
                     </DialogActions>
                 </DialogContent>
             </Dialog>
@@ -40,15 +52,27 @@ export default function LoadImageDialog({isOpened, handleOK, handleClose, image}
 
 }
 
-function renderCardMedia({loadedImage, setLoadedImage}) {
+function renderCardMedia({loadedImage, setUploadable}) {
+
+    const handleUploadToState = (event) => {
+        if (event.target.files && event.target.files[0]) {
+            const uploadable = event.target.files[0]
+            setUploadable(uploadable)
+        }
+    }
 
     if (loadedImage != null) {
         return (
-            <CardMedia
-                component="img"
-                height="250"
-                image={loadedImage}
-            />
+            <div>
+                <label style={{cursor: "pointer"}}>
+                    <CardMedia
+                        component="img"
+                        height="250"
+                        image={loadedImage}
+                    />
+                    <input style={{display: "none"}} type="file" onChange={handleUploadToState} />
+                </label>
+            </div>
         )
     } else {
         return (
