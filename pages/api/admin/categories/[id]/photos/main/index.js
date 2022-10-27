@@ -1,7 +1,9 @@
 import { prisma } from "~/lib/db"
 import {
     resultOK,
-    resultError
+    resultError,
+    makePath,
+    formatString
 } from "~/lib/util"
 
 import formidable from "formidable"
@@ -15,7 +17,6 @@ export const config = {
 
 export default async function getCategoryMainPhoto(req, res) {
 
-    const dataDir = "./data"
     const mainPhotoPath = "/categories/<id>/photos/main"
 
     if (req.method === "GET") {
@@ -24,13 +25,17 @@ export default async function getCategoryMainPhoto(req, res) {
 
     } else if (req.method === "POST") {
 
+        const { id } = req.query
+
         const form = new formidable.IncomingForm()
         form.parse(req, function(err, fields, files) {
+            makePath(formatString(mainPhotoPath, {id: id}), process.env.DATA_DIR)
             // const file = files.file
             // const data = fs.readFileSync(file.filepath)
             // fs.writeFileSync("./" + file.originalFilename, data)
-            return res.status(201).json(resultOK())
         })
+
+        return res.status(201).json(resultOK())
 
     }
 
