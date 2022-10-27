@@ -4,7 +4,19 @@ import {
     resultError
 } from "~/lib/util"
 
+import formidable from "formidable"
+import fs from "fs"
+
+export const config = {
+    api: {
+      bodyParser: false
+    }
+  }
+
 export default async function getCategoryMainPhoto(req, res) {
+
+    const dataDir = "./data"
+    const mainPhotoPath = "/categories/<id>/photos/main"
 
     if (req.method === "GET") {
 
@@ -12,7 +24,13 @@ export default async function getCategoryMainPhoto(req, res) {
 
     } else if (req.method === "POST") {
 
-        res.status(201).json(resultOK())
+        const form = new formidable.IncomingForm()
+        form.parse(req, function(err, fields, files) {
+            // const file = files.file
+            // const data = fs.readFileSync(file.filepath)
+            // fs.writeFileSync("./" + file.originalFilename, data)
+            return res.status(201).json(resultOK())
+        })
 
     }
 
