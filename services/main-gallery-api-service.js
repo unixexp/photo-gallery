@@ -1,5 +1,3 @@
-import path from "path"
-import { v4 as uuidv4} from "uuid";
 import GalleryAPIService from "./gallery-api-service";
 import { formatString } from "~/lib/util"
 
@@ -12,6 +10,9 @@ export default class MainGalleryAPIService extends GalleryAPIService {
         this.API_ROUTES = {
             categories: "/api/admin/categories",
             categoriesPhotosMain: "/api/admin/categories/<id>/photos/main"
+        }
+        this.PATHS = {
+            mainPhotoPath: "/categories/<id>/photos/main"
         }
     }
 

@@ -12,8 +12,6 @@ export function getGalleryAPIService() {
 
 export const GalleryAPIServiceFactory = (function () {
 
-    let instance
-
     function createInstance() {
         const developmentMode = process.env.DEVELOPMENT_MODE;
 
@@ -26,10 +24,10 @@ export const GalleryAPIServiceFactory = (function () {
 
     return {
         getInstance: function() {
-            if (!instance) {
-                instance = createInstance()
+            if (!global.apiService) {
+                global.apiService = createInstance()
             }
-            return instance
+            return apiService
         }
     }
 
