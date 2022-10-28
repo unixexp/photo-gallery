@@ -91,6 +91,14 @@ export default async function Categories(req, res) {
             return
         }
 
+        try {
+            const result = await prisma.Category.delete({ where: { id: convertUUIDStringToBuffered(id) } })
+        } catch (e) {
+            console.log(e)
+            res.status(500).json(resultError())
+            return
+        }
+
         if (category.mainPath != null) {
             const galleryAPIService = GalleryAPIServiceFactory.getInstance()
             const { mainPhotoPath } = galleryAPIService.PATHS
@@ -101,14 +109,6 @@ export default async function Categories(req, res) {
 
             if (fs.existsSync(imagePath))
                 fs.unlinkSync(imagePath)
-        }
-
-        try {
-            const result = await prisma.Category.delete({ where: { id: convertUUIDStringToBuffered(id) } })
-        } catch (e) {
-            console.log(e)
-            res.status(500).json(resultError())
-            return
         }
 
         res.status(200).json(resultOK())
