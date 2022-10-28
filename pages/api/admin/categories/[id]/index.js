@@ -1,12 +1,16 @@
+import path from "path"
+import fs from "fs"
 import { prisma } from "~/lib/db"
 import {
     convertUUIDStringToBuffered,
     convertUUIDBufferedToString,
     resultOK,
-    resultError
+    resultError,
+    formatString
 } from "~/lib/util"
+import { GalleryAPIServiceFactory } from "~/services/gallery-api-service-factory";
 
-export default async function getCategories(req, res) {
+export default async function Categories(req, res) {
 
     if (req.method === "GET") {
 
@@ -73,11 +77,11 @@ export default async function getCategories(req, res) {
     } else if (req.method === "DELETE") {
 
         const { id } = req.query
-        let result = null
+        let category = null
 
         try {
-            result = await prisma.Category.findUnique({ where: { id: convertUUIDStringToBuffered(id) } })
-            if (!result) {
+            category = await prisma.Category.findUnique({ where: { id: convertUUIDStringToBuffered(id) } })
+            if (!category) {
                 res.status(404).json(resultError("Category not found"))
                 return
             }
@@ -87,8 +91,20 @@ export default async function getCategories(req, res) {
             return
         }
 
+        if (category.mainPath != null) {
+            const galleryAPIService = GalleryAPIServiceFactory.getInstance()
+            const { mainPhotoPath } = galleryAPIService.PATHS
+            const imagePath = path.join(
+                process.env.DATA_DIR,
+                formatString(mainPhotoPath, {id: convertUUIDBufferedToString(category.id)}),
+                category.mainPhoto)
+
+            if (fs.existsSync(imagePath))
+                fs.unlinkSync(imagePath)
+        }
+
         try {
-            result = await prisma.Category.delete({ where: { id: convertUUIDStringToBuffered(id) } })
+            const result = await prisma.Category.delete({ where: { id: convertUUIDStringToBuffered(id) } })
         } catch (e) {
             console.log(e)
             res.status(500).json(resultError())
