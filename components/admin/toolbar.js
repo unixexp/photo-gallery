@@ -41,6 +41,7 @@ function renderMainImageSelector({ category, galleryAPIService }) {
 
     useEffect(() => {
         galleryAPIService.getCategoryMainPhoto(category).then(data => {
+            console.log(data)
             setMainPhoto(data)
         }).catch(() => {
             setMainPhoto(null)
