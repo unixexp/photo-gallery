@@ -77,7 +77,10 @@ function renderCardMedia({loadedImage, setUploadable}) {
     } else {
         return (
             <div>
-                Click to load image
+                <label style={{cursor: "pointer"}}>
+                    <div style={{padding: "8px", textAlign: "center"}}>Load image</div>
+                    <input style={{display: "none"}} type="file" onChange={handleUploadToState} />
+                </label>
             </div>
         )
     }

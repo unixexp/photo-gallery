@@ -8,7 +8,6 @@ import {
     resultError,
     formatString
 } from "~/lib/util"
-import { GalleryAPIServiceFactory } from "~/services/gallery-api-service-factory";
 
 export default async function Categories(req, res) {
 
@@ -99,17 +98,8 @@ export default async function Categories(req, res) {
             return
         }
 
-        if (category.mainPath != null) {
-            const galleryAPIService = GalleryAPIServiceFactory.getInstance()
-            const { mainPhotoPath } = galleryAPIService.PATHS
-            const imagePath = path.join(
-                process.env.DATA_DIR,
-                formatString(mainPhotoPath, {id: convertUUIDBufferedToString(category.id)}),
-                category.mainPhoto)
-
-            if (fs.existsSync(imagePath))
-                fs.unlinkSync(imagePath)
-        }
+        const categoryPhotosPath = path.join(process.env.DATA_DIR, convertUUIDBufferedToString(category.id))
+        fs.rmdir(categoryPhotosPath, {recursive: true, force: true})
 
         res.status(200).json(resultOK())
 
