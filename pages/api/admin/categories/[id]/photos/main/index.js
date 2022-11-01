@@ -11,6 +11,7 @@ import {
 } from "~/lib/util"
 import { GalleryAPIServiceFactory } from "~/services/gallery-api-service-factory";
 
+import fs from "fs"
 import formidable from "formidable"
 
 export const config = {
@@ -72,6 +73,7 @@ export default async function CategoriesPhotos(req, res) {
         const form = new formidable.IncomingForm()
         form.parse(req, async function(err, fields, files) {
             const pathName = makePath(formatString(mainPhotoPath, {id: id}), process.env.DATA_DIR)
+            fs.rmdir(pathName, {recursive: true, force: true})
             const fileName = saveFile(files.file, pathName)
             
             if (err) {

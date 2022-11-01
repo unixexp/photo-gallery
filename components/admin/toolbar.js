@@ -40,9 +40,8 @@ function renderMainImageSelector({ category, galleryAPIService }) {
     const [mainPhoto, setMainPhoto] = useState(null)
 
     useEffect(() => {
-        galleryAPIService.getCategoryMainPhoto(category).then(data => {
-            console.log(data)
-            setMainPhoto(data)
+        galleryAPIService.getCategoryMainPhoto(category).then(img => {
+            setMainPhoto(img)
         }).catch(() => {
             setMainPhoto(null)
         })
@@ -55,9 +54,10 @@ function renderMainImageSelector({ category, galleryAPIService }) {
 
     const handleLoadImageDialogConfirm = (uploadable) => {
         setLoadImageDialogIsOpened(false)
-        galleryAPIService.uploadCategoryMainPhoto(category, uploadable).then(data => {
-            console.log(data)
-        })
+        if (uploadable != null)
+            return galleryAPIService.uploadCategoryMainPhoto(category, uploadable)
+        else
+            return new Promise((resolve, reject) => resolve())
     }
 
     const handleLoadImageDialogCancel = () => {

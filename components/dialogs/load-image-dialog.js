@@ -22,7 +22,7 @@ export default function LoadImageDialog({isOpened, handleOK, handleClose, image}
     }, [uploadable])
 
     const callOkHandler = () => {
-        handleOK(uploadable)
+        handleOK(uploadable).then(() => setUploadable(null))
     }
 
     const callCloseHandler = () => {

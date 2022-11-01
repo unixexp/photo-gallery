@@ -55,7 +55,8 @@ export default class MainGalleryAPIService extends GalleryAPIService {
     getCategoryMainPhoto = async (category) => {
         const path = formatString(this.getRouteURL("categoriesPhotosMain"), {id: category.id})
         const response = await fetch(path, { method: "GET" })
-        return response
+        const imgBlob = await response.blob()
+        return URL.createObjectURL(imgBlob)
     }
 
     uploadCategoryMainPhoto = async (category, uploadable) => {
