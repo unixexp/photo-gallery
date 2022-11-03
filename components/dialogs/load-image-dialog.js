@@ -9,26 +9,17 @@ import Button from "@mui/material/Button"
 
 export default function LoadImageDialog({isOpened, handleOK, handleClose, image}) {
 
-    const [loadedImage, setLoadedImage] = useState(image)
     const [uploadable, setUploadable] = useState(null)
+    const [currentImage, setCurrentImage] = useState(image)
 
-    useEffect(() => {
-        setLoadedImage(image)
-    }, [image])
-
-    useEffect(() => {
-        if (uploadable != null)
-            setLoadedImage(URL.createObjectURL(uploadable))
-    }, [uploadable])
-
-    const callOkHandler = () => {
-        handleOK(uploadable).then(() => setUploadable(null))
+    const setUploadableHandler = (uploadableObject) => {
+        uploadable = uploadableObject
+        setCurrentImage(URL.createObjectURL(uploadable))
+        setUploadable(uploadableObject)
     }
 
-    const callCloseHandler = () => {
-        setUploadable(null)
-        setLoadedImage(image)
-        handleClose()
+    const upload = () => {
+        handleOK(uploadable)
     }
 
     return (
@@ -39,11 +30,11 @@ export default function LoadImageDialog({isOpened, handleOK, handleClose, image}
             >
                 <DialogContent>
                     <Card>
-                        {renderCardMedia({loadedImage, setUploadable})}
+                        {renderUploadableCardMedia({currentImage, setUploadableHandler})}
                     </Card>
                     <DialogActions>
-                        <Button onClick={callOkHandler}>Ok</Button>
-                        <Button onClick={callCloseHandler}>Cancel</Button>
+                        <Button onClick={upload}>Ok</Button>
+                        <Button onClick={() => handleClose()}>Cancel</Button>
                     </DialogActions>
                 </DialogContent>
             </Dialog>
@@ -52,23 +43,23 @@ export default function LoadImageDialog({isOpened, handleOK, handleClose, image}
 
 }
 
-function renderCardMedia({loadedImage, setUploadable}) {
+function renderUploadableCardMedia({currentImage, setUploadableHandler}) {
 
     const handleUploadToState = (event) => {
         if (event.target.files && event.target.files[0]) {
             const uploadable = event.target.files[0]
-            setUploadable(uploadable)
+            setUploadableHandler(uploadable)
         }
     }
 
-    if (loadedImage != null) {
+    if (currentImage != null) {
         return (
             <div>
                 <label style={{cursor: "pointer"}}>
                     <CardMedia
                         component="img"
                         height="250"
-                        image={loadedImage}
+                        image={currentImage}
                     />
                     <input style={{display: "none"}} type="file" onChange={handleUploadToState} />
                 </label>

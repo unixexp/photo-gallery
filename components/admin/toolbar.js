@@ -54,17 +54,11 @@ function renderMainImageSelector({ category, galleryAPIService, update, setUpdat
 
     const handleLoadImageDialogConfirm = async (uploadable) => {
         setLoadImageDialogIsOpened(false)
-        
-        let result
         if (uploadable != null) {
-            result = await galleryAPIService.uploadCategoryMainPhoto(category, uploadable)
+            await galleryAPIService.uploadCategoryMainPhoto(category, uploadable)
             setUpdatedCategoryId(category.id)
             update()
-        } else {
-            result = await new Promise((resolve, reject) => resolve())
         }
-
-        return result
     }
 
     const handleLoadImageDialogCancel = () => {
