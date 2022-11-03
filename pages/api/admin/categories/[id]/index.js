@@ -8,6 +8,7 @@ import {
     resultError,
     formatString
 } from "~/lib/util"
+import { GalleryAPIServiceFactory } from "~/services/gallery-api-service-factory"
 
 export default async function Categories(req, res) {
 
@@ -24,14 +25,13 @@ export default async function Categories(req, res) {
         } catch (e) {
             await prisma.$disconnect()
             console.log(e)
-            res.status(500).json(resultError())
-            return
+            return res.status(500).json(resultError())
         }
 
         const data = { ...result }
         data.id = convertUUIDBufferedToString(data.id)
 
-        res.status(200).json(resultOK(data))
+        return res.status(200).json(resultOK(data))
 
     } else if (req.method === "PUT") {
 
@@ -47,8 +47,7 @@ export default async function Categories(req, res) {
         } catch (e) {
             await prisma.$disconnect()
             console.log(e)
-            res.status(500).json(resultError())
-            return
+            return res.status(500).json(resultError())
         }
 
         try {
@@ -64,8 +63,7 @@ export default async function Categories(req, res) {
             })
         } catch (e) {
             console.log(e)
-            res.status(500).json(resultError())
-            return
+            return res.status(500).json(resultError())
         }
 
         const data = { ...result }
@@ -81,27 +79,33 @@ export default async function Categories(req, res) {
         try {
             category = await prisma.Category.findUnique({ where: { id: convertUUIDStringToBuffered(id) } })
             if (!category) {
-                res.status(404).json(resultError("Category not found"))
-                return
+                return res.status(404).json(resultError("Category not found"))
             }
         } catch (e) {
             console.log(e)
-            res.status(500).json(resultError())
-            return
+            return res.status(500).json(resultError())
         }
 
         try {
             const result = await prisma.Category.delete({ where: { id: convertUUIDStringToBuffered(id) } })
         } catch (e) {
             console.log(e)
-            res.status(500).json(resultError())
-            return
+            return res.status(500).json(resultError())
         }
 
-        const categoryPhotosPath = path.join(process.env.DATA_DIR, convertUUIDBufferedToString(category.id))
-        fs.rmdir(categoryPhotosPath, {recursive: true, force: true})
-
-        res.status(200).json(resultOK())
+        const galleryAPIService = GalleryAPIServiceFactory.getInstance()
+        const { categoryPath } = galleryAPIService.PATHS
+        const categoryPhotosPath = path.join(
+            process.env.DATA_DIR,
+            formatString(categoryPath, {"id": convertUUIDBufferedToString(category.id)})
+            )
+        fs.rm(categoryPhotosPath, { recursive: true, force: true }, (err) => {
+            if (err) {
+                res.status(500).json(resultError(err))
+            } else {
+                res.status(200).json(resultOK())
+            }
+        })
 
     }
 

@@ -18,7 +18,7 @@ import LoadImageDialog from "../dialogs/load-image-dialog"
 
 import { selectCategory, setCategory } from "./adminSlice"
 
-function renderMainImageSelector({ category, galleryAPIService }) {
+function renderMainImageSelector({ category, galleryAPIService, update, setUpdatedCategoryId }) {
 
     const styles = {
         mainImageContainer: {
@@ -52,35 +52,56 @@ function renderMainImageSelector({ category, galleryAPIService }) {
             setLoadImageDialogIsOpened(true)
     }
 
-    const handleLoadImageDialogConfirm = (uploadable) => {
+    const handleLoadImageDialogConfirm = async (uploadable) => {
         setLoadImageDialogIsOpened(false)
-        if (uploadable != null)
-            return galleryAPIService.uploadCategoryMainPhoto(category, uploadable)
-        else
-            return new Promise((resolve, reject) => resolve())
+        
+        let result
+        if (uploadable != null) {
+            result = await galleryAPIService.uploadCategoryMainPhoto(category, uploadable)
+            setUpdatedCategoryId(category.id)
+            update()
+        } else {
+            result = await new Promise((resolve, reject) => resolve())
+        }
+
+        return result
     }
 
     const handleLoadImageDialogCancel = () => {
         setLoadImageDialogIsOpened(false)
     }
 
-    return (
-        <div style={styles.mainImageContainer}>
-            <div
-                style={styles.mainImageButton}
-                onClick={(event) => {handleOpenLoadImageDialog(event)}}>
-                    <IconButton>
-                        <CloudUploadOutlinedIcon />
-                    </IconButton>
+    const MainImageContainer = () => {
+
+        return (
+            <div style={styles.mainImageContainer}>
+                <div
+                    style={styles.mainImageButton}
+                    onClick={(event) => {handleOpenLoadImageDialog(event)}}
+                >
+                        <IconButton>
+                            <CloudUploadOutlinedIcon />
+                        </IconButton>
+                </div>
             </div>
-            <LoadImageDialog
-                isOpened={loadImageDialogIsOpened}
-                handleOK={handleLoadImageDialogConfirm}
-                handleClose={handleLoadImageDialogCancel}
-                image={mainPhoto}
-            />
-        </div>
-    )
+        )
+    }
+
+    if (loadImageDialogIsOpened) {
+        return (
+            <>
+                <MainImageContainer />
+                <LoadImageDialog
+                    isOpened={loadImageDialogIsOpened}
+                    handleOK={handleLoadImageDialogConfirm}
+                    handleClose={handleLoadImageDialogCancel}
+                    image={mainPhoto}
+                />
+            </>
+        )
+    } else {
+        return <MainImageContainer />
+    }
 
 }
 
@@ -318,7 +339,7 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
                             </IconButton>
                         </div>
                         <div style={styles.descriptionBlock}>
-                            { renderMainImageSelector({category, galleryAPIService}) }
+                            { renderMainImageSelector({category, galleryAPIService, update, setUpdatedCategoryId}) }
                             <TextField
                                 minRows={4}
                                 maxRows={4}
@@ -335,7 +356,12 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
                                 onChange={handleCategoryDescriptionChange}
                             />
                             <div style={styles.updateButtonContainer}>
-                                <IconButton onClick={() => handleCategoryUpdate(category)}>
+                                <IconButton onClick={
+                                            () => {
+                                                if (category != null)
+                                                    handleCategoryUpdate(category)
+                                            }
+                                        }>
                                     <CheckIcon />
                                 </IconButton>
                             </div>

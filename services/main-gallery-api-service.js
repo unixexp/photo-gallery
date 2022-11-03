@@ -12,6 +12,7 @@ export default class MainGalleryAPIService extends GalleryAPIService {
             categoriesPhotosMain: "/api/admin/categories/<id>/photos/main"
         }
         this.PATHS = {
+            categoryPath: "/categories/<id>",
             mainPhotoPath: "/categories/<id>/photos/main"
         }
     }
@@ -55,8 +56,12 @@ export default class MainGalleryAPIService extends GalleryAPIService {
     getCategoryMainPhoto = async (category) => {
         const path = formatString(this.getRouteURL("categoriesPhotosMain"), {id: category.id})
         const response = await fetch(path, { method: "GET" })
-        const imgBlob = await response.blob()
-        return URL.createObjectURL(imgBlob)
+        if (response.status == 200) {
+            const imgBlob = await response.blob()
+            return URL.createObjectURL(imgBlob)   
+        } else {
+            throw new Error(response.status)
+        }
     }
 
     uploadCategoryMainPhoto = async (category, uploadable) => {

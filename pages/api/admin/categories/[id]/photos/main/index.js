@@ -7,7 +7,8 @@ import {
     formatString,
     saveFile,
     loadFile,
-    convertUUIDStringToBuffered
+    convertUUIDStringToBuffered,
+    convertUUIDBufferedToString
 } from "~/lib/util"
 import { GalleryAPIServiceFactory } from "~/services/gallery-api-service-factory";
 
@@ -29,7 +30,6 @@ export default async function CategoriesPhotos(req, res) {
         const { id } = req.query
 
         let category = null
-        let response = null
 
         try {
             category = await prisma.Category.findUnique({
@@ -37,65 +37,81 @@ export default async function CategoriesPhotos(req, res) {
             })
             
             if (!category) {
-                response = res.status(404).json(resultError("Category not found"))
+                return res.status(404).json(resultError("Category not found"))
             }
         } catch (e) {
             await prisma.$disconnect()
             console.log(e)
-            response = res.status(500).json(resultError())
+            return res.status(500).json(resultError())
         }
 
-        const filePath = path.join(
-            process.env.DATA_DIR,
-            formatString(mainPhotoPath, {id: id}),
-            category.mainPhoto)
-
-        const file = loadFile(filePath)
-
-        res.writeHead(
-            200,
-            {
-                "Content-Type": file.contentType,
-                "Content-Disposition": (!file.notFound)
-                    ? `attachment; filename=${category.mainPhoto}`
-                    : `attachment; filename=${file.notFound}`
-            })
-        res.write(file.data)
-        return res.end()
+        if (category.mainPhoto != null) {
+            const filePath = path.join(
+                process.env.DATA_DIR,
+                formatString(mainPhotoPath, {id: id}),
+                category.mainPhoto)
+    
+            const file = loadFile(filePath)
+    
+            res.writeHead(
+                200,
+                {
+                    "Content-Type": file.contentType,
+                    "Content-Disposition": (!file.notFound)
+                        ? `attachment; filename=${category.mainPhoto}`
+                        : `attachment; filename=${file.notFound}`
+                })
+            res.write(file.data)
+            return res.end()
+        } else {
+            return res.status(204).json(resultError("Image not loaded"))
+        }
 
     } else if (req.method === "POST") {
 
         const galleryAPIService = GalleryAPIServiceFactory.getInstance()
-        const { mainPhotoPath } = galleryAPIService.PATHS
+        const { mainPhotoPath, categoryPath } = galleryAPIService.PATHS
         const { id } = req.query
-        let response = null
+        let category = null
+
+        try {
+            category = await prisma.Category.findUnique({
+                where: { id: convertUUIDStringToBuffered(id) }
+            })
+            
+            if (!category) {
+                return res.status(404).json(resultError("Category not found"))
+            }
+        } catch (e) {
+            await prisma.$disconnect()
+            console.log(e)
+            return res.status(500).json(resultError())
+        }
 
         const form = new formidable.IncomingForm()
         form.parse(req, async function(err, fields, files) {
-            const pathName = makePath(formatString(mainPhotoPath, {id: id}), process.env.DATA_DIR)
-            fs.rmdir(pathName, {recursive: true, force: true})
+
+            const categoryPhotosPath = path.join(
+                process.env.DATA_DIR,
+                formatString(categoryPath, {"id": convertUUIDBufferedToString(category.id)})
+                )
+            fs.rmSync(categoryPhotosPath, { recursive: true, force: true }, (err) => {
+                if (err) {
+                    console.log(err)
+                    return res.status(500).json(resultError(err))
+                }
+            })
+
+            const pathName = path.join(
+                process.env.DATA_DIR,
+                formatString(mainPhotoPath, {id: id})
+            )
+            makePath(formatString(mainPhotoPath, {id: id}), process.env.DATA_DIR)
             const fileName = saveFile(files.file, pathName)
             
             if (err) {
-                response = res.status(500).json(resultError(err))
+                return res.status(500).json(resultError(err))
             } else {
-
-                let category = null
-
-                try {
-                    category = await prisma.Category.findUnique({
-                        where: { id: convertUUIDStringToBuffered(id) }
-                    })
-                    
-                    if (!category) {
-                        response = res.status(404).json(resultError("Category not found"))
-                    }
-                } catch (e) {
-                    await prisma.$disconnect()
-                    console.log(e)
-                    response = res.status(500).json(resultError())
-                }
-
                 try {
                     await prisma.Category.update({
                         where: { id: convertUUIDStringToBuffered(id) },
@@ -104,15 +120,12 @@ export default async function CategoriesPhotos(req, res) {
                 } catch (e) {
                     await prisma.$disconnect()
                     console.log(e)
-                    response = res.status(500).json(resultError())
+                    return res.status(500).json(resultError())
                 }
 
-                response = res.status(201).json(resultOK())
+                return res.status(201).json(resultOK())
             }
-            
         })
-
-        return response
 
     }
 
