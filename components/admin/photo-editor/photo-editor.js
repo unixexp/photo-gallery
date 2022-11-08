@@ -10,12 +10,19 @@ export default function PhotoEditor({ galleryAPIService }) {
     const category = useSelector(selectCategory)
     const itemData = loadPhotos()
 
+    const handleOpenCreatePhotoDialog = () => {}
+    const handleOpenEditPhotoDialog = (id) => {}
+    const handleOpenDeletePhotoDialog = (id) => {}
+
     return (
         <ImageList cols={5} gap={8}>
             {itemData.map((item) => (
                 <PhotoElement
                     key={item.id}
                     image={item}
+                    handleOpenCreatePhotoDialog={handleOpenCreatePhotoDialog}
+                    handleOpenEditPhotoDialog={handleOpenEditPhotoDialog}
+                    handleOpenDeletePhotoDialog={handleOpenDeletePhotoDialog}
                 />
             ))}
         </ImageList>

@@ -3,7 +3,12 @@ import { ImageListItem, Box, IconButton, Avatar } from "@mui/material"
 import MoreIcon from "@mui/icons-material/MoreVert"
 import CRUDMenu from "../../menu/crud-menu"
 
-export default function PhotoElement({ galleryAPIService, image }) {
+export default function PhotoElement({
+        image,
+        handleOpenCreatePhotoDialog,
+        handleOpenEditPhotoDialog,
+        handleOpenDeletePhotoDialog
+    }) {
 
     const [isHovering, setIsHovering] = useState(false)
     const [menuParent, setMenuParent] = useState(null)
@@ -23,10 +28,6 @@ export default function PhotoElement({ galleryAPIService, image }) {
     const handleMenuClose = () => {
         setMenuParent(null)
     }
-
-    const handleOpenCreatePhotoDialog = () => {}
-    const handleOpenEditPhotoDialog = () => {}
-    const handleOpenDeletePhotoDialog = () => {}
 
     return (
         <ImageListItem
