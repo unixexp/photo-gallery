@@ -13,7 +13,7 @@ import CloudUploadOutlinedIcon from "@mui/icons-material/CloudUploadOutlined"
 
 import AlertDialog from "../dialogs/alert-dialog"
 import InputDialog from "../dialogs/input-dialog"
-import LoadImageDialog from "../dialogs/load-image-dialog"
+import LoadMainImageDialog from "../dialogs/load-main-image-dialog"
 
 import { selectCategory, setCategory } from "../adminSlice"
 import CRUDMenu from "../menu/crud-menu"
@@ -36,7 +36,7 @@ function renderMainImageSelector({ category, galleryAPIService, update, setUpdat
             cursor: "pointer"
         }
     }
-    const [loadImageDialogIsOpened, setLoadImageDialogIsOpened] = useState(false)
+    const [LoadMainImageDialogIsOpened, setLoadMainImageDialogIsOpened] = useState(false)
     const [mainPhoto, setMainPhoto] = useState(null)
 
     useEffect(() => {
@@ -47,13 +47,13 @@ function renderMainImageSelector({ category, galleryAPIService, update, setUpdat
         })
     }, [category])
 
-    const handleOpenLoadImageDialog = (event) => {
+    const handleOpenLoadMainImageDialog = (event) => {
         if (category != null)
-            setLoadImageDialogIsOpened(true)
+            setLoadMainImageDialogIsOpened(true)
     }
 
-    const handleLoadImageDialogConfirm = async (uploadable) => {
-        setLoadImageDialogIsOpened(false)
+    const handleLoadMainImageDialogConfirm = async (uploadable) => {
+        setLoadMainImageDialogIsOpened(false)
         if (uploadable != null) {
             await galleryAPIService.uploadCategoryMainPhoto(category, uploadable)
             setUpdatedCategoryId(category.id)
@@ -61,8 +61,8 @@ function renderMainImageSelector({ category, galleryAPIService, update, setUpdat
         }
     }
 
-    const handleLoadImageDialogCancel = () => {
-        setLoadImageDialogIsOpened(false)
+    const handleLoadMainImageDialogCancel = () => {
+        setLoadMainImageDialogIsOpened(false)
     }
 
     const MainImageContainer = () => {
@@ -71,7 +71,7 @@ function renderMainImageSelector({ category, galleryAPIService, update, setUpdat
             <div style={styles.mainImageContainer}>
                 <div
                     style={styles.mainImageButton}
-                    onClick={(event) => {handleOpenLoadImageDialog(event)}}
+                    onClick={(event) => {handleOpenLoadMainImageDialog(event)}}
                 >
                         <IconButton>
                             <CloudUploadOutlinedIcon />
@@ -81,14 +81,14 @@ function renderMainImageSelector({ category, galleryAPIService, update, setUpdat
         )
     }
 
-    if (loadImageDialogIsOpened) {
+    if (LoadMainImageDialogIsOpened) {
         return (
             <>
                 <MainImageContainer />
-                <LoadImageDialog
-                    isOpened={loadImageDialogIsOpened}
-                    handleOK={handleLoadImageDialogConfirm}
-                    handleClose={handleLoadImageDialogCancel}
+                <LoadMainImageDialog
+                    isOpened={LoadMainImageDialogIsOpened}
+                    handleOK={handleLoadMainImageDialogConfirm}
+                    handleClose={handleLoadMainImageDialogCancel}
                     image={mainPhoto}
                 />
             </>

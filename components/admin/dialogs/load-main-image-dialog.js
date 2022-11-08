@@ -7,7 +7,7 @@ import Button from "@mui/material/Button"
 
 import UploadableCard from "../toolbar/uploadable-card"
 
-export default function LoadImageDialog({isOpened, handleOK, handleClose, image}) {
+export default function LoadMainImageDialog({isOpened, handleOK, handleClose, image}) {
 
     const [uploadable, setUploadable] = useState(null)
     const [currentImage, setCurrentImage] = useState(image)
