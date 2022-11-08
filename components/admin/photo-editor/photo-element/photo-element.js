@@ -49,7 +49,7 @@ export default function PhotoElement({
                     backgroundColor: "white",
                     opacity: 0.8
                 }}>
-                <Avatar sx={{bgcolor: "warning.light"}}>{image.n}</Avatar>
+                <Avatar sx={{bgcolor: "warning.light"}}>{image.order}</Avatar>
                 <Box>
                     <IconButton color="warning" onClick={handleMenuOpen}>
                         <MoreIcon />
