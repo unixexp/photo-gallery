@@ -1,11 +1,12 @@
 import { useState } from "react"
 import { ImageListItem, Box, IconButton, Avatar } from "@mui/material"
 import MoreIcon from "@mui/icons-material/MoreVert"
-import AddIcon from '@mui/icons-material/Add'
+import CRUDMenu from "../../menu/crud-menu"
 
 export default function PhotoElement({ galleryAPIService, image }) {
 
     const [isHovering, setIsHovering] = useState(false)
+    const [menuParent, setMenuParent] = useState(null)
 
     const handleMouseEnter = () => {
         setIsHovering(true)
@@ -15,9 +16,17 @@ export default function PhotoElement({ galleryAPIService, image }) {
         setIsHovering(false)
     }
 
-    const handleMenuOpen = () => {
-        alert("Menu")
+    const handleMenuOpen = (event) => {
+        setMenuParent(event.currentTarget)
     }
+
+    const handleMenuClose = () => {
+        setMenuParent(null)
+    }
+
+    const handleOpenCreatePhotoDialog = () => {}
+    const handleOpenEditPhotoDialog = () => {}
+    const handleOpenDeletePhotoDialog = () => {}
 
     return (
         <ImageListItem
@@ -44,15 +53,19 @@ export default function PhotoElement({ galleryAPIService, image }) {
                     <IconButton color="warning" onClick={handleMenuOpen}>
                         <MoreIcon />
                     </IconButton>
-                    <IconButton color="warning" onClick={handleMenuOpen}>
-                        <AddIcon />
-                    </IconButton>
                 </Box>
             </Box>
             <img
                 src={image.url}
                 srcSet={image.url}
                 loading="lazy"
+            />
+            <CRUDMenu
+                menuParent={menuParent}
+                handleMenuClose={handleMenuClose}
+                handleOpenCreatePhotoDialog={handleOpenCreatePhotoDialog}
+                handleOpenEditPhotoDialog={handleOpenEditPhotoDialog}
+                handleOpenDeletePhotoDialog={handleOpenDeletePhotoDialog}
             />
         </ImageListItem>
       )

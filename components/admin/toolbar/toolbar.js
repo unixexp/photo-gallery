@@ -171,7 +171,7 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
         setMenuParent(null)
     }
 
-    const handleOpenRemoveCategoryDialog = () => {
+    const handleOpenDeleteCategoryDialog = () => {
         handleMenuClose()
         if (category != null)
             setRemoveCategoryAlertDialogIsOpened(true)
@@ -192,7 +192,7 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
         setRemoveCategoryAlertDialogIsOpened(false)
     }
 
-    const handleOpenAddCategoryDialog = () => {
+    const handleOpenCreateCategoryDialog = () => {
         handleMenuClose()
         setAddCategoryDialogIsOpened(true)
     }
@@ -218,7 +218,7 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
         }
     }
 
-    const handleOpenEditCategoryNameDialog = () => {
+    const handleOpenEditCategoryDialog = () => {
         handleMenuClose()
         if (category)
             setEditCategoryNameDialogIsOpened(true)
@@ -349,11 +349,11 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
                 handleClose={handleEditCategoryNameCancel}
             />
             <CRUDMenu
-                    menuParent={menuParent}
-                    handleMenuClose={handleMenuClose}
-                    handleOpenRemoveCategoryDialog={handleOpenRemoveCategoryDialog}
-                    handleOpenAddCategoryDialog={handleOpenAddCategoryDialog}
-                    handleOpenEditCategoryNameDialog={handleOpenEditCategoryNameDialog}
+                menuParent={menuParent}
+                handleMenuClose={handleMenuClose}
+                handleOpenCreateDialog={handleOpenCreateCategoryDialog}
+                handleOpenEditDialog={handleOpenEditCategoryDialog}
+                handleOpenDeleteDialog={handleOpenDeleteCategoryDialog}
             />
         </div>
     )

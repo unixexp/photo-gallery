@@ -6,9 +6,9 @@ export default function CRUDMenu(props) {
     const {
         menuParent,
         handleMenuClose,
-        handleOpenRemoveCategoryDialog,
-        handleOpenAddCategoryDialog,
-        handleOpenEditCategoryNameDialog
+        handleOpenCreateDialog,
+        handleOpenEditDialog,
+        handleOpenDeleteDialog
     } = props
     const isMenuOpen = Boolean(menuParent)
 
@@ -22,15 +22,15 @@ export default function CRUDMenu(props) {
         >
             <MenuItem
                 key="add"
-                onClick={handleOpenAddCategoryDialog}
+                onClick={handleOpenCreateDialog}
             >Add</MenuItem>
             <MenuItem
                 key="change-name"
-                onClick={handleOpenEditCategoryNameDialog}    
+                onClick={handleOpenEditDialog}    
             >Edit</MenuItem>
             <MenuItem
                 key="remove"
-                onClick={handleOpenRemoveCategoryDialog}
+                onClick={handleOpenDeleteDialog}
             >Remove</MenuItem>
         </Menu>
     )
