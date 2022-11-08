@@ -1,7 +1,9 @@
 import Layout from "../components/layout/layout"
-import Container from "../components/container/container"
-import Toolbar from "../components/admin/toolbar"
-import PhotoEditor from "../components/admin/photo-editor"
+import Container from "../components/admin/container/container"
+import Toolbar from "../components/admin/toolbar/toolbar"
+import PhotoEditor from "../components/admin/photo-editor/photo-editor"
+
+import { Box, Button } from "@mui/material"
 
 import { GalleryAPIServiceFactory } from "~/services/gallery-api-service-factory";
 
@@ -23,7 +25,7 @@ export async function getServerSideProps(context) {
 
 }
 
-export default function AdminPage({ galleryAPIService, categoriesSSR }) {
+export default function AdminPage({ galleryAPIService, categoriesSSR, toggleTheme }) {
 
     return (
         <Layout>
@@ -32,7 +34,13 @@ export default function AdminPage({ galleryAPIService, categoriesSSR }) {
                     galleryAPIService={galleryAPIService}
                     categoriesSSR={ categoriesSSR }
                 />
-                <PhotoEditor galleryAPIService={galleryAPIService}/>
+                <Button
+                    sx={{margin: "8px 8px"}}
+                    variant="contained"
+                    onClick={toggleTheme}>Theme</Button>
+                <Box sx={{ padding: "8px"}}>
+                    <PhotoEditor galleryAPIService={galleryAPIService}/>
+                </Box>
             </Container>
         </Layout>
     );

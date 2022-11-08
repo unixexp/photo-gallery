@@ -1,21 +1,12 @@
 import styles from "./main.module.scss";
+import { useEffect } from "react";
 
-import { useSelector, useDispatch } from 'react-redux';
-import { selectTheme, setTheme } from "../app/appSlice";
-
-export default function Main({children}) {
-
-    const theme = useSelector(selectTheme);
-    const dispatch = useDispatch();
+export default function Main({children, toggleTheme}) {
 
     return (
         <main>
             <div className="container">
-                <button onClick={() =>
-                    theme == "dark"
-                        ? dispatch(setTheme("light"))
-                        : dispatch(setTheme("dark"))
-                }>Theme</button>
+                <button onClick={toggleTheme}>Theme</button>
                 {children}
             </div>
         </main>

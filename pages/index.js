@@ -5,7 +5,7 @@ import Layout from "../components/layout/layout";
 import Main from "../components/main/main";
 import Link from "next/link";
 
-export default function IndexPage({ galleryAPIService }) {
+export default function IndexPage({ galleryAPIService, toggleTheme }) {
 
     const [categories, setCategories] = useState([])
 
@@ -26,7 +26,7 @@ export default function IndexPage({ galleryAPIService }) {
             <Head>
                 <title>Gallery</title>
             </Head>
-            <Main>
+            <Main toggleTheme={toggleTheme}>
                 <Link href="/category1">
                     <a>To category #1</a>
                 </Link>

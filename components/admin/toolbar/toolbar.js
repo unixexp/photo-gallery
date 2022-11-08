@@ -16,7 +16,7 @@ import AlertDialog from "../dialogs/alert-dialog"
 import InputDialog from "../dialogs/input-dialog"
 import LoadImageDialog from "../dialogs/load-image-dialog"
 
-import { selectCategory, setCategory } from "./adminSlice"
+import { selectCategory, setCategory } from "../adminSlice"
 
 function renderMainImageSelector({ category, galleryAPIService, update, setUpdatedCategoryId }) {
 
