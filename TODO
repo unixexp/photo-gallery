@@ -1,0 +1,28 @@
+Create table to save photo information (photos)
+Create table to link photo->categories (category-photo)
+    - Each photo has personal description for each category
+    - Each photo has personal order for each category
+
+Make API standard CRUD for add, edit and delete photo for category
+    - Add new
+        - Select all photos from this category
+        - Set this photo order relatively photo client clicked in frontend + 1
+        - Update each photo order and insert new photo in db
+        - Save photo on drive    
+
+    - Remove
+        - Remove photo entry from 'category-photo' table
+        - Select all photos from this category
+        - Update each photo order field value
+
+    - Edit
+        - Select this photo from 'category-photo'
+        - If photo order field was changed, select all photos from
+          this category and update order, if not - just update current photo information
+        - If photo image was changed - add new photo to 'photos' table,
+          change link record in 'category-photo' to new photo image
+
+    - Add exists from another category
+        - Add link record on selected photo to 'category-photo' table (personal description, order)
+
+Pagginate photos in photo editor and in dialog for select exist photos to "Add from another category"
