@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { ImageListItem, Box, IconButton, Avatar } from "@mui/material"
 import MoreIcon from "@mui/icons-material/MoreVert"
+import AddIcon from '@mui/icons-material/Add'
 
 export default function PhotoElement({ galleryAPIService, image }) {
 
@@ -39,9 +40,14 @@ export default function PhotoElement({ galleryAPIService, image }) {
                     opacity: 0.8
                 }}>
                 <Avatar sx={{bgcolor: "warning.light"}}>{image.n}</Avatar>
-                <IconButton color="warning" onClick={handleMenuOpen}>
-                    <MoreIcon />
-                </IconButton>
+                <Box>
+                    <IconButton color="warning" onClick={handleMenuOpen}>
+                        <MoreIcon />
+                    </IconButton>
+                    <IconButton color="warning" onClick={handleMenuOpen}>
+                        <AddIcon />
+                    </IconButton>
+                </Box>
             </Box>
             <img
                 src={image.url}

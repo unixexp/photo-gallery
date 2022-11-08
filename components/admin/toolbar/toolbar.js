@@ -6,7 +6,6 @@ import FormControl from "@mui/material/FormControl"
 import MenuItem from "@mui/material/MenuItem"
 import IconButton from "@mui/material/IconButton"
 import AppBar from "@mui/material/AppBar"
-import Menu from "@mui/material/Menu"
 import TextField from "@mui/material/TextField"
 import MoreIcon from "@mui/icons-material/MoreVert"
 import CheckIcon from "@mui/icons-material/CheckOutlined"
@@ -17,6 +16,7 @@ import InputDialog from "../dialogs/input-dialog"
 import LoadImageDialog from "../dialogs/load-image-dialog"
 
 import { selectCategory, setCategory } from "../adminSlice"
+import CRUDMenu from "../menu/crud-menu"
 
 function renderMainImageSelector({ category, galleryAPIService, update, setUpdatedCategoryId }) {
 
@@ -110,42 +110,6 @@ function renderCategories(categories) {
             </MenuItem>
         )
     })
-
-}
-
-function renderMenu(props) {
-
-    const {
-        menuParent,
-        handleMenuClose,
-        handleOpenRemoveCategoryDialog,
-        handleOpenAddCategoryDialog,
-        handleOpenEditCategoryNameDialog
-    } = props
-    const isMenuOpen = Boolean(menuParent)
-
-    return (
-        <Menu
-            anchorEl={menuParent}
-            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-            open={isMenuOpen}
-            onClose={handleMenuClose}
-        >
-            <MenuItem
-                key="add"
-                onClick={handleOpenAddCategoryDialog}
-            >Add</MenuItem>
-            <MenuItem
-                key="change-name"
-                onClick={handleOpenEditCategoryNameDialog}    
-            >Edit</MenuItem>
-            <MenuItem
-                key="remove"
-                onClick={handleOpenRemoveCategoryDialog}
-            >Remove</MenuItem>
-        </Menu>
-    )
 
 }
 
@@ -384,15 +348,13 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
                 handleOK={handleEditCategoryNameConfirm}
                 handleClose={handleEditCategoryNameCancel}
             />
-            {
-                renderMenu({
-                    menuParent,
-                    handleMenuClose,
-                    handleOpenRemoveCategoryDialog,
-                    handleOpenAddCategoryDialog,
-                    handleOpenEditCategoryNameDialog
-                })
-            }
+            <CRUDMenu
+                    menuParent={menuParent}
+                    handleMenuClose={handleMenuClose}
+                    handleOpenRemoveCategoryDialog={handleOpenRemoveCategoryDialog}
+                    handleOpenAddCategoryDialog={handleOpenAddCategoryDialog}
+                    handleOpenEditCategoryNameDialog={handleOpenEditCategoryNameDialog}
+            />
         </div>
     )
 

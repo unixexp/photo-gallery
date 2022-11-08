@@ -34,15 +34,25 @@ export default function AdminPage({ galleryAPIService, categoriesSSR, toggleThem
                     galleryAPIService={galleryAPIService}
                     categoriesSSR={ categoriesSSR }
                 />
-                <Button
-                    sx={{margin: "8px 8px"}}
-                    variant="contained"
-                    onClick={toggleTheme}>Theme</Button>
+                { renderThemeButton(toggleTheme) }
                 <Box sx={{ padding: "8px"}}>
                     <PhotoEditor galleryAPIService={galleryAPIService}/>
                 </Box>
             </Container>
         </Layout>
     );
+
+}
+
+const renderThemeButton = ({toggleTheme}) => {
+
+    return
+
+    return (
+        <Button
+            sx={{margin: "8px 8px"}}
+            variant="contained"
+            onClick={toggleTheme}>Theme</Button>
+    )
 
 }
