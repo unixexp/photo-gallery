@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { ImageListItem, Box, IconButton, Avatar } from "@mui/material"
+import { ImageListItem, Box, IconButton, Avatar, Button } from "@mui/material"
 import MoreIcon from "@mui/icons-material/MoreVert"
 import CRUDMenu from "../../menu/crud-menu"
 
@@ -31,7 +31,10 @@ export default function PhotoElement({
 
     const onAction = (f) => {
         handleMenuClose()
-        f(menuParent)
+        if (menuParent != null)
+            f(menuParent.dataset.id)
+        else
+            f(null)
     }
 
     return (
@@ -45,22 +48,12 @@ export default function PhotoElement({
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
         >
-            <Box
-                sx={{
-                    display: "flex",
-                    position: "absolute",
-                    width: "100%",
-                    justifyContent: "space-between",
-                    backgroundColor: "white",
-                    opacity: 0.8
-                }}>
-                <Avatar sx={{bgcolor: "warning.light"}}>{image.order}</Avatar>
-                <Box>
-                    <IconButton color="warning" data-id={image.id} onClick={handleMenuOpen}>
-                        <MoreIcon />
-                    </IconButton>
-                </Box>
-            </Box>
+            <PhotoElementActions
+                image={image}
+                handleMenuOpen={handleMenuOpen}
+                onAction={onAction}
+                handleOpenCreatePhotoDialog={handleOpenCreatePhotoDialog}
+            />
             <img
                 src={image.url}
                 srcSet={image.url}
@@ -77,3 +70,47 @@ export default function PhotoElement({
       )
 
 }
+
+function PhotoElementActions({image, handleMenuOpen, onAction, handleOpenCreatePhotoDialog}){
+
+    if (image.id != null) {
+        return (
+            <Box
+                sx={{
+                    display: "flex",
+                    position: "absolute",
+                    width: "100%",
+                    justifyContent: "space-between",
+                    backgroundColor: "white",
+                    opacity: 0.8
+                }}>
+                <Avatar sx={{bgcolor: "warning.light"}}>{image.order}</Avatar>
+                <Box>
+                    <IconButton color="warning" data-id={image.id} onClick={handleMenuOpen}>
+                        <MoreIcon />
+                    </IconButton>
+                </Box>
+            </Box>
+        )
+    } else {
+        return (
+            <Box
+                sx={{
+                    display: "flex",
+                    width: "100%",
+                    height: "100%"
+                }}>
+                <Button
+                    sx={{width: "100%", height: "100%"}}
+                    variant="outlined"
+                    onClick={() => { onAction(handleOpenCreatePhotoDialog) }}
+                >
+                    Load image
+                </Button>
+            </Box>
+        )
+    }
+
+}
+
+

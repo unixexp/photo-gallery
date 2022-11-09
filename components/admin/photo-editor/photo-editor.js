@@ -13,9 +13,9 @@ export default function PhotoEditor({ galleryAPIService }) {
     const [afterPhotoId, setAfterPhotoId] = useState(null)
     const [createPhotoDialogIsOpened, setCreatePhotoDialogIsOpened] = useState(false)
 
-    const handleOpenCreatePhotoDialog = (parent) => {
+    const handleOpenCreatePhotoDialog = (afterPhotoId) => {
         if (category != null) {
-            setAfterPhotoId(parent.dataset.id)
+            setAfterPhotoId(afterPhotoId)
             setCreatePhotoDialogIsOpened(true)
         }
     }
@@ -58,7 +58,7 @@ export default function PhotoEditor({ galleryAPIService }) {
 
 const loadPhotos = () => {
 
-    return [
+    const photos = [
         {
             id: 1,
             url: 'https://images.unsplash.com/photo-1549388604-817d15aa0110',
@@ -131,6 +131,8 @@ const loadPhotos = () => {
             descriptioorder: 'Hutomo Abrianto',
             order: 12
         },
-      ];
+      ]
+
+      return [{id: null, url: null, descriptioorder: null, order: 0}, ...photos]
 
 }

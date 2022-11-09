@@ -15,6 +15,7 @@ export default function CreateCategoryPhotoDialog({
     }) {
 
     const [uploadable, setUploadable] = useState(null)
+    console.log(afterPhotoId)
 
     const getUploadableURL = () => {
         if (uploadable != null)
