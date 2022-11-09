@@ -29,6 +29,11 @@ export default function PhotoElement({
         setMenuParent(null)
     }
 
+    const onAction = (f) => {
+        handleMenuClose()
+        f(menuParent)
+    }
+
     return (
         <ImageListItem
             sx={{
@@ -51,7 +56,7 @@ export default function PhotoElement({
                 }}>
                 <Avatar sx={{bgcolor: "warning.light"}}>{image.order}</Avatar>
                 <Box>
-                    <IconButton color="warning" onClick={handleMenuOpen}>
+                    <IconButton color="warning" data-id={image.id} onClick={handleMenuOpen}>
                         <MoreIcon />
                     </IconButton>
                 </Box>
@@ -64,9 +69,9 @@ export default function PhotoElement({
             <CRUDMenu
                 menuParent={menuParent}
                 handleMenuClose={handleMenuClose}
-                handleOpenCreatePhotoDialog={handleOpenCreatePhotoDialog}
-                handleOpenEditPhotoDialog={handleOpenEditPhotoDialog}
-                handleOpenDeletePhotoDialog={handleOpenDeletePhotoDialog}
+                handleOpenCreateDialog={() => { onAction(handleOpenCreatePhotoDialog) }}
+                handleOpenEditDialog={() => { onAction(handleOpenEditPhotoDialog) }}
+                handleOpenDeleteDialog={() => { onAction(handleOpenDeletePhotoDialog) }}
             />
         </ImageListItem>
       )

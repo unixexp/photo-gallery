@@ -8,22 +8,41 @@ datasource db {
 }
 
 model Category {
-  id          Bytes     @id
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime? @updatedAt @map("updated_at")
-  name        String    @unique
-  description String?
-  mainPhoto   String?   @map("main_photo")
+  id                Bytes               @id
+  createdAt         DateTime            @default(now()) @map("created_at")
+  updatedAt         DateTime?           @updatedAt @map("updated_at")
+  name              String              @unique
+  description       String?
+  mainPhoto         String?             @map("main_photo")
+  CategoryPhotoLink CategoryPhotoLink[]
 
   @@map("categories")
 }
 
 model Photo {
-  id        Bytes     @id
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime? @updatedAt @map("updated_at")
-  main      String?
-  thumbnail String?
+  id                Bytes               @id
+  createdAt         DateTime            @default(now()) @map("created_at")
+  updatedAt         DateTime?           @updatedAt @map("updated_at")
+  name              String?
+  description       String?
+  main              String?
+  thumbnail         String?
+  CategoryPhotoLink CategoryPhotoLink[]
 
   @@map("photos")
+}
+
+model CategoryPhotoLink {
+  id          Bytes     @id
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime? @updatedAt @map("updated_at")
+  categoryId  Bytes     @map("category_id")
+  photoId     Bytes     @map("photo_id")
+  order       Int
+
+  Category Category? @relation(fields: [categoryId], references: [id])
+  Photo    Photo?    @relation(fields: [photoId], references: [id])
+
+  @@unique([categoryId, photoId, order], name: "uq_category_id_photo_id_order")
+  @@map("category_photo_links")
 }

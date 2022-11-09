@@ -21,7 +21,7 @@ export const config = {
     }
 }
 
-export default async function CategoriesPhotos(req, res) {
+export default async function CategoriesPhotosMain(req, res) {
 
     if (req.method === "GET") {
 

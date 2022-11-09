@@ -26,7 +26,7 @@ export default function CRUDMenu(props) {
             >Add</MenuItem>
             <MenuItem
                 key="change-name"
-                onClick={handleOpenEditDialog}    
+                onClick={handleOpenEditDialog}
             >Edit</MenuItem>
             <MenuItem
                 key="remove"

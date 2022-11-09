@@ -5,6 +5,7 @@
     "start": "next start"
   },
   "devDependencies": {
+    "prisma": "^4.6.0",
     "sass": "^1.55.0"
   },
   "exports": {

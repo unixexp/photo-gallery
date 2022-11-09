@@ -4,28 +4,54 @@ import { selectCategory } from "../adminSlice"
 
 import { ImageList } from "@mui/material"
 import PhotoElement from "./photo-element/photo-element"
+import CreateCategoryPhotoDialog from "../dialogs/create-category-photo-dialog"
 
 export default function PhotoEditor({ galleryAPIService }) {
 
     const category = useSelector(selectCategory)
     const itemData = loadPhotos()
+    const [afterPhotoId, setAfterPhotoId] = useState(null)
+    const [createPhotoDialogIsOpened, setCreatePhotoDialogIsOpened] = useState(false)
 
-    const handleOpenCreatePhotoDialog = () => {}
+    const handleOpenCreatePhotoDialog = (parent) => {
+        if (category != null) {
+            setAfterPhotoId(parent.dataset.id)
+            setCreatePhotoDialogIsOpened(true)
+        }
+    }
+
+    const handleCreatePhotoDialogConfirm = () => {
+        setCreatePhotoDialogIsOpened(false)
+    }
+
+    const handleCreatePhotoDialogClose = () => {
+        setCreatePhotoDialogIsOpened(false)
+    }
+
     const handleOpenEditPhotoDialog = (id) => {}
+    
     const handleOpenDeletePhotoDialog = (id) => {}
 
     return (
-        <ImageList cols={5} gap={8}>
-            {itemData.map((item) => (
-                <PhotoElement
-                    key={item.id}
-                    image={item}
-                    handleOpenCreatePhotoDialog={handleOpenCreatePhotoDialog}
-                    handleOpenEditPhotoDialog={handleOpenEditPhotoDialog}
-                    handleOpenDeletePhotoDialog={handleOpenDeletePhotoDialog}
-                />
-            ))}
-        </ImageList>
+        <>
+            <ImageList cols={5} gap={8}>
+                {itemData.map((item) => (
+                    <PhotoElement
+                        key={item.id}
+                        image={item}
+                        handleOpenCreatePhotoDialog={handleOpenCreatePhotoDialog}
+                        handleOpenEditPhotoDialog={handleOpenEditPhotoDialog}
+                        handleOpenDeletePhotoDialog={handleOpenDeletePhotoDialog}
+                    />
+                ))}
+            </ImageList>
+            <CreateCategoryPhotoDialog
+                isOpened={createPhotoDialogIsOpened}
+                handleOK={handleCreatePhotoDialogConfirm}
+                handleClose={handleCreatePhotoDialogClose}
+                afterPhotoId={afterPhotoId}
+            />
+        </>
       )
 
 }

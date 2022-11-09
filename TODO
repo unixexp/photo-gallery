@@ -1,14 +1,13 @@
-Create table to save photo information (photos)
-Create table to link photo->categories (category-photo)
-    - Each photo has personal description for each category
-    - Each photo has personal order for each category
-
 Make API standard CRUD for add, edit and delete photo for category
     - Add new
         - Select all photos from this category
         - Set this photo order relatively photo client clicked in frontend + 1
         - Update each photo order and insert new photo in db
-        - Save photo on drive    
+        - Save photo on drive
+            - POST /api/categories/1/photos/
+                - formData fields
+                    - photoId: <uuid> | null
+                    - files: []
 
     - Remove
         - Remove photo entry from 'category-photo' table

@@ -1,5 +1,6 @@
 import Card from "@mui/material/Card"
 import CardMedia from "@mui/material/CardMedia"
+import Button from "@mui/material/Button"
 
 export default function UploadableCard({currentImage, setUploadableHandler, size}) {
 
@@ -25,9 +26,9 @@ export default function UploadableCard({currentImage, setUploadableHandler, size
         )
     } else {
         return (
-            <div>
+            <div style={{textAlign: "center"}}>
                 <label style={{cursor: "pointer"}}>
-                    <div style={{padding: "8px", textAlign: "center"}}>Load image</div>
+                    <Button variant="outlined">Load image</Button>
                     <input style={{display: "none"}} type="file" onChange={handleUploadToState} />
                 </label>
             </div>

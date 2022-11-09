@@ -33,8 +33,3 @@ Get main category photo
 Get main photo file or thumbnail by UUId
 /api/photos/<uuid>/main
 /api/photos/<uuid>/thumbnail
-
-https://codesandbox.io/s/fsq8js?file=/demo.tsx
-https://mui.com/material-ui/react-grid/
-https://www.npmjs.com/package/sqlite
-https://www.youtube.com/watch?v=PxiQDo0CmDE
