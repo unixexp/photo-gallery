@@ -20,7 +20,10 @@ export default function PhotoEditor({ galleryAPIService }) {
         }
     }
 
-    const handleCreatePhotoDialogConfirm = () => {
+    const handleCreatePhotoDialogConfirm = (name, description, uploadable) => {
+        console.log(name)
+        console.log(description)
+        console.log(uploadable)
         setCreatePhotoDialogIsOpened(false)
     }
 

@@ -15,16 +15,32 @@ const galleryAPIService = GalleryAPIServiceFactory.getInstance()
 const DARK_THEME_NAME = "dark"
 const LIGHT_THEME_NAME = "light"
 
+const themeComponentsOverride = {
+    components: {
+        MuiDialogContent: {
+            styleOverrides: {
+                root: {
+                    "div:not(:last-child)": {
+                        marginBottom: "8px"
+                    }
+                }
+            }
+        }
+    }
+}
+
 const darkTheme = createTheme({
     palette: {
         mode: DARK_THEME_NAME
-    }
+    },
+    ...themeComponentsOverride
 })
 
 const lightTheme = createTheme({
     palette: {
         mode: LIGHT_THEME_NAME
-    }
+    },
+    ...themeComponentsOverride
 })
 
 const PREFFERENCE_THEME_COOKIE = "preffered-theme"

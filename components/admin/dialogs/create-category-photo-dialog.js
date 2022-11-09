@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react"
 
-import Dialog from "@mui/material/Dialog"
-import DialogContent from "@mui/material/DialogContent"
-import DialogActions from "@mui/material/DialogActions"
-import Button from "@mui/material/Button"
+import {
+    Dialog,
+    DialogContent,
+    DialogActions,
+    TextField,
+    Button,
+    Typography
+} from "@mui/material"
 
 import UploadableCard from "../toolbar/uploadable-card"
 
@@ -14,22 +18,36 @@ export default function CreateCategoryPhotoDialog({
         afterPhotoId
     }) {
 
-    const [uploadable, setUploadable] = useState(null)
-    console.log(afterPhotoId)
+    const [name, setName] = useState('')
+    const [description, setDescription] = useState('')
+    const [originalUploadable, setOriginalUploadable] = useState(null)
+    const [thumbnaillUploadable, setThumbnailUploadable] = useState(null)
 
-    const getUploadableURL = () => {
+    const getUploadableURL = (uploadable) => {
         if (uploadable != null)
             return URL.createObjectURL(uploadable)
         else
             null
     }
 
-    const setUploadableHandler = (uploadableObject) => {
-        setUploadable(uploadableObject)
+    const setOriginalUploadableHandler = (uploadableObject) => {
+        setOriginalUploadable(uploadableObject)
+    }
+
+    const setThumbnailUploadableHandler = (uploadableObject) => {
+        setThumbnailUploadable(uploadableObject)
+    }
+
+    const handleOnChangeName = (e) => {
+        setName(e.target.value)
+    }
+
+    const handleOnChangeDescription = (e) => {
+        setDescription(e.target.value)
     }
 
     const upload = () => {
-        handleOK(uploadable)
+        handleOK(name, description, originalUploadable, thumbnaillUploadable)
     }
 
     return (
@@ -38,11 +56,39 @@ export default function CreateCategoryPhotoDialog({
                 open={isOpened}
                 onClose={handleClose}
             >
-                <DialogContent>
+                <DialogContent >
+                    <Typography>Original</Typography>
                     <UploadableCard
-                        currentImage={getUploadableURL()}
-                        setUploadableHandler={setUploadableHandler}
-                        size="400"/>
+                        caption="Upload original image"
+                        currentImage={getUploadableURL(originalUploadable)}
+                        setUploadableHandler={setOriginalUploadableHandler}
+                        size="150"/>
+                    <Typography>Thumbnail</Typography>
+                    <UploadableCard
+                        caption="Upload thumbnail"
+                        currentImage={getUploadableURL(thumbnaillUploadable)}
+                        setUploadableHandler={setThumbnailUploadableHandler}
+                        size="150"/>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        label="Name"
+                        type="text"
+                        fullWidth
+                        variant="standard"
+                        value={name}
+                        onChange={handleOnChangeName}
+                    />
+                    <TextField
+                        minRows={4}
+                        maxRows={4}
+                        variant="outlined"
+                        multiline
+                        label="Description"
+                        value={description}
+                        fullWidth
+                        onChange={handleOnChangeDescription}
+                    />
                     <DialogActions>
                         <Button onClick={upload}>Ok</Button>
                         <Button onClick={() => handleClose()}>Cancel</Button>

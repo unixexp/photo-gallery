@@ -30,6 +30,7 @@ export default function LoadMainImageDialog({isOpened, handleOK, handleClose, im
             >
                 <DialogContent>
                     <UploadableCard
+                        caption="Upload image"
                         currentImage={currentImage}
                         setUploadableHandler={setUploadableHandler}
                         size="400"/>

@@ -2,7 +2,7 @@ import Card from "@mui/material/Card"
 import CardMedia from "@mui/material/CardMedia"
 import Button from "@mui/material/Button"
 
-export default function UploadableCard({currentImage, setUploadableHandler, size}) {
+export default function UploadableCard({currentImage, setUploadableHandler, size, caption}) {
 
     const handleUploadToState = (event) => {
         if (event.target.files && event.target.files[0]) {
@@ -27,10 +27,10 @@ export default function UploadableCard({currentImage, setUploadableHandler, size
     } else {
         return (
             <div style={{textAlign: "center"}}>
-                <label style={{cursor: "pointer"}}>
-                    <Button variant="outlined">Load image</Button>
-                    <input style={{display: "none"}} type="file" onChange={handleUploadToState} />
-                </label>
+                <Button variant="contained" component="label" onChange={handleUploadToState}>
+                    {caption}
+                    <input hidden accept="image/*" type="file" />
+                </Button>
             </div>
         )
     }
