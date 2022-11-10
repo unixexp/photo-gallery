@@ -27,9 +27,10 @@ export default function PhotoEditor({ galleryAPIService }) {
             originalUploadable,
             thumbnaillUploadable
         } = params
-        setCreatePhotoDialogIsOpened(false)
-        if (originalUploadable != null && thumbnaillUploadable != null &&
-                name.length && description.length) {
+
+        if (originalUploadable != null && thumbnaillUploadable != null
+                && name.length && description.length) {
+            setCreatePhotoDialogIsOpened(false)
             return await galleryAPIService.createCategoryPhoto({...params, category, afterPhotoId})
         } else {
             throw new Error("Not enough params to fill.")

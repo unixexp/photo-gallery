@@ -51,12 +51,11 @@ export default function CreateCategoryPhotoDialog({
             onClose()
         } else {
             try {
-                const response = await handleOK({ name, description, originalUploadable, thumbnaillUploadable })
+                const response = await handleOK({name, description, originalUploadable, thumbnaillUploadable})
+                clean()
                 alert(response.result)
             } catch(e) {
                 alert(e)
-            } finally {
-                clean()
             }
         }
     }
