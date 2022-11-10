@@ -9,10 +9,12 @@ export default class MainGalleryAPIService extends GalleryAPIService {
         this.PHOTOS_PATH = "/data/photos"
         this.API_ROUTES = {
             categories: "/api/admin/categories",
+            categoriesPhotos: "/api/admin/categories/<id>/photos",
             categoriesPhotosMain: "/api/admin/categories/<id>/photos/main"
         }
         this.PATHS = {
             categoryPath: "/categories/<id>",
+            photoPath: "/photos",
             mainPhotoPath: "/categories/<id>/photos/main"
         }
     }
@@ -70,6 +72,29 @@ export default class MainGalleryAPIService extends GalleryAPIService {
         body.append("file", uploadable)
         const response = await fetch(path, { method: "POST", body })
         return await response.json()
+    }
+
+    createCategoryPhoto = async (params) => {
+        const {
+            name,
+            description,
+            originalUploadable,
+            thumbnaillUploadable,
+            category,
+            afterPhotoId
+        } = params
+        const path = formatString(this.getRouteURL("categoriesPhotos"), {id: category.id})
+        const body = new FormData()
+        body.append("name", name)
+        body.append("description", description)
+        body.append("afterPhotoId", afterPhotoId)
+        body.append("file", uploadable)
+        const response = await fetch(path, { method: "POST", body })
+        if (response.status == 200) {
+            return await response.json()
+        } else {
+            throw new Error(response.status)
+        }     
     }
 
     getRouteURL = (route) => {

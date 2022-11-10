@@ -20,11 +20,20 @@ export default function PhotoEditor({ galleryAPIService }) {
         }
     }
 
-    const handleCreatePhotoDialogConfirm = (name, description, uploadable) => {
-        console.log(name)
-        console.log(description)
-        console.log(uploadable)
+    const handleCreatePhotoDialogConfirm = async (params) => {
+        const {
+            name,
+            description,
+            originalUploadable,
+            thumbnaillUploadable
+        } = params
         setCreatePhotoDialogIsOpened(false)
+        if (originalUploadable != null && thumbnaillUploadable != null &&
+                name.length && description.length) {
+            return await galleryAPIService.createCategoryPhoto({...params, category, afterPhotoId})
+        } else {
+            throw new Error("Not enough params to fill.")
+        }
     }
 
     const handleCreatePhotoDialogClose = () => {
@@ -52,7 +61,6 @@ export default function PhotoEditor({ galleryAPIService }) {
                 isOpened={createPhotoDialogIsOpened}
                 handleOK={handleCreatePhotoDialogConfirm}
                 handleClose={handleCreatePhotoDialogClose}
-                afterPhotoId={afterPhotoId}
             />
         </>
       )

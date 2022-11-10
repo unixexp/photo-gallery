@@ -8,14 +8,13 @@ import {
     Button,
     Typography
 } from "@mui/material"
-
+import { RESULT_ERROR } from "~/lib/util"
 import UploadableCard from "../toolbar/uploadable-card"
 
 export default function CreateCategoryPhotoDialog({
         isOpened,
         handleOK,
-        handleClose,
-        afterPhotoId
+        handleClose
     }) {
 
     const [name, setName] = useState('')
@@ -46,8 +45,32 @@ export default function CreateCategoryPhotoDialog({
         setDescription(e.target.value)
     }
 
-    const upload = () => {
-        handleOK(name, description, originalUploadable, thumbnaillUploadable)
+    const onOk = async () => {
+        if (!name.length && !description.length
+                && originalUploadable == null && thumbnaillUploadable == null) {
+            onClose()
+        } else {
+            try {
+                const response = await handleOK({ name, description, originalUploadable, thumbnaillUploadable })
+                alert(response.result)
+            } catch(e) {
+                alert(e)
+            } finally {
+                clean()
+            }
+        }
+    }
+
+    const onClose = () => {
+        handleClose()
+        clean()
+    }
+
+    const clean = () => {
+        setName("")
+        setDescription("")
+        setOriginalUploadable(null)
+        setThumbnailUploadable(null)
     }
 
     return (
@@ -90,8 +113,8 @@ export default function CreateCategoryPhotoDialog({
                         onChange={handleOnChangeDescription}
                     />
                     <DialogActions>
-                        <Button onClick={upload}>Ok</Button>
-                        <Button onClick={() => handleClose()}>Cancel</Button>
+                        <Button onClick={onOk}>Ok</Button>
+                        <Button onClick={onClose}>Cancel</Button>
                     </DialogActions>
                 </DialogContent>
             </Dialog>
