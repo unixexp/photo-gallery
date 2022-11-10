@@ -8,7 +8,7 @@ import {
     Button,
     Typography
 } from "@mui/material"
-import { RESULT_ERROR } from "~/lib/util"
+
 import UploadableCard from "../toolbar/uploadable-card"
 
 export default function CreateCategoryPhotoDialog({
