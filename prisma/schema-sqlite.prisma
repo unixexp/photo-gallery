@@ -25,7 +25,7 @@ model Photo {
   updatedAt         DateTime?           @updatedAt @map("updated_at")
   name              String?
   description       String?
-  main              String?
+  original          String?
   thumbnail         String?
   CategoryPhotoLink CategoryPhotoLink[]
 

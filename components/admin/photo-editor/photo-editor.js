@@ -6,6 +6,8 @@ import { ImageList } from "@mui/material"
 import PhotoElement from "./photo-element/photo-element"
 import CreateCategoryPhotoDialog from "../dialogs/create-category-photo-dialog"
 
+import { RESULT_OK } from "~/lib/util"
+
 export default function PhotoEditor({ galleryAPIService }) {
 
     const category = useSelector(selectCategory)
@@ -30,8 +32,12 @@ export default function PhotoEditor({ galleryAPIService }) {
 
         if (originalUploadable != null && thumbnaillUploadable != null
                 && name.length && description.length) {
-            setCreatePhotoDialogIsOpened(false)
-            return await galleryAPIService.createCategoryPhoto({...params, category, afterPhotoId})
+            const response = await galleryAPIService.createCategoryPhoto({...params, category, afterPhotoId})
+            if (response.result == RESULT_OK) {
+                setCreatePhotoDialogIsOpened(false)
+            } else {
+                throw new Error(response.error)
+            }
         } else {
             throw new Error("Not enough params to fill.")
         }

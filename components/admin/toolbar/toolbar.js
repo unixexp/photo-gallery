@@ -17,6 +17,7 @@ import LoadMainImageDialog from "../dialogs/load-main-image-dialog"
 
 import { selectCategory, setCategory } from "../adminSlice"
 import CRUDMenu from "../menu/crud-menu"
+import { RESULT_OK } from "~/lib/util"
 
 function renderMainImageSelector({ category, galleryAPIService, update, setUpdatedCategoryId }) {
 
@@ -55,7 +56,12 @@ function renderMainImageSelector({ category, galleryAPIService, update, setUpdat
     const handleLoadMainImageDialogConfirm = async (uploadable) => {
         setLoadMainImageDialogIsOpened(false)
         if (uploadable != null) {
-            await galleryAPIService.uploadCategoryMainPhoto(category, uploadable)
+            const response = await galleryAPIService.uploadCategoryMainPhoto(category, uploadable)
+            if (response.result != RESULT_OK) {
+                alert(response.error)
+            } else {
+                alert(response.result)
+            }
             setUpdatedCategoryId(category.id)
             update()
         }

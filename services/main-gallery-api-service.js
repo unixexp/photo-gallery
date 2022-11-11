@@ -14,7 +14,8 @@ export default class MainGalleryAPIService extends GalleryAPIService {
         }
         this.PATHS = {
             categoryPath: "/categories/<id>",
-            photoPath: "/photos",
+            photosPath: "/photos",
+            photosThumbnailsPath: "/photos/thumbnails",
             mainPhotoPath: "/categories/<id>/photos/main"
         }
     }
@@ -92,12 +93,7 @@ export default class MainGalleryAPIService extends GalleryAPIService {
         body.append("originalUploadable", originalUploadable)
         body.append("thumbnailUploadable", thumbnaillUploadable)
         const response = await fetch(path, { method: "POST", body })
-
-        if (response.status == 200) {
-            return await response.json()
-        } else {
-            throw new Error(response.status)
-        }     
+        return await response.json()  
     }
 
     getRouteURL = (route) => {

@@ -107,7 +107,12 @@ export default async function CategoriesPhotosMain(req, res) {
                 formatString(mainPhotoPath, {id: id})
             )
             makePath(formatString(mainPhotoPath, {id: id}), process.env.DATA_DIR)
-            const fileName = saveFile(files.file, pathName)
+            let fileName
+            try {
+                fileName = saveFile(files.file, pathName)
+            } catch (e) {
+                return res.status(409).json(resultError(e.toString()))
+            }
             
             if (err) {
                 return res.status(500).json(resultError(err))
