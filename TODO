@@ -1,13 +1,9 @@
 Make API standard CRUD for add, edit and delete photo for category
     - Add new
+        - Make uniq name for photo and thumbnail and upload photo and thumbnail
         - Select all photos from this category
         - Set this photo order relatively photo client clicked in frontend + 1
-        - Update each photo order and insert new photo in db
-        - Save photo on drive
-            - POST /api/categories/1/photos/
-                - formData fields
-                    - photoId: <uuid> | null
-                    - files: []
+        - Insert link to photo and thumbnail to DB
 
     - Remove
         - Remove photo entry from 'category-photo' table
