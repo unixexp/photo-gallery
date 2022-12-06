@@ -38,8 +38,8 @@ model CategoryPhotoLink {
   id          Bytes     @id
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime? @updatedAt @map("updated_at")
-  categoryId  Bytes?    @map("category_id")
-  photoId     Bytes?    @map("photo_id")
+  categoryId  Bytes     @map("category_id")
+  photoId     Bytes     @map("photo_id")
   order       Int
 
   Category Category? @relation(fields: [categoryId], references: [id])

@@ -152,13 +152,19 @@ const addPhotoToDB = async (params) => {
         }))
     }
     // Add new link to photo
-    statements.push(prisma.Category.update({
+    statements.push(prisma.Photo.update({
         where: {
-            id: category.id,
+            id: photo.data.id
         },
         data: {
             CategoryPhotoLink: {
-                create: [{id: makeUUIDBuffered(), order: currentLinkOrder, Photo: photo}]
+                create: [
+                    {
+                        id: makeUUIDBuffered(),
+                        order: currentLinkOrder,
+                        Category: { connect: { id: category.id } }
+                    }
+                ]
             }
         }
     }))
