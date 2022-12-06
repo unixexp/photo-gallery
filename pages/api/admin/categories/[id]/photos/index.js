@@ -8,7 +8,8 @@ import {
     saveFile,
     loadFile,
     convertUUIDStringToBuffered,
-    convertUUIDBufferedToString
+    convertUUIDBufferedToString,
+    makeUUIDBuffered
 } from "~/lib/util"
 import { GalleryAPIServiceFactory } from "~/services/gallery-api-service-factory";
 
@@ -53,11 +54,29 @@ export default async function CategoriesPhotos(req, res) {
         form.parse(req, async function(err, fields, files) {
 
             const { originalUploadable, thumbnailUploadable } = files
+            let uploaded = null
+            let added = null
 
             try {
-                uploadPhotoFilesToDisk(galleryAPIService, originalUploadable, thumbnailUploadable)
+                uploaded = uploadPhotoFilesToDisk(galleryAPIService, originalUploadable, thumbnailUploadable)
             } catch (e) {
                 return res.status(500).json(resultError(e.toString()))
+            }
+
+            if (uploaded != null) {
+                try {
+                    added = addPhotoToDB({
+                        ...fields,
+                        ...uploaded,
+                        originalFileName: originalUploadable.originalFilename,
+                        thumbnailFileName: thumbnailUploadable.originalFilename
+                    })
+                } catch (e) {
+                    return res.status(500).json(resultError(e.toString()))
+                }
+            } else {
+                console.log(uploaded)
+                return res.status(500).json(resultError("Cannot upload files."))
             }
 
             return res.status(200).json(resultOK("Feature is testing"))
@@ -74,9 +93,29 @@ const uploadPhotoFilesToDisk = (galleryAPIService, original, thumbnail) => {
     const photosPathAbs = makePath(photosPath, process.env.DATA_DIR)
     const photosThumbnailsPathAbs = makePath(photosThumbnailsPath, process.env.DATA_DIR)
 
-    const originalFileName = saveFile(original, photosPathAbs)
-    const thumbnailFileName = saveFile(thumbnail, photosThumbnailsPathAbs)
+    const originalUUID = saveFile(original, photosPathAbs)
+    const thumbnailUUID = saveFile(thumbnail, photosThumbnailsPathAbs)
 
-    return { originalFileName, thumbnailFileName }
+    return { originalUUID, thumbnailUUID }
+
+}
+
+const addPhotoToDB = async (params) => {
+
+    const { name, description, originalFileName, thumbnailFileName, originalUUID, thumbnailUUID } = params
+
+    const photo = {
+        data: {
+            id: makeUUIDBuffered(),
+            name,
+            description,
+            originalFileName,
+            thumbnailFileName,
+            originalUUID,
+            thumbnailUUID
+        }
+    }
+
+    return await prisma.Photo.create(photo)
 
 }

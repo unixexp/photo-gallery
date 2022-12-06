@@ -1,6 +1,5 @@
 Make API standard CRUD for add, edit and delete photo for category
     - Add new
-        - Make uniq name for photo and thumbnail and upload photo and thumbnail
         - Select all photos from this category
         - Set this photo order relatively photo client clicked in frontend + 1
         - Insert link to photo and thumbnail to DB
