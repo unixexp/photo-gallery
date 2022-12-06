@@ -20,16 +20,4 @@ Remove prisma/migration dir is it exists, then run
 Add dummy records for categories and photos
 # node ./snippets/init-dummy.js
 
--------------------------------------------
-
-API ROUTES:
-
-Get all photo UUIDs by category
-/api/categories/1/photos/
-
-Get main category photo
-/api/categories/1/photos/main
-
-Get main photo file or thumbnail by UUId
-/api/photos/<uuid>/main
-/api/photos/<uuid>/thumbnail
+Make tmp directory to load photos

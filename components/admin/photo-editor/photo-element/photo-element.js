@@ -31,10 +31,11 @@ export default function PhotoElement({
 
     const onAction = (f) => {
         handleMenuClose()
-        if (menuParent != null)
-            f(menuParent.dataset.id)
-        else
+        if (menuParent != null) {
+            f(menuParent.dataset.order)
+        } else {
             f(null)
+        }
     }
 
     return (
@@ -86,7 +87,7 @@ function PhotoElementActions({image, handleMenuOpen, onAction, handleOpenCreateP
                 }}>
                 <Avatar sx={{bgcolor: "warning.light"}}>{image.order}</Avatar>
                 <Box>
-                    <IconButton color="warning" data-id={image.id} onClick={handleMenuOpen}>
+                    <IconButton color="warning" data-order={image.order} onClick={handleMenuOpen}>
                         <MoreIcon />
                     </IconButton>
                 </Box>

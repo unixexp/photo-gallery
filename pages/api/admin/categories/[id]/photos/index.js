@@ -69,7 +69,8 @@ export default async function CategoriesPhotos(req, res) {
                         ...fields,
                         ...uploaded,
                         originalFileName: originalUploadable.originalFilename,
-                        thumbnailFileName: thumbnailUploadable.originalFilename
+                        thumbnailFileName: thumbnailUploadable.originalFilename,
+                        category
                     })
                 } catch (e) {
                     return res.status(500).json(resultError(e.toString()))
@@ -102,7 +103,31 @@ const uploadPhotoFilesToDisk = (galleryAPIService, original, thumbnail) => {
 
 const addPhotoToDB = async (params) => {
 
-    const { name, description, originalFileName, thumbnailFileName, originalUUID, thumbnailUUID } = params
+    const {
+        name,
+        description,
+        originalFileName,
+        thumbnailFileName,
+        originalUUID,
+        thumbnailUUID,
+        category,
+        order
+    } = params
+
+    let dbOrder = 1;
+    let links = []
+
+    links = await prisma.CategoryPhotoLink.findMany({ where: { categoryId: category.id } })
+    links.sort((a, b) => a.order - b.order)
+
+    const linksBefore = links.filter(item => item.order < order)
+    const linksAfter = links.filter(item => item.order >= order)
+    linksBefore.sort((a, b) => a.order - b.order)
+    linksAfter.sort((a, b) => a.order - b.order);
+
+    linksBefore.map((item) => { item.order = dbOrder; dbOrder++; });
+    const currentLinkOrder = dbOrder;
+    linksAfter.map((item) => { dbOrder++; item.order = dbOrder; });
 
     const photo = {
         data: {
@@ -116,6 +141,28 @@ const addPhotoToDB = async (params) => {
         }
     }
 
-    return await prisma.Photo.create(photo)
+    const statements = []
+    // Add photo to db
+    statements.push(prisma.Photo.create(photo))
+    // Update order links before and after
+    for (let link of [...linksBefore, ...linksAfter]) {
+        statements.push(prisma.CategoryPhotoLink.update({
+            where: { id: link.id },
+            data: {...link}
+        }))
+    }
+    // Add new link to photo
+    statements.push(prisma.Category.update({
+        where: {
+            id: category.id,
+        },
+        data: {
+            CategoryPhotoLink: {
+                create: [{id: makeUUIDBuffered(), order: currentLinkOrder, Photo: photo}]
+            }
+        }
+    }))
+
+    return await prisma.$transaction(statements)
 
 }
