@@ -16,11 +16,12 @@ export default function PhotoElement({
     const [imgURL, setImgURL] = useState(null)
 
     useEffect(() => {
-        galleryAPIService.getPhotoThumbnail(image.id).then(url => {
-            setImgURL(url)
-        }).catch(() => {
-            setImgURL(null)
-        })
+        if (image.id != null)
+            galleryAPIService.getPhotoThumbnail(image.id).then(url => {
+                setImgURL(url)
+            }).catch(() => {
+                setImgURL(null)
+            })
     }, [])
 
     const handleMouseEnter = () => {

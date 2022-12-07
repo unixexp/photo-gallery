@@ -32,7 +32,8 @@ export default async function CategoriesPhotos(req, res) {
         try {
             result = await prisma.CategoryPhotoLink.findMany({
                 where: { categoryId: convertUUIDStringToBuffered(id) },
-                include: { Photo: true }
+                include: { Photo: true },
+                orderBy: { order: "asc" }
             })
         } catch (e) {
             console.log(e)
