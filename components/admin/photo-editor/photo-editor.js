@@ -16,15 +16,18 @@ export default function PhotoEditor({ galleryAPIService }) {
     const [createPhotoDialogIsOpened, setCreatePhotoDialogIsOpened] = useState(false)
 
     useEffect(() => {
-        if (category != null) {
-            galleryAPIService.getCategoryPhotos(category).then(({response}) => {
-                const photosWithUploadDummy = [{id: null, url: null, descriptioorder: null, order: 0}, ...response]
-                setPhotos(photosWithUploadDummy)
-            }).catch(() => {
-                setPhotos([])
-            })
-        }
+        if (category != null)
+            update()
     }, [category])
+
+    const update = () => {
+        galleryAPIService.getCategoryPhotos(category).then(({response}) => {
+            const photosWithUploadDummy = [{id: null, url: null, descriptioorder: null, order: 0}, ...response]
+            setPhotos(photosWithUploadDummy)
+        }).catch(() => {
+            setPhotos([])
+        })
+    }
 
     const handleOpenCreatePhotoDialog = (order) => {
         order++
@@ -46,6 +49,7 @@ export default function PhotoEditor({ galleryAPIService }) {
             const response = await galleryAPIService.createCategoryPhoto({...params, category, order})
             if (response.result == RESULT_OK) {
                 setCreatePhotoDialogIsOpened(false)
+                update()
             } else {
                 throw new Error(response.error)
             }
