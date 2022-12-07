@@ -19,7 +19,6 @@ export default function PhotoEditor({ galleryAPIService }) {
         if (category != null) {
             galleryAPIService.getCategoryPhotos(category).then(({response}) => {
                 const photosWithUploadDummy = [{id: null, url: null, descriptioorder: null, order: 0}, ...response]
-                response.map(entry => console.log(galleryAPIService.getPhoto(entry.id)))
                 setPhotos(photosWithUploadDummy)
             }).catch(() => {
                 setPhotos([])
@@ -68,6 +67,7 @@ export default function PhotoEditor({ galleryAPIService }) {
             <ImageList cols={5} gap={8}>
                 {photos.map((item) => (
                     <PhotoElement
+                        galleryAPIService={galleryAPIService}
                         key={item.id}
                         image={item}
                         handleOpenCreatePhotoDialog={handleOpenCreatePhotoDialog}

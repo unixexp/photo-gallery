@@ -118,8 +118,6 @@ export default class MainGalleryAPIService extends GalleryAPIService {
 
     getPhoto = async (id) => {
         const path = formatString(this.getRouteURL("photosOriginal"), {id})
-        console.log(path)
-        return
         return this.__getPhoto(id, path)
     }
 

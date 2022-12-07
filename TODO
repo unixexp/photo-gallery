@@ -1,8 +1,4 @@
 Make API standard CRUD for add, edit and delete photo for category
-    - Load
-        - Make API route to get image list by category
-        - Make API route to get image by url
-
     - Remove
         - Remove photo entry from 'category-photo' table
         - Select all photos from this category

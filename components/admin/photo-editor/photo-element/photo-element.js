@@ -1,9 +1,10 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ImageListItem, Box, IconButton, Avatar, Button } from "@mui/material"
 import MoreIcon from "@mui/icons-material/MoreVert"
 import CRUDMenu from "../../menu/crud-menu"
 
 export default function PhotoElement({
+        galleryAPIService,
         image,
         handleOpenCreatePhotoDialog,
         handleOpenEditPhotoDialog,
@@ -12,6 +13,15 @@ export default function PhotoElement({
 
     const [isHovering, setIsHovering] = useState(false)
     const [menuParent, setMenuParent] = useState(null)
+    const [imgURL, setImgURL] = useState(null)
+
+    useEffect(() => {
+        galleryAPIService.getPhotoThumbnail(image.id).then(url => {
+            setImgURL(url)
+        }).catch(() => {
+            setImgURL(null)
+        })
+    }, [])
 
     const handleMouseEnter = () => {
         setIsHovering(true)
@@ -56,8 +66,8 @@ export default function PhotoElement({
                 handleOpenCreatePhotoDialog={handleOpenCreatePhotoDialog}
             />
             <img
-                src={image.url}
-                srcSet={image.url}
+                src={imgURL}
+                srcSet={imgURL}
                 loading="lazy"
             />
             <CRUDMenu
