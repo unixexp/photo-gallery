@@ -10,7 +10,11 @@ export default class MainGalleryAPIService extends GalleryAPIService {
         this.API_ROUTES = {
             categories: "/api/admin/categories",
             categoriesPhotos: "/api/admin/categories/<id>/photos",
-            categoriesPhotosMain: "/api/admin/categories/<id>/photos/main"
+            categoriesPhotosThumbnail: "/api/admin/categories/<id>/photos/<id>/thumbnail",
+            categoriesPhotosMain: "/api/admin/categories/<id>/photos/main",
+
+            photosOriginal: "/api/admin/photos/<id>/original",
+            photosThumbnail: "/api/admin/photos/<id>/thumbnail",
         }
         this.PATHS = {
             categoryPath: "/categories/<id>",
@@ -75,6 +79,12 @@ export default class MainGalleryAPIService extends GalleryAPIService {
         return await response.json()
     }
 
+    getCategoryPhotos = async (category) => {
+        const path = formatString(this.getRouteURL("categoriesPhotos"), {id: category.id})
+        const response = await fetch(path, { method: "GET" })
+        return await response.json()
+    }
+
     createCategoryPhoto = async (params) => {
         const {
             name,
@@ -94,6 +104,28 @@ export default class MainGalleryAPIService extends GalleryAPIService {
         body.append("thumbnailUploadable", thumbnaillUploadable)
         const response = await fetch(path, { method: "POST", body })
         return await response.json()  
+    }
+
+    __getPhoto = async (id, path) => {
+        const response = await fetch(path, { method: "GET" })
+        if (response.status == 200) {
+            const imgBlob = await response.blob()
+            return URL.createObjectURL(imgBlob)   
+        } else {
+            throw new Error(response.status)
+        }
+    }
+
+    getPhoto = async (id) => {
+        const path = formatString(this.getRouteURL("photosOriginal"), {id})
+        console.log(path)
+        return
+        return this.__getPhoto(id, path)
+    }
+
+    getPhotoThumbnail = async (id) => {
+        const path = formatString(this.getRouteURL("photosThumbnail"), {id})
+        return this.__getPhoto(id, path)
     }
 
     getRouteURL = (route) => {

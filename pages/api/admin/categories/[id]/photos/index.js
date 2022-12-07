@@ -13,7 +13,7 @@ import {
 } from "~/lib/util"
 import { GalleryAPIServiceFactory } from "~/services/gallery-api-service-factory";
 
-import fs from "fs"
+import fs, { link } from "fs"
 import formidable from "formidable"
 
 export const config = {
@@ -26,8 +26,34 @@ export default async function CategoriesPhotos(req, res) {
 
     if (req.method === "GET") {
 
-        // TODO: implement getting category photo list
-        return res.status(200).json(resultOK("Feature not implemented yet"))
+        const { id } = req.query
+        let result = []
+
+        try {
+            result = await prisma.CategoryPhotoLink.findMany({
+                where: { categoryId: convertUUIDStringToBuffered(id) },
+                include: { Photo: true }
+            })
+        } catch (e) {
+            console.log(e)
+            res.status(500).json(resultError())
+            return
+        }
+
+        const data = result.map((entry) => {
+            const photo = entry.Photo
+
+            return {
+                id: convertUUIDBufferedToString(photo.id),
+                url: "https://images.unsplash.com/photo-1549388604-817d15aa0110",
+                
+                name: photo.name,
+                description: photo.description,
+                order: entry.order
+            }
+        })
+        
+        return res.status(200).json(resultOK(data))
 
     } else if (req.method === "POST") {
 

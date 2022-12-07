@@ -1,8 +1,7 @@
 Make API standard CRUD for add, edit and delete photo for category
-    - Add new
-        - Select all photos from this category
-        - Set this photo order relatively photo client clicked in frontend + 1
-        - Insert link to photo and thumbnail to DB
+    - Load
+        - Make API route to get image list by category
+        - Make API route to get image by url
 
     - Remove
         - Remove photo entry from 'category-photo' table
