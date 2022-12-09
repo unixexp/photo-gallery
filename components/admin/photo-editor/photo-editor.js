@@ -5,6 +5,7 @@ import { selectCategory } from "../adminSlice"
 import { ImageList } from "@mui/material"
 import PhotoElement from "./photo-element/photo-element"
 import CreateCategoryPhotoDialog from "../dialogs/create-category-photo-dialog"
+import AlertDialog from "../dialogs/alert-dialog"
 
 import { RESULT_OK } from "~/lib/util"
 
@@ -14,6 +15,8 @@ export default function PhotoEditor({ galleryAPIService }) {
     const [photos, setPhotos] = useState([])
     const [order, setOrder] = useState(null)
     const [createPhotoDialogIsOpened, setCreatePhotoDialogIsOpened] = useState(false)
+    const [removePhotoAlertDialogIsOpened, setRemovePhotoAlertDialogIsOpened] = useState(false)
+    const [photoToDelete, setPhotoToDelete] = useState(null)
 
     useEffect(() => {
         if (category != null)
@@ -64,7 +67,25 @@ export default function PhotoEditor({ galleryAPIService }) {
 
     const handleOpenEditPhotoDialog = (id) => {}
     
-    const handleOpenDeletePhotoDialog = (id) => {}
+    const handleOpenDeletePhotoDialog = async (id) => {
+        setPhotoToDelete(id)
+        setRemovePhotoAlertDialogIsOpened(true)
+    }
+
+    const handleDeletePhotoConfirm = async () => {
+        const response = await galleryAPIService.deleteCategoryPhoto(category.id, photoToDelete)
+        if (response.result == RESULT_OK) {
+            setCreatePhotoDialogIsOpened(false)
+            update()
+        } else {
+            throw new Error(response.error)
+        }
+        setPhotoToDelete(null)
+    }
+
+    const handleDeletePhotoCancel = () => {
+        setRemovePhotoAlertDialogIsOpened(false)
+    }
 
     return (
         <>
@@ -84,6 +105,13 @@ export default function PhotoEditor({ galleryAPIService }) {
                 isOpened={createPhotoDialogIsOpened}
                 handleOK={handleCreatePhotoDialogConfirm}
                 handleClose={handleCreatePhotoDialogClose}
+            />
+            <AlertDialog
+                title="Alert!"
+                contentText="Delete this photo?"
+                isOpened={removePhotoAlertDialogIsOpened}
+                handleOK={handleDeletePhotoConfirm}
+                handleClose={handleDeletePhotoCancel}
             />
         </>
       )

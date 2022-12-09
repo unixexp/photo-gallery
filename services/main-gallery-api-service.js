@@ -10,6 +10,7 @@ export default class MainGalleryAPIService extends GalleryAPIService {
         this.API_ROUTES = {
             categories: "/api/admin/categories",
             categoriesPhotos: "/api/admin/categories/<id>/photos",
+            categoriesPhotosDelete: "/api/admin/categories/<category_id>/photos/<photo_id>",
             categoriesPhotosThumbnail: "/api/admin/categories/<id>/photos/<id>/thumbnail",
             categoriesPhotosMain: "/api/admin/categories/<id>/photos/main",
 
@@ -104,6 +105,15 @@ export default class MainGalleryAPIService extends GalleryAPIService {
         body.append("thumbnailUploadable", thumbnaillUploadable)
         const response = await fetch(path, { method: "POST", body })
         return await response.json()  
+    }
+
+    deleteCategoryPhoto = async (categoryId, photoId) => {
+        const path = formatString(
+            this.getRouteURL("categoriesPhotosDelete"),
+            { category_id: categoryId, photo_id: photoId }
+        )
+        const response = await fetch(path, { method: "DELETE" })
+        return await response.json()   
     }
 
     __getPhoto = async (id, path) => {

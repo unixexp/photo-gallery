@@ -40,12 +40,30 @@ export default function PhotoElement({
         setMenuParent(null)
     }
 
-    const onAction = (f) => {
+    const handleCreatePhoto = () => {
         handleMenuClose()
         if (menuParent != null) {
-            f(menuParent.dataset.order)
+            handleOpenCreatePhotoDialog(menuParent.dataset.order)
         } else {
-            f(null)
+            handleOpenCreatePhotoDialog(null)
+        }
+    }
+
+    const handleEditPhoto = () => {
+        handleMenuClose()
+        if (menuParent != null) {
+            handleOpenEditPhotoDialog(menuParent.dataset.id)
+        } else {
+            handleOpenEditPhotoDialog(null)
+        }
+    }
+
+    const handleDeletePhoto = () => {
+        handleMenuClose()
+        if (menuParent != null) {
+            handleOpenDeletePhotoDialog(menuParent.dataset.id)
+        } else {
+            handleOpenDeletePhotoDialog(null)
         }
     }
 
@@ -63,8 +81,7 @@ export default function PhotoElement({
             <PhotoElementActions
                 image={image}
                 handleMenuOpen={handleMenuOpen}
-                onAction={onAction}
-                handleOpenCreatePhotoDialog={handleOpenCreatePhotoDialog}
+                handleCreatePhoto={handleCreatePhoto}
             />
             <img
                 src={imgURL}
@@ -74,16 +91,16 @@ export default function PhotoElement({
             <CRUDMenu
                 menuParent={menuParent}
                 handleMenuClose={handleMenuClose}
-                handleOpenCreateDialog={() => { onAction(handleOpenCreatePhotoDialog) }}
-                handleOpenEditDialog={() => { onAction(handleOpenEditPhotoDialog) }}
-                handleOpenDeleteDialog={() => { onAction(handleOpenDeletePhotoDialog) }}
+                handleOpenCreateDialog={handleCreatePhoto}
+                handleOpenEditDialog={handleEditPhoto}
+                handleOpenDeleteDialog={handleDeletePhoto}
             />
         </ImageListItem>
       )
 
 }
 
-function PhotoElementActions({image, handleMenuOpen, onAction, handleOpenCreatePhotoDialog}){
+function PhotoElementActions({image, handleMenuOpen, handleCreatePhoto}){
 
     if (image.id != null) {
         return (
@@ -98,7 +115,11 @@ function PhotoElementActions({image, handleMenuOpen, onAction, handleOpenCreateP
                 }}>
                 <Avatar sx={{bgcolor: "warning.light"}}>{image.order}</Avatar>
                 <Box>
-                    <IconButton color="warning" data-order={image.order} onClick={handleMenuOpen}>
+                    <IconButton
+                            color="warning"
+                            data-order={image.order}
+                            data-id={image.id}
+                            onClick={handleMenuOpen}>
                         <MoreIcon />
                     </IconButton>
                 </Box>
@@ -115,7 +136,7 @@ function PhotoElementActions({image, handleMenuOpen, onAction, handleOpenCreateP
                 <Button
                     sx={{width: "100%", height: "100%"}}
                     variant="outlined"
-                    onClick={() => { onAction(handleOpenCreatePhotoDialog) }}
+                    onClick={handleCreatePhoto}
                 >
                     Load image
                 </Button>
