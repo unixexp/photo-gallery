@@ -305,8 +305,8 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
                         <div style={styles.descriptionBlock}>
                             { renderMainImageSelector({category, galleryAPIService, update, setUpdatedCategoryId}) }
                             <TextField
-                                minRows={4}
-                                maxRows={4}
+                                minRows={10}
+                                maxRows={10}
                                 variant="outlined"
                                 multiline
                                 value={
