@@ -1,9 +1,4 @@
 Make API standard CRUD for add, edit and delete photo for category
-    - Remove
-        - Remove photo entry from 'category-photo' table
-        - Select all photos from this category
-        - Update each photo order field value
-
     - Edit
         - Select this photo from 'category-photo'
         - If photo order field was changed, select all photos from
@@ -17,12 +12,3 @@ Make API standard CRUD for add, edit and delete photo for category
     - Check delete category feature, what happens with photos and db
 
 Pagginate photos in photo editor and in dialog for select exist photos to "Add from another category"
-
-const update = () => {
-        galleryAPIService.getCategoryPhotos(category).then(({response}) => {
-            const photosWithUploadDummy = [{id: null, url: null, descriptioorder: null, order: 0}, ...response] <-----Fix bug: after create function return the same photos count
-            setPhotos(photosWithUploadDummy)
-        }).catch(() => {
-            setPhotos([])
-        })
-    }

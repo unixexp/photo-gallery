@@ -92,7 +92,7 @@ export default async function CategoriesPhotos(req, res) {
 
             if (uploaded != null) {
                 try {
-                    added = addPhotoToDB({
+                    await addPhotoToDB({
                         ...fields,
                         ...uploaded,
                         originalFileName: originalUploadable.originalFilename,
@@ -107,7 +107,7 @@ export default async function CategoriesPhotos(req, res) {
                 return res.status(500).json(resultError("Cannot upload files."))
             }
 
-            return res.status(200).json(resultOK("Feature is testing"))
+            return res.status(200).json(resultOK())
         })
 
     }
