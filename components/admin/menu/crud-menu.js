@@ -29,9 +29,9 @@ export default function CRUDMenu(props) {
                 onClick={handleOpenEditDialog}
             >Edit</MenuItem>
             <MenuItem
-                key="remove"
+                key="delete"
                 onClick={handleOpenDeleteDialog}
-            >Remove</MenuItem>
+            >Delete</MenuItem>
         </Menu>
     )
 

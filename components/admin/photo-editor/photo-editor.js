@@ -75,7 +75,7 @@ export default function PhotoEditor({ galleryAPIService }) {
     const handleDeletePhotoConfirm = async () => {
         const response = await galleryAPIService.deleteCategoryPhoto(category.id, photoToDelete)
         if (response.result == RESULT_OK) {
-            setCreatePhotoDialogIsOpened(false)
+            setRemovePhotoAlertDialogIsOpened(false)
             update()
         } else {
             throw new Error(response.error)
