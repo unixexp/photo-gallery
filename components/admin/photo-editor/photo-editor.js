@@ -5,6 +5,7 @@ import { selectCategory } from "../adminSlice"
 import { ImageList } from "@mui/material"
 import PhotoElement from "./photo-element/photo-element"
 import CreateCategoryPhotoDialog from "../dialogs/create-category-photo-dialog"
+import EditCategoryPhotoDialog from "../dialogs/edit-category-photo-dialog"
 import AlertDialog from "../dialogs/alert-dialog"
 
 import { RESULT_OK } from "~/lib/util"
@@ -15,8 +16,10 @@ export default function PhotoEditor({ galleryAPIService }) {
     const [photos, setPhotos] = useState([])
     const [order, setOrder] = useState(null)
     const [createPhotoDialogIsOpened, setCreatePhotoDialogIsOpened] = useState(false)
+    const [editPhotoDialogIsOpened, setEditPhotoDialogIsOpened] = useState(false)
     const [removePhotoAlertDialogIsOpened, setRemovePhotoAlertDialogIsOpened] = useState(false)
     const [photoToDelete, setPhotoToDelete] = useState(null)
+    const [photoToEdit, setPhotoToEdit] = useState(null)
 
     useEffect(() => {
         if (category != null)
@@ -65,8 +68,19 @@ export default function PhotoEditor({ galleryAPIService }) {
         setCreatePhotoDialogIsOpened(false)
     }
 
-    const handleOpenEditPhotoDialog = (id) => {}
+    const handleOpenEditPhotoDialog = (id) => {
+        if (id != null && category != null) {
+            setPhotoToEdit(id)
+            setEditPhotoDialogIsOpened(true)
+        }
+    }
+
+    const handleEditPhotoDialogClose = () => {
+        setEditPhotoDialogIsOpened(false)
+    }
     
+    const handleEditPhotoDialogConfirm = async (params) => {}
+
     const handleOpenDeletePhotoDialog = async (id) => {
         setPhotoToDelete(id)
         setRemovePhotoAlertDialogIsOpened(true)
@@ -105,6 +119,13 @@ export default function PhotoEditor({ galleryAPIService }) {
                 isOpened={createPhotoDialogIsOpened}
                 handleOK={handleCreatePhotoDialogConfirm}
                 handleClose={handleCreatePhotoDialogClose}
+            />
+            <EditCategoryPhotoDialog
+                galleryAPIService={galleryAPIService}
+                photoToEdit={photoToEdit}
+                isOpened={editPhotoDialogIsOpened}
+                handleOK={handleEditPhotoDialogConfirm}
+                handleClose={handleEditPhotoDialogClose}
             />
             <AlertDialog
                 title="Alert!"
