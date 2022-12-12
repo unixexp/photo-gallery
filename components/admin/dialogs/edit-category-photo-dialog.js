@@ -15,20 +15,52 @@ export default function EditCategoryPhotoDialog({
         isOpened,
         handleOK,
         handleClose,
-        photoToEdit,
+        category,
+        photoToEdit: photoId,
         galleryAPIService
     }) {
 
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
+    const [order, setOrder] = useState(0)
     const [originalUploadable, setOriginalUploadable] = useState(null)
     const [thumbnaillUploadable, setThumbnailUploadable] = useState(null)
 
+    useEffect(() => {
+        if (photoId != null)
+            load()
+    }, [photoId])
+
+    const load = async () => {
+        galleryAPIService.findCategoryPhotoById(category.id, photoId).then(({response}) => {
+            setName(response.name)
+            setDescription(response.description)
+            setOrder(response.order)
+
+            galleryAPIService.getPhoto(photoId).then((photo) => {
+                setOriginalUploadable(photo)
+
+                galleryAPIService.getPhotoThumbnail(photoId).then((thumbnail) => {
+                    setThumbnailUploadable(thumbnail)
+                }).catch(() => {
+                    alert("Error load thumbnail.")
+                    onClose()
+                })
+            }).catch(() => {
+                alert("Error load main photo.")
+                onClose()
+            })
+        }).catch(() => {
+            alert("Error load photo data.")
+            onClose()
+        })
+    }
+
     const getUploadableURL = (uploadable) => {
-        if (uploadable != null)
+        if (uploadable != null && typeof(uploadable) != 'string')
             return URL.createObjectURL(uploadable)
         else
-            null
+            return uploadable
     }
 
     const setOriginalUploadableHandler = (uploadableObject) => {
@@ -53,8 +85,8 @@ export default function EditCategoryPhotoDialog({
             onClose()
         } else {
             try {
-                await handleOK({name, description, originalUploadable, thumbnaillUploadable})
-                clean()
+                await handleOK({name, description, order, originalUploadable, thumbnaillUploadable})
+                onClose()
             } catch(e) {
                 alert(e)
             }

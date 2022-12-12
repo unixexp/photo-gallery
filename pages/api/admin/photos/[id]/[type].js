@@ -8,7 +8,7 @@ import {
 } from "~/lib/util"
 import { GalleryAPIServiceFactory } from "~/services/gallery-api-service-factory";
 
-export default async function Photos(req, res) {
+export default async function PhotosOfType(req, res) {
 
     if (req.method === "GET") {
 

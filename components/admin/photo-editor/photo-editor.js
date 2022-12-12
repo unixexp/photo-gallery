@@ -79,7 +79,9 @@ export default function PhotoEditor({ galleryAPIService }) {
         setEditPhotoDialogIsOpened(false)
     }
     
-    const handleEditPhotoDialogConfirm = async (params) => {}
+    const handleEditPhotoDialogConfirm = async (params) => {
+        // TODO
+    }
 
     const handleOpenDeletePhotoDialog = async (id) => {
         setPhotoToDelete(id)
@@ -122,6 +124,7 @@ export default function PhotoEditor({ galleryAPIService }) {
             />
             <EditCategoryPhotoDialog
                 galleryAPIService={galleryAPIService}
+                category={category}
                 photoToEdit={photoToEdit}
                 isOpened={editPhotoDialogIsOpened}
                 handleOK={handleEditPhotoDialogConfirm}
