@@ -117,19 +117,27 @@ export default function PhotoEditor({ galleryAPIService }) {
                     />
                 ))}
             </ImageList>
-            <CreateCategoryPhotoDialog
-                isOpened={createPhotoDialogIsOpened}
-                handleOK={handleCreatePhotoDialogConfirm}
-                handleClose={handleCreatePhotoDialogClose}
-            />
-            <EditCategoryPhotoDialog
-                galleryAPIService={galleryAPIService}
-                category={category}
-                photoToEdit={photoToEdit}
-                isOpened={editPhotoDialogIsOpened}
-                handleOK={handleEditPhotoDialogConfirm}
-                handleClose={handleEditPhotoDialogClose}
-            />
+            {
+                createPhotoDialogIsOpened
+                    ? <CreateCategoryPhotoDialog
+                        isOpened={createPhotoDialogIsOpened}
+                        handleOK={handleCreatePhotoDialogConfirm}
+                        handleClose={handleCreatePhotoDialogClose}
+                    />
+                    : <></>
+            }
+            {
+                editPhotoDialogIsOpened
+                    ? <EditCategoryPhotoDialog
+                        galleryAPIService={galleryAPIService}
+                        category={category}
+                        photoToEdit={photoToEdit}
+                        isOpened={editPhotoDialogIsOpened}
+                        handleOK={handleEditPhotoDialogConfirm}
+                        handleClose={handleEditPhotoDialogClose}
+                    />
+                    : <></>
+            }
             <AlertDialog
                 title="Alert!"
                 contentText="Delete this photo?"

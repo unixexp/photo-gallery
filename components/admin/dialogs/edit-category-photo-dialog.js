@@ -29,7 +29,7 @@ export default function EditCategoryPhotoDialog({
     useEffect(() => {
         if (photoId != null)
             load()
-    }, [photoId])
+    }, [])
 
     const load = async () => {
         galleryAPIService.findCategoryPhotoById(category.id, photoId).then(({response}) => {
