@@ -110,6 +110,8 @@ export default class MainGalleryAPIService extends GalleryAPIService {
 
     updateCategoryPhoto = async (params) => {
         const {
+            photoId,
+            linkId,
             name,
             description,
             originalUploadable,
@@ -122,6 +124,7 @@ export default class MainGalleryAPIService extends GalleryAPIService {
 
         const path = formatString(this.getRouteURL("categoriesPhotos"), {id: category.id})
         const body = new FormData()
+        body.append("linkId", linkId)
         body.append("name", name)
         body.append("description", description)
         body.append("order", order)

@@ -52,7 +52,7 @@ export default function PhotoElement({
     const handleEditPhoto = () => {
         handleMenuClose()
         if (menuParent != null) {
-            handleOpenEditPhotoDialog(menuParent.dataset.id)
+            handleOpenEditPhotoDialog(menuParent.dataset.id, menuParent.dataset.linkid)
         } else {
             handleOpenEditPhotoDialog(null)
         }
@@ -119,6 +119,7 @@ function PhotoElementActions({image, handleMenuOpen, handleCreatePhoto}){
                             color="warning"
                             data-order={image.order}
                             data-id={image.id}
+                            data-linkid={image.linkId}
                             onClick={handleMenuOpen}>
                         <MoreIcon />
                     </IconButton>

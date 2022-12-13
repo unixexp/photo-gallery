@@ -1,10 +1,7 @@
 Make API standard CRUD for add, edit and delete photo for category
-    - Edit
-        - Select this photo from 'category-photo'
-        - If photo order field was changed, select all photos from
-          this category and update order, if not - just update current photo information
-        - If photo image was changed - add new photo to 'photos' table,
-          change link record in 'category-photo' to new photo image
+
+    - Fix ordering when photo updating
+    - Update images before updated
 
     - Add exists from another category
         - Add link record on selected photo to 'category-photo' table (personal description, order)

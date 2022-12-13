@@ -16,7 +16,7 @@ export default function EditCategoryPhotoDialog({
         handleOK,
         handleClose,
         category,
-        photoToEdit: photoId,
+        photoId,
         galleryAPIService
     }) {
 

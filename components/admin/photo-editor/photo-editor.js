@@ -19,7 +19,8 @@ export default function PhotoEditor({ galleryAPIService }) {
     const [editPhotoDialogIsOpened, setEditPhotoDialogIsOpened] = useState(false)
     const [removePhotoAlertDialogIsOpened, setRemovePhotoAlertDialogIsOpened] = useState(false)
     const [photoToDelete, setPhotoToDelete] = useState(null)
-    const [photoToEdit, setPhotoToEdit] = useState(null)
+    const [photoId, setPhotoId] = useState(null)
+    const [linkId, setLinkId] = useState(null)
 
     useEffect(() => {
         if (category != null)
@@ -28,7 +29,7 @@ export default function PhotoEditor({ galleryAPIService }) {
 
     const update = () => {
         galleryAPIService.getCategoryPhotos(category).then(({response}) => {
-            const photosWithUploadDummy = [{id: null, url: null, descriptioorder: null, order: 0}, ...response]
+            const photosWithUploadDummy = [{id: null, url: null, description: null, order: 0}, ...response]
             setPhotos(photosWithUploadDummy)
         }).catch(() => {
             setPhotos([])
@@ -68,9 +69,10 @@ export default function PhotoEditor({ galleryAPIService }) {
         setCreatePhotoDialogIsOpened(false)
     }
 
-    const handleOpenEditPhotoDialog = (id) => {
-        if (id != null && category != null) {
-            setPhotoToEdit(id)
+    const handleOpenEditPhotoDialog = (id, linkId) => {
+        if (id != null && linkId != null && category != null) {
+            setPhotoId(id)
+            setLinkId(linkId)
             setEditPhotoDialogIsOpened(true)
         }
     }
@@ -92,7 +94,9 @@ export default function PhotoEditor({ galleryAPIService }) {
 
         if (originalUploadable != null && thumbnaillUploadable != null
                 && name.length && description.length && order) {
-            const response = await galleryAPIService.updateCategoryPhoto({...params, category})
+            const response = await galleryAPIService.updateCategoryPhoto({
+                ...params, category, linkId
+            })
             if (response.result == RESULT_OK) {
                 setEditPhotoDialogIsOpened(false)
                 update()
@@ -152,7 +156,7 @@ export default function PhotoEditor({ galleryAPIService }) {
                     ? <EditCategoryPhotoDialog
                         galleryAPIService={galleryAPIService}
                         category={category}
-                        photoToEdit={photoToEdit}
+                        photoId={photoId}
                         isOpened={editPhotoDialogIsOpened}
                         handleOK={handleEditPhotoDialogConfirm}
                         handleClose={handleEditPhotoDialogClose}

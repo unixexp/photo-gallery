@@ -46,6 +46,7 @@ export default async function CategoriesPhotos(req, res) {
 
             return {
                 id: convertUUIDBufferedToString(photo.id),
+                linkId: convertUUIDBufferedToString(entry.id),
                 url: "https://images.unsplash.com/photo-1549388604-817d15aa0110",
                 
                 name: photo.name,
@@ -81,19 +82,26 @@ export default async function CategoriesPhotos(req, res) {
         form.parse(req, async function(err, fields, files) {
 
             const { originalUploadable, thumbnailUploadable } = files
-            let uploaded = null
+            let originalUUID, thumbnailUUID = null
 
             try {
-                uploaded = uploadPhotoFilesToDisk(galleryAPIService, originalUploadable, thumbnailUploadable)
+                const { photosPath, photosThumbnailsPath } = galleryAPIService.PATHS
+
+                const photosPathAbs = makePath(photosPath, process.env.DATA_DIR)
+                const photosThumbnailsPathAbs = makePath(photosThumbnailsPath, process.env.DATA_DIR)
+
+                originalUUID = saveFile(originalUploadable, photosPathAbs)
+                thumbnailUUID = saveFile(thumbnailUploadable, photosThumbnailsPathAbs)
             } catch (e) {
                 return res.status(500).json(resultError(e.toString()))
             }
 
-            if (uploaded != null) {
+            if (originalUUID != null && thumbnailUUID != null) {
                 try {
                     await addPhotoToDB({
                         ...fields,
-                        ...uploaded,
+                        originalUUID,
+                        thumbnailUUID,
                         originalFileName: originalUploadable.originalFilename,
                         thumbnailFileName: thumbnailUploadable.originalFilename,
                         category
@@ -111,8 +119,10 @@ export default async function CategoriesPhotos(req, res) {
 
     } else if (req.method === "PUT") {
         const galleryAPIService = GalleryAPIServiceFactory.getInstance()
+        const { photosPath, photosThumbnailsPath } = galleryAPIService.PATHS
         const { id } = req.query
         let category = null
+        const statements = []
 
         // Check category exists
         try {
@@ -132,12 +142,85 @@ export default async function CategoriesPhotos(req, res) {
         const form = new formidable.IncomingForm()
         form.parse(req, async function(err, fields, files) {
             
+            const { linkId, name, description, order } = fields
             const { originalUploadable, thumbnailUploadable } = files
-            let uploaded = null
+            const content = {}
+            let photoLink
 
-            console.log(originalUploadable)
-            console.log(thumbnailUploadable)
+            // Get link data
+            try {
+                photoLink = await prisma.CategoryPhotoLink.findUnique({
+                    where: { id: convertUUIDStringToBuffered(linkId) }
+                })
+                
+                if (!photoLink) {
+                    return res.status(404).json(resultError("Photo not found"))
+                }
+            } catch (e) {
+                await prisma.$disconnect()
+                return res.status(500).json(resultError())
+            }
 
+            // Update basic photo fields
+            if (originalUploadable != null) {
+                let originalUUID
+                const photosPathAbs = makePath(photosPath, process.env.DATA_DIR)
+                try {
+                    originalUUID = saveFile(originalUploadable, photosPathAbs)
+                } catch (e) {
+                    return res.status(500).json(resultError(e.toString()))
+                }
+
+                content.originalFileName = originalUploadable.originalFilename
+                content.originalUUID = originalUUID
+            }
+
+            if (thumbnailUploadable != null) {
+                let thumbnailUUID
+                const photosThumbnailsPathAbs = makePath(photosThumbnailsPath, process.env.DATA_DIR)
+                try {
+                    thumbnailUUID = saveFile(thumbnailUploadable, photosThumbnailsPathAbs)
+                } catch (e) {
+                    return res.status(500).json(resultError(e.toString()))
+                }
+
+                content.thumbnailFileName = thumbnailUploadable.originalFilename
+                content.thumbnailUUID = thumbnailUUID
+            }
+
+            statements.push(prisma.Photo.update({
+                where: { id: photoLink.photoId },
+                data: { name, description, ...content }
+            }))
+
+            // Sorting photo links
+            const links = await prisma.CategoryPhotoLink.findMany({
+                where: {
+                    AND: [
+                        { categoryId: category.id },
+                        { id: { not: convertUUIDStringToBuffered(linkId) } }
+                    ]
+                }
+            })
+            const { currentLinkOrder, linksBefore, linksAfter } = getSortedPhotoLinksObject({ links, order })
+            for (let link of [...linksBefore, ...linksAfter]) {
+                statements.push(prisma.CategoryPhotoLink.update({
+                    where: { id: link.id },
+                    data: {...link}
+                }))
+            }
+
+            statements.push(prisma.CategoryPhotoLink.update({
+                where: { id: convertUUIDStringToBuffered(linkId) },
+                data: { order: currentLinkOrder }
+            }))
+
+            try {
+                await prisma.$transaction(statements)
+            } catch (e) {
+                return res.status(500).json(resultError(e.toString()))
+            }
+            
             return res.status(200).json(resultOK())
 
         })
@@ -145,18 +228,26 @@ export default async function CategoriesPhotos(req, res) {
 
 }
 
-const uploadPhotoFilesToDisk = (galleryAPIService, original, thumbnail) => {
+const getSortedPhotoLinksObject = ({ links, order }) => {
+    let currentOrder = 1
+    let linksSorted = [...links]
 
-    const { photosPath, photosThumbnailsPath } = galleryAPIService.PATHS
+    linksSorted.sort((a, b) => a.order - b.order)
 
-    const photosPathAbs = makePath(photosPath, process.env.DATA_DIR)
-    const photosThumbnailsPathAbs = makePath(photosThumbnailsPath, process.env.DATA_DIR)
+    const linksBefore = linksSorted.filter(item => item.order < order)
+    const linksAfter = linksSorted.filter(item => item.order >= order)
+    linksBefore.sort((a, b) => a.order - b.order)
+    linksAfter.sort((a, b) => a.order - b.order);
 
-    const originalUUID = saveFile(original, photosPathAbs)
-    const thumbnailUUID = saveFile(thumbnail, photosThumbnailsPathAbs)
+    linksBefore.map((item) => { item.order = currentOrder; currentOrder++; });
+    const currentLinkOrder = currentOrder;
+    linksAfter.map((item) => { currentOrder++; item.order = currentOrder; });
 
-    return { originalUUID, thumbnailUUID }
-
+    return {
+        currentLinkOrder: currentLinkOrder,
+        linksBefore: linksBefore,
+        linksAfter: linksAfter
+    }
 }
 
 const addPhotoToDB = async (params) => {
@@ -171,21 +262,6 @@ const addPhotoToDB = async (params) => {
         category,
         order
     } = params
-
-    let dbOrder = 1;
-    let links = []
-
-    links = await prisma.CategoryPhotoLink.findMany({ where: { categoryId: category.id } })
-    links.sort((a, b) => a.order - b.order)
-
-    const linksBefore = links.filter(item => item.order < order)
-    const linksAfter = links.filter(item => item.order >= order)
-    linksBefore.sort((a, b) => a.order - b.order)
-    linksAfter.sort((a, b) => a.order - b.order);
-
-    linksBefore.map((item) => { item.order = dbOrder; dbOrder++; });
-    const currentLinkOrder = dbOrder;
-    linksAfter.map((item) => { dbOrder++; item.order = dbOrder; });
 
     const photo = {
         data: {
@@ -202,7 +278,10 @@ const addPhotoToDB = async (params) => {
     const statements = []
     // Add photo to db
     statements.push(prisma.Photo.create(photo))
-    // Update order links before and after
+    // Sorting photo links
+    const links = await prisma.CategoryPhotoLink.findMany({ where: { categoryId: category.id } })
+    const sortObj = getSortedPhotoLinksObject({ links, order })
+    const { currentLinkOrder, linksBefore, linksAfter } = sortObj
     for (let link of [...linksBefore, ...linksAfter]) {
         statements.push(prisma.CategoryPhotoLink.update({
             where: { id: link.id },
