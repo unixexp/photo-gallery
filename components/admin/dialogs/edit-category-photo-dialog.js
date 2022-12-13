@@ -25,6 +25,8 @@ export default function EditCategoryPhotoDialog({
     const [order, setOrder] = useState(0)
     const [originalUploadable, setOriginalUploadable] = useState(null)
     const [thumbnaillUploadable, setThumbnailUploadable] = useState(null)
+    const [originalUploadableChanged, setOriginalUploadableChanged] = useState(false)
+    const [thumbnaillUploadableChanged, setThumbnaillUploadableChanged] = useState(false)
 
     useEffect(() => {
         if (photoId != null)
@@ -65,14 +67,20 @@ export default function EditCategoryPhotoDialog({
 
     const setOriginalUploadableHandler = (uploadableObject) => {
         setOriginalUploadable(uploadableObject)
+        setOriginalUploadableChanged(true)
     }
 
     const setThumbnailUploadableHandler = (uploadableObject) => {
         setThumbnailUploadable(uploadableObject)
+        setThumbnaillUploadableChanged(true)
     }
 
     const handleOnChangeName = (e) => {
         setName(e.target.value)
+    }
+
+    const handleOnChangeOrder = (e) => {
+        setOrder(e.target.value)
     }
 
     const handleOnChangeDescription = (e) => {
@@ -85,7 +93,15 @@ export default function EditCategoryPhotoDialog({
             onClose()
         } else {
             try {
-                await handleOK({name, description, order, originalUploadable, thumbnaillUploadable})
+                await handleOK({
+                    name,
+                    description,
+                    order,
+                    originalUploadable,
+                    thumbnaillUploadable,
+                    originalUploadableChanged,
+                    thumbnaillUploadableChanged
+                })
                 onClose()
             } catch(e) {
                 alert(e)
@@ -103,6 +119,8 @@ export default function EditCategoryPhotoDialog({
         setDescription("")
         setOriginalUploadable(null)
         setThumbnailUploadable(null)
+        setOriginalUploadableChanged(false)
+        setThumbnaillUploadableChanged(false)
     }
 
     return (
@@ -133,6 +151,16 @@ export default function EditCategoryPhotoDialog({
                         variant="standard"
                         value={name}
                         onChange={handleOnChangeName}
+                    />
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        label="Order"
+                        type="number"
+                        fullWidth
+                        variant="standard"
+                        value={order}
+                        onChange={handleOnChangeOrder}
                     />
                     <TextField
                         minRows={4}

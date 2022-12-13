@@ -108,6 +108,40 @@ export default class MainGalleryAPIService extends GalleryAPIService {
         return await response.json()  
     }
 
+    updateCategoryPhoto = async (params) => {
+        const {
+            name,
+            description,
+            originalUploadable,
+            thumbnaillUploadable,
+            category,
+            order,
+            originalUploadableChanged,
+            thumbnaillUploadableChanged
+        } = params
+
+        const path = formatString(this.getRouteURL("categoriesPhotos"), {id: category.id})
+        const body = new FormData()
+        body.append("name", name)
+        body.append("description", description)
+        body.append("order", order)
+
+        if (originalUploadableChanged) {
+            body.append("originalUploadable", originalUploadable)
+        } else {
+            body.append("originalUploadable", null)
+        }
+        
+        if (thumbnaillUploadableChanged) {
+            body.append("thumbnailUploadable", thumbnaillUploadable)
+        } else {
+            body.append("thumbnailUploadable", null)
+        }
+
+        const response = await fetch(path, { method: "PUT", body })
+        return await response.json()  
+    }
+
     findCategoryPhotoById = async (categoryId, photoId) => {
         const path = formatString(
             this.getRouteURL("categoriesPhotosFindById"),

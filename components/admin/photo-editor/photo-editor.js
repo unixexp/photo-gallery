@@ -80,7 +80,28 @@ export default function PhotoEditor({ galleryAPIService }) {
     }
     
     const handleEditPhotoDialogConfirm = async (params) => {
-        // TODO
+        const {
+            name,
+            description,
+            order,
+            originalUploadable,
+            thumbnaillUploadable,
+            originalUploadableChanged,
+            thumbnaillUploadableChanged
+        } = params
+
+        if (originalUploadable != null && thumbnaillUploadable != null
+                && name.length && description.length && order) {
+            const response = await galleryAPIService.updateCategoryPhoto({...params, category})
+            if (response.result == RESULT_OK) {
+                setEditPhotoDialogIsOpened(false)
+                update()
+            } else {
+                throw new Error(response.error)
+            }
+        } else {
+            throw new Error("Not enough params to fill.")
+        }
     }
 
     const handleOpenDeletePhotoDialog = async (id) => {

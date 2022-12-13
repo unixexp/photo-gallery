@@ -82,7 +82,6 @@ export default async function CategoriesPhotos(req, res) {
 
             const { originalUploadable, thumbnailUploadable } = files
             let uploaded = null
-            let added = null
 
             try {
                 uploaded = uploadPhotoFilesToDisk(galleryAPIService, originalUploadable, thumbnailUploadable)
@@ -110,6 +109,38 @@ export default async function CategoriesPhotos(req, res) {
             return res.status(200).json(resultOK())
         })
 
+    } else if (req.method === "PUT") {
+        const galleryAPIService = GalleryAPIServiceFactory.getInstance()
+        const { id } = req.query
+        let category = null
+
+        // Check category exists
+        try {
+            category = await prisma.Category.findUnique({
+                where: { id: convertUUIDStringToBuffered(id) }
+            })
+            
+            if (!category) {
+                return res.status(404).json(resultError("Category not found"))
+            }
+        } catch (e) {
+            await prisma.$disconnect()
+            return res.status(500).json(resultError())
+        }
+
+        // Parsing form data
+        const form = new formidable.IncomingForm()
+        form.parse(req, async function(err, fields, files) {
+            
+            const { originalUploadable, thumbnailUploadable } = files
+            let uploaded = null
+
+            console.log(originalUploadable)
+            console.log(thumbnailUploadable)
+
+            return res.status(200).json(resultOK())
+
+        })
     }
 
 }
