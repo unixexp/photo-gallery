@@ -48,7 +48,7 @@ export default async function CategoriesPhotos(req, res) {
                 id: convertUUIDBufferedToString(photo.id),
                 linkId: convertUUIDBufferedToString(entry.id),
                 url: "https://images.unsplash.com/photo-1549388604-817d15aa0110",
-                
+                updatedAt: entry.updatedAt != null ? new Date(entry.updatedAt) : entry.updatedAt,
                 name: photo.name,
                 description: photo.description,
                 order: entry.order
