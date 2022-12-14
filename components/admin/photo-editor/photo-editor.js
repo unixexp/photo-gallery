@@ -137,7 +137,7 @@ export default function PhotoEditor({ galleryAPIService }) {
                 {photos.map((item) => (
                     <PhotoElement
                         galleryAPIService={galleryAPIService}
-                        key={item.updatedAt}
+                        key={`${item.id}_${item.updatedAt}`}
                         image={item}
                         handleOpenCreatePhotoDialog={handleOpenCreatePhotoDialog}
                         handleOpenEditPhotoDialog={handleOpenEditPhotoDialog}
