@@ -87,10 +87,17 @@ export default async function Categories(req, res) {
         }
 
         try {
+            await prisma.CategoryPhotoLink.deleteMany({ where: { categoryId: convertUUIDStringToBuffered(id) } })
+        } catch (e) {
+            console.log(e)
+            return res.status(500).json(resultError("Cannot delete photos from category"))
+        }
+
+        try {
             const result = await prisma.Category.delete({ where: { id: convertUUIDStringToBuffered(id) } })
         } catch (e) {
             console.log(e)
-            return res.status(500).json(resultError())
+            return res.status(500).json(resultError("Cannot delete category"))
         }
 
         const galleryAPIService = GalleryAPIServiceFactory.getInstance()

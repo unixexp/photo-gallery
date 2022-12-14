@@ -161,6 +161,10 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
             const _index = categories.findIndex(cat => cat.id === id)
             if (_index != -1) {
                 dispatch(setCategory(categories[_index]))
+            } else if (categories.length) {
+                dispatch(setCategory(categories[0]))
+            } else {
+                dispatch(setCategory(null))
             }
         } else {
             if (id != 0) {
@@ -188,7 +192,7 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
         if (category != null) {
             galleryAPIService.removeCategory(category.id).then(() => {
                 setRemoveCategoryAlertDialogIsOpened(false)
-                handleCategoryChange()
+                setUpdatedCategoryId(category.id)
                 update()
             })
         }

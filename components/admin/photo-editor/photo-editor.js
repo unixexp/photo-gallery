@@ -23,17 +23,20 @@ export default function PhotoEditor({ galleryAPIService }) {
     const [linkId, setLinkId] = useState(null)
 
     useEffect(() => {
-        if (category != null)
-            update()
+        update()
     }, [category])
 
     const update = () => {
-        galleryAPIService.getCategoryPhotos(category).then(({response}) => {
-            const photosWithUploadDummy = [{id: null, url: null, description: null, order: 0}, ...response]
-            setPhotos(photosWithUploadDummy)
-        }).catch(() => {
+        if (category != null) {
+            galleryAPIService.getCategoryPhotos(category).then(({response}) => {
+                const photosWithUploadDummy = [{id: null, url: null, description: null, order: 0}, ...response]
+                setPhotos(photosWithUploadDummy)
+            }).catch(() => {
+                setPhotos([])
+            })
+        } else {
             setPhotos([])
-        })
+        }
     }
 
     const handleOpenCreatePhotoDialog = (order) => {
