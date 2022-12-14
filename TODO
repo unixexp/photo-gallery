@@ -1,6 +1,4 @@
 Make API standard CRUD for add, edit and delete photo for category
 
-    - Fix ordering when photo updating
-
     - Add exists from another category
         - Add link record on selected photo to 'category-photo' table (personal description, order)
