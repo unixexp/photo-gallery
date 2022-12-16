@@ -86,7 +86,7 @@ export default function PhotoElement({
                             handleMenuOpen={handleMenuOpen}
                             handleCreatePhoto={handleCreatePhoto}
                         />
-                    : <></>
+                    : null
             }
             <img
                 src={imgURL}

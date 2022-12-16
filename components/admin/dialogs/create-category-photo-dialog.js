@@ -63,6 +63,10 @@ export default function CreateCategoryPhotoDialog({
         setDescription(e.target.value)
     }
 
+    const handleSetPhoto = (photo) => {
+        console.log(photo)
+    }
+
     const onOk = async () => {
         if (!name.length && !description.length
                 && originalUploadable == null && thumbnaillUploadable == null) {
@@ -94,9 +98,11 @@ export default function CreateCategoryPhotoDialog({
             <Dialog
                 open={isOpened}
                 onClose={handleClose}
+                fullWidth={true}
+                maxWidth={"lg"}
             >
-                <DialogContent sx={{display: "flex"}}>
-                    <Box>
+                <DialogContent sx={{display: "flex", justifyContent: "space-between"}}>
+                    <Box sx={{width: "100%"}}>
                         <Typography>Original</Typography>
                         <UploadableCard
                             caption="Upload original image"
@@ -134,15 +140,24 @@ export default function CreateCategoryPhotoDialog({
                             <Button onClick={onClose}>Cancel</Button>
                         </DialogActions>
                     </Box>
-                    <Box sx={{width: "150px", height: "400px", overflowY: "scroll", paddingLeft: "8px", paddingRight: "8px"}}>
-                        <ImageList cols={1} gap={8}>
+                    <Box
+                        sx={{
+                            maxWidth: "600px",
+                            height: "400px",
+                            overflowY: "scroll",
+                            paddingLeft: "8px",
+                            paddingRight: "8px"
+                        }}>
+                        <ImageList cols={3}>
                             {photos.map((item) => (
-                                <PhotoElement
-                                    galleryAPIService={galleryAPIService}
-                                    key={`${item.id}_${item.updatedAt}`}
-                                    image={item}
-                                    toolbar={false}
-                                />
+                                <div onClick={() => handleSetPhoto(item)}>
+                                    <PhotoElement
+                                        galleryAPIService={galleryAPIService}
+                                        key={`${item.id}_${item.updatedAt}`}
+                                        image={item}
+                                        toolbar={false}
+                                    />
+                                </div>
                             ))}
                         </ImageList>
                     </Box>
