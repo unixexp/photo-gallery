@@ -41,17 +41,18 @@ export default async function CategoriesPhotos(req, res) {
             return
         }
 
-        const data = result.map((entry) => {
-            const photo = entry.Photo
+        const data = result.map((link) => {
+            const photo = link.Photo
 
             return {
                 id: convertUUIDBufferedToString(photo.id),
-                linkId: convertUUIDBufferedToString(entry.id),
+                linkId: convertUUIDBufferedToString(link.id),
                 url: "https://images.unsplash.com/photo-1549388604-817d15aa0110",
-                updatedAt: entry.updatedAt != null ? new Date(entry.updatedAt) : entry.updatedAt,
+                linkUpdatedAt: link.updatedAt != null ? new Date(link.updatedAt) : link.updatedAt,
+                photoUpdatedAt: photo.updatedAt != null ? new Date(photo.updatedAt) : photo.updatedAt,
                 name: photo.name,
                 description: photo.description,
-                order: entry.order
+                order: link.order
             }
         })
         
