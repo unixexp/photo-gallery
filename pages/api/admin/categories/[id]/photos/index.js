@@ -98,7 +98,7 @@ export default async function CategoriesPhotos(req, res) {
 
             if (originalUUID != null && thumbnailUUID != null) {
                 try {
-                    await addPhotoToDB({
+                    await add({
                         ...fields,
                         originalUUID,
                         thumbnailUUID,
@@ -194,26 +194,22 @@ export default async function CategoriesPhotos(req, res) {
             }))
 
             // Sorting photo links
-            const links = await prisma.CategoryPhotoLink.findMany({
-                where: {
-                    AND: [
-                        { categoryId: category.id },
-                        { id: { not: convertUUIDStringToBuffered(linkId) } }
-                    ]
-                }
-            })
-            const { currentLinkOrder, linksBefore, linksAfter } = getSortedPhotoLinksObject({ links, order })
-            for (let link of [...linksBefore, ...linksAfter]) {
+            const links = await prisma.CategoryPhotoLink.findMany({ where: { categoryId: category.id } })
+            const linksOrdered = move(
+                linkId,
+                order,
+                links.map(link => {
+                    link.id = convertUUIDBufferedToString(link.id)
+                    return link
+                }))
+
+            for (let link of linksOrdered) {
+                link.id = convertUUIDStringToBuffered(link.id)
                 statements.push(prisma.CategoryPhotoLink.update({
                     where: { id: link.id },
                     data: {...link}
                 }))
             }
-
-            statements.push(prisma.CategoryPhotoLink.update({
-                where: { id: convertUUIDStringToBuffered(linkId) },
-                data: { order: currentLinkOrder }
-            }))
 
             try {
                 await prisma.$transaction(statements)
@@ -228,31 +224,9 @@ export default async function CategoriesPhotos(req, res) {
 
 }
 
-const getSortedPhotoLinksObject = ({ links, order }) => {
-    let currentOrder = 1
-    let linksSorted = [...links]
+const add = async (params) => {
 
-    linksSorted.sort((a, b) => a.order - b.order)
-
-    const linksBefore = linksSorted.filter(item => item.order < order)
-    const linksAfter = linksSorted.filter(item => item.order >= order)
-    linksBefore.sort((a, b) => a.order - b.order)
-    linksAfter.sort((a, b) => a.order - b.order);
-
-    linksBefore.map((item) => { item.order = currentOrder; currentOrder++; });
-    const currentLinkOrder = currentOrder;
-    linksAfter.map((item) => { currentOrder++; item.order = currentOrder; });
-
-    return {
-        currentLinkOrder: currentLinkOrder,
-        linksBefore: linksBefore,
-        linksAfter: linksAfter
-    }
-}
-
-const addPhotoToDB = async (params) => {
-
-    const {
+    let {
         name,
         description,
         originalFileName,
@@ -262,6 +236,11 @@ const addPhotoToDB = async (params) => {
         category,
         order
     } = params
+
+    order = parseInt(order)
+
+    if (order < 1)
+        order = 1
 
     const photo = {
         data: {
@@ -280,19 +259,25 @@ const addPhotoToDB = async (params) => {
     statements.push(prisma.Photo.create(photo))
     // Sorting photo links
     const links = await prisma.CategoryPhotoLink.findMany({ where: { categoryId: category.id } })
-    const sortObj = getSortedPhotoLinksObject({ links, order })
-    const { currentLinkOrder, linksBefore, linksAfter } = sortObj
-    for (let link of [...linksBefore, ...linksAfter]) {
+    
+    let n = 1
+    for (let link of links.sort((a, b) => a.order - b.order)) {
+        if (n == order)
+            n++
+        link.order = n
+        n++
+        
         statements.push(prisma.CategoryPhotoLink.update({
             where: { id: link.id },
             data: {...link}
         }))
     }
+
     // Add new link to photo
     statements.push(prisma.CategoryPhotoLink.create({
         data: {
             id: makeUUIDBuffered(),
-            order: currentLinkOrder,
+            order: order > n ? n : order,
             Category: { connect: { id: category.id } },
             Photo: { connect: { id: photo.data.id }}
         }
@@ -301,3 +286,31 @@ const addPhotoToDB = async (params) => {
     return await prisma.$transaction(statements)
 
 }
+
+const move = (id, order, links) => {
+
+    order = parseInt(order)
+
+    if (order < 1)
+        order = 1
+
+    let n = 1
+    const linksWithoutCurrent = (links.filter(item => item.id != id).sort((a, b) => a.order - b.order))
+    const linksOrdered = []
+    for (let link of linksWithoutCurrent) {
+        if (n == order)
+            n++
+        link.order = n
+        n++
+        linksOrdered.push(link)
+    }
+
+    const currentLink = (links.filter(item => item.id == id))[0]
+    currentLink.order = order > n ? n : order
+    linksOrdered.push(currentLink)
+    linksOrdered.sort((a, b) => a.order - b.order)
+
+    return linksOrdered
+
+}
+
