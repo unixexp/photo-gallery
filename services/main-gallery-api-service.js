@@ -15,6 +15,7 @@ export default class MainGalleryAPIService extends GalleryAPIService {
             categoriesPhotosThumbnail: "/api/admin/categories/<id>/photos/<id>/thumbnail",
             categoriesPhotosMain: "/api/admin/categories/<id>/photos/main",
 
+            photos: "/api/admin/photos",
             photosOriginal: "/api/admin/photos/<id>/original",
             photosThumbnail: "/api/admin/photos/<id>/thumbnail",
         }
@@ -175,6 +176,12 @@ export default class MainGalleryAPIService extends GalleryAPIService {
         } else {
             throw new Error(response.status)
         }
+    }
+
+    getPhotos = async () => {
+        const path = this.getRouteURL("photos")
+        const response = await fetch(path, { method: "GET" })
+        return await response.json()
     }
 
     getPhoto = async (id) => {

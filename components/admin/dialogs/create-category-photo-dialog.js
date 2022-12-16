@@ -6,12 +6,16 @@ import {
     DialogActions,
     TextField,
     Button,
-    Typography
+    Typography,
+    Box,
+    ImageList
 } from "@mui/material"
 
+import PhotoElement from "../photo-editor/photo-element/photo-element"
 import UploadableCard from "../toolbar/uploadable-card"
 
 export default function CreateCategoryPhotoDialog({
+        galleryAPIService,
         isOpened,
         handleOK,
         handleClose
@@ -21,6 +25,20 @@ export default function CreateCategoryPhotoDialog({
     const [description, setDescription] = useState('')
     const [originalUploadable, setOriginalUploadable] = useState(null)
     const [thumbnaillUploadable, setThumbnailUploadable] = useState(null)
+    const [photos, setPhotos] = useState([])
+
+    useEffect(() => {
+        load()
+    }, [])
+
+    const load = async () => {
+        galleryAPIService.getPhotos().then(({response}) => {
+            setPhotos(response)
+        }).catch(() => {
+            alert("Error load photos.")
+            onClose()
+        })
+    }
 
     const getUploadableURL = (uploadable) => {
         if (uploadable != null)
@@ -77,43 +95,57 @@ export default function CreateCategoryPhotoDialog({
                 open={isOpened}
                 onClose={handleClose}
             >
-                <DialogContent >
-                    <Typography>Original</Typography>
-                    <UploadableCard
-                        caption="Upload original image"
-                        currentImage={getUploadableURL(originalUploadable)}
-                        setUploadableHandler={setOriginalUploadableHandler}
-                        size="150"/>
-                    <Typography>Thumbnail</Typography>
-                    <UploadableCard
-                        caption="Upload thumbnail"
-                        currentImage={getUploadableURL(thumbnaillUploadable)}
-                        setUploadableHandler={setThumbnailUploadableHandler}
-                        size="150"/>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        label="Name"
-                        type="text"
-                        fullWidth
-                        variant="standard"
-                        value={name}
-                        onChange={handleOnChangeName}
-                    />
-                    <TextField
-                        minRows={4}
-                        maxRows={4}
-                        variant="outlined"
-                        multiline
-                        label="Description"
-                        value={description}
-                        fullWidth
-                        onChange={handleOnChangeDescription}
-                    />
-                    <DialogActions>
-                        <Button onClick={onOk}>Ok</Button>
-                        <Button onClick={onClose}>Cancel</Button>
-                    </DialogActions>
+                <DialogContent sx={{display: "flex"}}>
+                    <Box>
+                        <Typography>Original</Typography>
+                        <UploadableCard
+                            caption="Upload original image"
+                            currentImage={getUploadableURL(originalUploadable)}
+                            setUploadableHandler={setOriginalUploadableHandler}
+                            size="150"/>
+                        <Typography>Thumbnail</Typography>
+                        <UploadableCard
+                            caption="Upload thumbnail"
+                            currentImage={getUploadableURL(thumbnaillUploadable)}
+                            setUploadableHandler={setThumbnailUploadableHandler}
+                            size="150"/>
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            label="Name"
+                            type="text"
+                            fullWidth
+                            variant="standard"
+                            value={name}
+                            onChange={handleOnChangeName}
+                        />
+                        <TextField
+                            minRows={4}
+                            maxRows={4}
+                            variant="outlined"
+                            multiline
+                            label="Description"
+                            value={description}
+                            fullWidth
+                            onChange={handleOnChangeDescription}
+                        />
+                        <DialogActions>
+                            <Button onClick={onOk}>Ok</Button>
+                            <Button onClick={onClose}>Cancel</Button>
+                        </DialogActions>
+                    </Box>
+                    <Box sx={{width: "150px", height: "400px", overflowY: "scroll", paddingLeft: "8px", paddingRight: "8px"}}>
+                        <ImageList cols={1} gap={8}>
+                            {photos.map((item) => (
+                                <PhotoElement
+                                    galleryAPIService={galleryAPIService}
+                                    key={`${item.id}_${item.updatedAt}`}
+                                    image={item}
+                                    toolbar={false}
+                                />
+                            ))}
+                        </ImageList>
+                    </Box>
                 </DialogContent>
             </Dialog>
         </div>

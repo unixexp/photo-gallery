@@ -1,19 +1,15 @@
 import { prisma } from "~/lib/db"
-import path from "path"
 import {
     resultOK,
     resultError,
     makePath,
-    formatString,
     saveFile,
-    loadFile,
     convertUUIDStringToBuffered,
     convertUUIDBufferedToString,
     makeUUIDBuffered
 } from "~/lib/util"
 import { GalleryAPIServiceFactory } from "~/services/gallery-api-service-factory";
 
-import fs, { link } from "fs"
 import formidable from "formidable"
 
 export const config = {
@@ -47,7 +43,6 @@ export default async function CategoriesPhotos(req, res) {
             return {
                 id: convertUUIDBufferedToString(photo.id),
                 linkId: convertUUIDBufferedToString(link.id),
-                url: "https://images.unsplash.com/photo-1549388604-817d15aa0110",
                 linkUpdatedAt: link.updatedAt != null ? new Date(link.updatedAt) : link.updatedAt,
                 photoUpdatedAt: photo.updatedAt != null ? new Date(photo.updatedAt) : photo.updatedAt,
                 name: photo.name,

@@ -148,6 +148,7 @@ export default function PhotoEditor({ galleryAPIService }) {
             {
                 createPhotoDialogIsOpened
                     ? <CreateCategoryPhotoDialog
+                        galleryAPIService={galleryAPIService}
                         isOpened={createPhotoDialogIsOpened}
                         handleOK={handleCreatePhotoDialogConfirm}
                         handleClose={handleCreatePhotoDialogClose}

@@ -8,7 +8,8 @@ export default function PhotoElement({
         image,
         handleOpenCreatePhotoDialog,
         handleOpenEditPhotoDialog,
-        handleOpenDeletePhotoDialog
+        handleOpenDeletePhotoDialog,
+        toolbar=true
     }) {
 
     const [isHovering, setIsHovering] = useState(false)
@@ -78,11 +79,15 @@ export default function PhotoElement({
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
         >
-            <PhotoElementActions
-                image={image}
-                handleMenuOpen={handleMenuOpen}
-                handleCreatePhoto={handleCreatePhoto}
-            />
+            {
+                toolbar
+                    ? <PhotoElementActions
+                            image={image}
+                            handleMenuOpen={handleMenuOpen}
+                            handleCreatePhoto={handleCreatePhoto}
+                        />
+                    : <></>
+            }
             <img
                 src={imgURL}
                 srcSet={imgURL}
