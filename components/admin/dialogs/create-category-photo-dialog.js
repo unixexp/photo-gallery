@@ -41,10 +41,10 @@ export default function CreateCategoryPhotoDialog({
     }
 
     const getUploadableURL = (uploadable) => {
-        if (uploadable != null)
+        if (uploadable != null && typeof(uploadable) != 'string')
             return URL.createObjectURL(uploadable)
         else
-            null
+            return uploadable
     }
 
     const setOriginalUploadableHandler = (uploadableObject) => {
@@ -64,7 +64,19 @@ export default function CreateCategoryPhotoDialog({
     }
 
     const handleSetPhoto = (photo) => {
-        console.log(photo)
+        galleryAPIService.getPhoto(photo.id).then((data) => {
+            setOriginalUploadable(data)
+
+            galleryAPIService.getPhotoThumbnail(photo.id).then((data) => {
+                setThumbnailUploadable(data)
+            }).catch(() => {
+                alert("Error load thumbnail.")
+                onClose()
+            })
+        }).catch(() => {
+            alert("Error load main photo.")
+            onClose()
+        })
     }
 
     const onOk = async () => {
