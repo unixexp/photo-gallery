@@ -26,6 +26,7 @@ export default function CreateCategoryPhotoDialog({
     const [originalUploadable, setOriginalUploadable] = useState(null)
     const [thumbnaillUploadable, setThumbnailUploadable] = useState(null)
     const [photos, setPhotos] = useState([])
+    const [loadedFromExists, setLoadedFromExists] = useState(false)
 
     useEffect(() => {
         load()
@@ -49,10 +50,16 @@ export default function CreateCategoryPhotoDialog({
 
     const setOriginalUploadableHandler = (uploadableObject) => {
         setOriginalUploadable(uploadableObject)
+        if (loadedFromExists)
+            setThumbnailUploadable(null)
+        setLoadedFromExists(false)
     }
 
     const setThumbnailUploadableHandler = (uploadableObject) => {
         setThumbnailUploadable(uploadableObject)
+        if (loadedFromExists)
+            setOriginalUploadable(null)
+        setLoadedFromExists(false)
     }
 
     const handleOnChangeName = (e) => {
@@ -63,12 +70,16 @@ export default function CreateCategoryPhotoDialog({
         setDescription(e.target.value)
     }
 
-    const handleSetPhoto = (photo) => {
+    const handleSetPhotoFromExists = (photo) => {
+        setName(photo.name)
+        setDescription(photo.description)
+
         galleryAPIService.getPhoto(photo.id).then((data) => {
             setOriginalUploadable(data)
 
             galleryAPIService.getPhotoThumbnail(photo.id).then((data) => {
                 setThumbnailUploadable(data)
+                setLoadedFromExists(true)
             }).catch(() => {
                 alert("Error load thumbnail.")
                 onClose()
@@ -162,7 +173,7 @@ export default function CreateCategoryPhotoDialog({
                         }}>
                         <ImageList cols={3}>
                             {photos.map((item) => (
-                                <div onClick={() => handleSetPhoto(item)}>
+                                <div onClick={() => handleSetPhotoFromExists(item)}>
                                     <PhotoElement
                                         galleryAPIService={galleryAPIService}
                                         key={`${item.id}_${item.updatedAt}`}

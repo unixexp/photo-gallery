@@ -24,7 +24,8 @@ export default async function Photos(req, res) {
             return {
                 id: convertUUIDBufferedToString(photo.id),
                 photoUpdatedAt: photo.updatedAt != null ? new Date(photo.updatedAt) : photo.updatedAt,
-                name: photo.name
+                name: photo.name,
+                description: photo.description
             }
         })
         
