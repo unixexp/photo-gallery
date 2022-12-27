@@ -77,41 +77,52 @@ export default async function CategoriesPhotos(req, res) {
         const form = new formidable.IncomingForm()
         form.parse(req, async function(err, fields, files) {
 
-            const { loadedFromExists } = fields
+            const { order, loadedFromExists: photoId } = fields
             const { originalUploadable, thumbnailUploadable } = files
             let originalUUID, thumbnailUUID = null
 
-            try {
-                const { photosPath, photosThumbnailsPath } = galleryAPIService.PATHS
-
-                const photosPathAbs = makePath(photosPath, process.env.DATA_DIR)
-                const photosThumbnailsPathAbs = makePath(photosThumbnailsPath, process.env.DATA_DIR)
-
-                originalUUID = saveFile(originalUploadable, photosPathAbs)
-                thumbnailUUID = saveFile(thumbnailUploadable, photosThumbnailsPathAbs)
-            } catch (e) {
-                return res.status(500).json(resultError(e.toString()))
-            }
-
-            if (originalUUID != null && thumbnailUUID != null) {
+            if (photoId == null) {
                 try {
-                    await add({
-                        ...fields,
-                        originalUUID,
-                        thumbnailUUID,
-                        originalFileName: originalUploadable.originalFilename,
-                        thumbnailFileName: thumbnailUploadable.originalFilename,
-                        category
-                    })
+                    const { photosPath, photosThumbnailsPath } = galleryAPIService.PATHS
+    
+                    const photosPathAbs = makePath(photosPath, process.env.DATA_DIR)
+                    const photosThumbnailsPathAbs = makePath(photosThumbnailsPath, process.env.DATA_DIR)
+    
+                    originalUUID = saveFile(originalUploadable, photosPathAbs)
+                    thumbnailUUID = saveFile(thumbnailUploadable, photosThumbnailsPathAbs)
                 } catch (e) {
                     return res.status(500).json(resultError(e.toString()))
                 }
-            } else {
-                console.log(uploaded)
-                return res.status(500).json(resultError("Cannot upload files."))
-            }
+    
+                if (originalUUID != null && thumbnailUUID != null) {
+                    try {
+                        await add({
+                            ...fields,
+                            originalUUID,
+                            thumbnailUUID,
+                            originalFileName: originalUploadable.originalFilename,
+                            thumbnailFileName: thumbnailUploadable.originalFilename,
+                            category
+                        })
+                    } catch (e) {
+                        return res.status(500).json(resultError(e.toString()))
+                    }
 
-            return res.status(200).json(resultOK())
+                    return res.status(200).json(resultOK())
+                } else {
+                    console.log(uploaded)
+                    return res.status(500).json(resultError("Cannot upload files."))
+                }
+            } else {
+                try {
+                    await addFromExists({category, order, photoId})
+                } catch (e) {
+                    console.log(e)
+                    return res.status(500).json(resultError(e.toString()))
+                }
+
+                return res.status(200).json(resultOK())
+            }
         })
 
     } else if (req.method === "PUT") {
@@ -277,6 +288,45 @@ const add = async (params) => {
             order: order > n ? n : order,
             Category: { connect: { id: category.id } },
             Photo: { connect: { id: photo.data.id }}
+        }
+    }))
+
+    return await prisma.$transaction(statements)
+
+}
+
+const addFromExists = async (params) => {
+
+    let { category, order, photoId } = params
+
+    order = parseInt(order)
+
+    if (order < 1)
+        order = 1
+
+    const statements = []
+    const links = await prisma.CategoryPhotoLink.findMany({ where: { categoryId: category.id } })
+    
+    let n = 1
+    for (let link of links.sort((a, b) => a.order - b.order)) {
+        if (n == order)
+            n++
+        link.order = n
+        n++
+        
+        statements.push(prisma.CategoryPhotoLink.update({
+            where: { id: link.id },
+            data: {...link}
+        }))
+    }
+
+    // Add new link to photo
+    statements.push(prisma.CategoryPhotoLink.create({
+        data: {
+            id: makeUUIDBuffered(),
+            order: order > n ? n : order,
+            Category: { connect: { id: category.id } },
+            Photo: { connect: { id: convertUUIDStringToBuffered(photoId) }}
         }
     }))
 
