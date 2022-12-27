@@ -26,7 +26,7 @@ export default function CreateCategoryPhotoDialog({
     const [originalUploadable, setOriginalUploadable] = useState(null)
     const [thumbnaillUploadable, setThumbnailUploadable] = useState(null)
     const [photos, setPhotos] = useState([])
-    const [loadedFromExists, setLoadedFromExists] = useState(false)
+    const [loadedFromExists, setLoadedFromExists] = useState(null)
 
     useEffect(() => {
         load()
@@ -42,24 +42,25 @@ export default function CreateCategoryPhotoDialog({
     }
 
     const getUploadableURL = (uploadable) => {
-        if (uploadable != null && typeof(uploadable) != 'string')
+        if (uploadable != null && typeof(uploadable) != 'string') {
             return URL.createObjectURL(uploadable)
-        else
+        } else {
             return uploadable
+        }
     }
 
     const setOriginalUploadableHandler = (uploadableObject) => {
         setOriginalUploadable(uploadableObject)
         if (loadedFromExists)
             setThumbnailUploadable(null)
-        setLoadedFromExists(false)
+        setLoadedFromExists(null)
     }
 
     const setThumbnailUploadableHandler = (uploadableObject) => {
         setThumbnailUploadable(uploadableObject)
         if (loadedFromExists)
             setOriginalUploadable(null)
-        setLoadedFromExists(false)
+        setLoadedFromExists(null)
     }
 
     const handleOnChangeName = (e) => {
@@ -79,7 +80,7 @@ export default function CreateCategoryPhotoDialog({
 
             galleryAPIService.getPhotoThumbnail(photo.id).then((data) => {
                 setThumbnailUploadable(data)
-                setLoadedFromExists(true)
+                setLoadedFromExists(photo.id)
             }).catch(() => {
                 alert("Error load thumbnail.")
                 onClose()
@@ -96,7 +97,7 @@ export default function CreateCategoryPhotoDialog({
             onClose()
         } else {
             try {
-                await handleOK({name, description, originalUploadable, thumbnaillUploadable})
+                await handleOK({name, description, originalUploadable, thumbnaillUploadable, loadedFromExists})
                 clean()
             } catch(e) {
                 alert(e)

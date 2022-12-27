@@ -77,6 +77,7 @@ export default async function CategoriesPhotos(req, res) {
         const form = new formidable.IncomingForm()
         form.parse(req, async function(err, fields, files) {
 
+            const { loadedFromExists } = fields
             const { originalUploadable, thumbnailUploadable } = files
             let originalUUID, thumbnailUUID = null
 

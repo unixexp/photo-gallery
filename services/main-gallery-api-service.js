@@ -95,7 +95,8 @@ export default class MainGalleryAPIService extends GalleryAPIService {
             originalUploadable,
             thumbnaillUploadable,
             category,
-            order
+            order,
+            loadedFromExists
         } = params
 
         const path = formatString(this.getRouteURL("categoriesPhotos"), {id: category.id})
@@ -105,6 +106,7 @@ export default class MainGalleryAPIService extends GalleryAPIService {
         body.append("order", order)
         body.append("originalUploadable", originalUploadable)
         body.append("thumbnailUploadable", thumbnaillUploadable)
+        body.append("loadedFromExists", loadedFromExists)
         const response = await fetch(path, { method: "POST", body })
         return await response.json()  
     }

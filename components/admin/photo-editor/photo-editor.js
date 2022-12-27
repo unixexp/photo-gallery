@@ -56,7 +56,6 @@ export default function PhotoEditor({ galleryAPIService }) {
         } = params
 
         if (originalUploadable != null && thumbnaillUploadable != null && name.length && description.length) {
-            console.log(originalUploadable)
             const response = await galleryAPIService.createCategoryPhoto({...params, category, order})
             if (response.result == RESULT_OK) {
                 setCreatePhotoDialogIsOpened(false)
