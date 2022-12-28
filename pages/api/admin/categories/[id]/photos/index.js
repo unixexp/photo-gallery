@@ -81,7 +81,8 @@ export default async function CategoriesPhotos(req, res) {
             const { originalUploadable, thumbnailUploadable } = files
             let originalUUID, thumbnailUUID = null
 
-            if (photoId == null) {
+            if (photoId === "") {
+
                 try {
                     const { photosPath, photosThumbnailsPath } = galleryAPIService.PATHS
     
@@ -91,6 +92,7 @@ export default async function CategoriesPhotos(req, res) {
                     originalUUID = saveFile(originalUploadable, photosPathAbs)
                     thumbnailUUID = saveFile(thumbnailUploadable, photosThumbnailsPathAbs)
                 } catch (e) {
+                    console.log(e)
                     return res.status(500).json(resultError(e.toString()))
                 }
     

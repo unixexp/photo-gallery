@@ -53,14 +53,14 @@ export default function CreateCategoryPhotoDialog({
         setOriginalUploadable(uploadableObject)
         if (loadedFromExists)
             setThumbnailUploadable(null)
-        setLoadedFromExists(null)
+        setLoadedFromExists("")
     }
 
     const setThumbnailUploadableHandler = (uploadableObject) => {
         setThumbnailUploadable(uploadableObject)
         if (loadedFromExists)
             setOriginalUploadable(null)
-        setLoadedFromExists(null)
+        setLoadedFromExists("")
     }
 
     const handleOnChangeName = (e) => {
