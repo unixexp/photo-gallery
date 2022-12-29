@@ -14,7 +14,7 @@ export const authOptions = {
                 const { login, password } = credentials
                 // TODO: make request to api to authorize
                 if (login !== "admin" || password != "pass") {
-                    return null
+                    throw new Error("Invalid credentials")
                 } else {
                     return {id: "1234", name: "Administrator"}
                 }

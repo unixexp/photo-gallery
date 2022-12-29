@@ -44,8 +44,8 @@ export default function AdminPage({ galleryAPIService, categoriesSSR, toggleThem
                 </Box>
             </Container>
         </Layout>
-    );
-
+    )
+    
 }
 
 const renderThemeButton = ({toggleTheme}) => {

@@ -2,6 +2,7 @@ import "../styles/global.scss";
 import { createTheme } from "@mui/material"
 import { ThemeProvider } from '@mui/material/styles';
 import { Provider } from 'react-redux'
+import { SessionProvider } from "next-auth/react";
 import { GalleryAPIServiceFactory } from "~/services/gallery-api-service-factory";
 
 import store from "components/app/store"
@@ -83,10 +84,12 @@ export default function App({ Component, pageProps }) {
             </Head>
             <Provider store={store}>
                 <ThemeProvider theme={activeTheme}>
-                    <Component {...pageProps}
-                        galleryAPIService={galleryAPIService}
-                        toggleTheme={toggleTheme}
-                    />
+                    <SessionProvider session={pageProps.session}>
+                        <Component {...pageProps}
+                            galleryAPIService={galleryAPIService}
+                            toggleTheme={toggleTheme}
+                        />
+                    </SessionProvider>
                 </ThemeProvider>
             </Provider>
         </>
