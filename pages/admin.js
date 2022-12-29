@@ -1,3 +1,4 @@
+import Head from "next/head"
 import Layout from "../components/layout/layout"
 import Container from "../components/admin/container/container"
 import Toolbar from "../components/admin/toolbar/toolbar"
@@ -29,6 +30,9 @@ export default function AdminPage({ galleryAPIService, categoriesSSR, toggleThem
 
     return (
         <Layout>
+            <Head>
+                <title>Admin panel</title>
+            </Head>
             <Container>
                 <Toolbar
                     galleryAPIService={galleryAPIService}

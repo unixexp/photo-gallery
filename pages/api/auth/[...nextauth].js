@@ -1,7 +1,32 @@
-import NextAuth from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
+import NextAuth from "next-auth"
+import CredentialsProvider from "next-auth/providers/credentials"
 
 export const authOptions = {
+
+    session: {
+        strategy: "jwt"
+    },
+    
+    providers: [
+        CredentialsProvider({
+            type: "credentials",
+            authorize: async function (credentials, req) {
+                const { login, password } = credentials
+                // TODO: make request to api to authorize
+                if (login !== "admin" || password != "pass") {
+                    return null
+                } else {
+                    return {id: "1234", name: "Administrator"}
+                }
+            }
+        })
+    ],
+
+    pages: {
+        signIn: "/auth/signin"
+    }
+
+    /*
     providers: [
         CredentialsProvider({
             name: "Credentials",
@@ -48,6 +73,7 @@ export const authOptions = {
             return token
         }
     }
+    */
 }
 
 export default NextAuth(authOptions);
