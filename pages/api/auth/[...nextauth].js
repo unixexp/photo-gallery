@@ -6,7 +6,7 @@ export const authOptions = {
     session: {
         strategy: "jwt"
     },
-    
+
     providers: [
         CredentialsProvider({
             type: "credentials",
@@ -27,7 +27,7 @@ export const authOptions = {
     ],
 
     callbacks: {
-        jwt(params) {
+        async jwt(params) {
             if (params.user?.role) {
                 params.token.role = params.user.role
             }

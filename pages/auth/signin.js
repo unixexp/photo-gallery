@@ -12,7 +12,7 @@ import {
 import Head from "next/head"
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import { useState } from "react"
-import { signIn } from "next-auth/react";
+import { signIn } from "next-auth/react"
 
 export default function SignInPage() {
 
@@ -25,7 +25,6 @@ export default function SignInPage() {
             password: userInfo.password,
             redirect: false
         })
-        console.log(response)
     }
 
     return (
