@@ -8,25 +8,7 @@ import { Box, Button } from "@mui/material"
 
 import { GalleryAPIServiceFactory } from "~/services/gallery-api-service-factory";
 
-export async function getServerSideProps(context) {
-
-    const galleryAPIService = GalleryAPIServiceFactory.getInstance()
-    const categoriesData = await galleryAPIService.getCategories()
-    let categories = []
-
-    if (categoriesData.result === "ok")
-        categories = categoriesData.response
-
-
-    return {
-        props: {
-            categoriesSSR: categories
-        }
-    }
-
-}
-
-export default function AdminPage({ galleryAPIService, categoriesSSR, toggleTheme }) {
+export default function AdminPage({ galleryAPIService, toggleTheme }) {
 
     return (
         <Layout>
@@ -36,7 +18,6 @@ export default function AdminPage({ galleryAPIService, categoriesSSR, toggleThem
             <Container>
                 <Toolbar
                     galleryAPIService={galleryAPIService}
-                    categoriesSSR={ categoriesSSR }
                 />
                 { renderThemeButton(toggleTheme) }
                 <Box sx={{ padding: "8px"}}>

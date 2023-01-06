@@ -62,14 +62,13 @@ export default async function CategoriesPhoto(req, res) {
 
     } else if (req.method === "DELETE") {
 
-        const { id: categoryId, photoId } = req.query
-        let result = []
+        const { id: categoryId, photoId: linkId } = req.query
 
         try {
             await prisma.CategoryPhotoLink.deleteMany({
                 where: {
                     AND: [
-                        { photoId: convertUUIDStringToBuffered(photoId) },
+                        { id: convertUUIDStringToBuffered(linkId) },
                         { categoryId: convertUUIDStringToBuffered(categoryId) }
                     ]
                 }

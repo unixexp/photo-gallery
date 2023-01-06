@@ -119,7 +119,7 @@ function renderCategories(categories) {
 
 }
 
-export default function Toolbar({ galleryAPIService, categoriesSSR }) {
+export default function Toolbar({ galleryAPIService }) {
 
     const styles = {
         formContainer: {
@@ -154,7 +154,7 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
     const [addCategoryDialogIsOpened, setAddCategoryDialogIsOpened] = useState(false)
     const [editCategoryNameDialogIsOpened, setEditCategoryNameDialogIsOpened] = useState(false)
     const [updatedCategoryId, setUpdatedCategoryId] = useState(null)
-    const [categories, setCategories] = useState(categoriesSSR)
+    const [categories, setCategories] = useState([])
 
     const handleCategoryChange = (id) => {
         if (id) {
@@ -272,6 +272,19 @@ export default function Toolbar({ galleryAPIService, categoriesSSR }) {
             }
         })
     }
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const categoriesData = await galleryAPIService.getCategories()
+                if (categoriesData.result === "ok")
+                    setCategories(categoriesData.response)
+            } catch (e) {
+                console.log("Cannot get categories by toolbar mount")
+            }
+        }
+        fetchData()
+    }, [])
 
     useEffect(() => {
         handleCategoryChange(updatedCategoryId)

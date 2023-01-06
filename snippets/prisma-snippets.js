@@ -1,7 +1,7 @@
 import { parse as uuidParse } from "uuid";
 import { PrismaClient } from "@prisma/client";
 
-function main() {
+function initTestData() {
 
     const prisma = new PrismaClient({
         datasources: {
@@ -43,4 +43,23 @@ function main() {
 
 }
 
-main()
+async function deletePhotosFromDB() {
+
+    const prisma = new PrismaClient({
+        datasources: {
+            db: {
+                url: "file:../photo-gallery.db"
+            }
+        }
+    })
+
+    try {
+        await prisma.Photo.deleteMany({})
+    } catch (e) {
+        console.log(e)
+    }
+
+}
+
+// initTestData()
+deletePhotosFromDB()

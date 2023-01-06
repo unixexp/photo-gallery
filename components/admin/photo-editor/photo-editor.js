@@ -90,9 +90,7 @@ export default function PhotoEditor({ galleryAPIService }) {
             description,
             order,
             originalUploadable,
-            thumbnaillUploadable,
-            originalUploadableChanged,
-            thumbnaillUploadableChanged
+            thumbnaillUploadable
         } = params
 
         if (originalUploadable != null && thumbnaillUploadable != null

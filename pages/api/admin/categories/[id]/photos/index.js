@@ -95,7 +95,7 @@ export default async function CategoriesPhotos(req, res) {
                     console.log(e)
                     return res.status(500).json(resultError(e.toString()))
                 }
-    
+
                 if (originalUUID != null && thumbnailUUID != null) {
                     try {
                         await add({

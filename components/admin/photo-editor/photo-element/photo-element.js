@@ -62,7 +62,7 @@ export default function PhotoElement({
     const handleDeletePhoto = () => {
         handleMenuClose()
         if (menuParent != null) {
-            handleOpenDeletePhotoDialog(menuParent.dataset.id)
+            handleOpenDeletePhotoDialog(menuParent.dataset.linkid)
         } else {
             handleOpenDeletePhotoDialog(null)
         }
