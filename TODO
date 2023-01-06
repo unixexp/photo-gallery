@@ -1,4 +1,9 @@
-Make API standard CRUD for add, edit and delete photo for category
+Auth:
 
-    - Add exists from another category
-        - Add link record on selected photo to 'category-photo' table (personal description, order)
+    - API resolved without sending a response for /api/admin/categories/b2fe0848-077d-41f3-bdb6-a492d8a583ae/   
+      photos, this may result in stalled requests.
+    - fix create new photo
+    - show error message if login or password missmatch
+    - redirect to admin page after login
+    - logout procedure
+    - save token into db and check it

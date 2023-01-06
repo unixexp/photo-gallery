@@ -66,11 +66,13 @@ export default async function CategoriesPhotos(req, res) {
             })
             
             if (!category) {
-                return res.status(404).json(resultError("Category not found"))
+                res.status(404).json(resultError("Category not found"))
+                return
             }
         } catch (e) {
             await prisma.$disconnect()
-            return res.status(500).json(resultError())
+            res.status(500).json(resultError())
+            return
         }
 
         // Parsing form data
@@ -93,7 +95,8 @@ export default async function CategoriesPhotos(req, res) {
                     thumbnailUUID = saveFile(thumbnailUploadable, photosThumbnailsPathAbs)
                 } catch (e) {
                     console.log(e)
-                    return res.status(500).json(resultError(e.toString()))
+                    res.status(500).json(resultError(e.toString()))
+                    return
                 }
 
                 if (originalUUID != null && thumbnailUUID != null) {
@@ -107,23 +110,26 @@ export default async function CategoriesPhotos(req, res) {
                             category
                         })
                     } catch (e) {
-                        return res.status(500).json(resultError(e.toString()))
+                        res.status(500).json(resultError(e.toString()))
+                        return
                     }
 
-                    return res.status(200).json(resultOK())
+                    response = res.status(200).json(resultOK())
                 } else {
                     console.log(uploaded)
-                    return res.status(500).json(resultError("Cannot upload files."))
+                    response = res.status(500).json(resultError("Cannot upload files."))
                 }
             } else {
                 try {
                     await addFromExists({category, order, photoId})
                 } catch (e) {
                     console.log(e)
-                    return res.status(500).json(resultError(e.toString()))
+                    res.status(500).json(resultError(e.toString()))
+                    return
                 }
 
-                return res.status(200).json(resultOK())
+                res.status(200).json(resultOK())
+                return
             }
         })
 

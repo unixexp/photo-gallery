@@ -107,6 +107,7 @@ export default class MainGalleryAPIService extends GalleryAPIService {
         body.append("originalUploadable", originalUploadable)
         body.append("thumbnailUploadable", thumbnaillUploadable)
         body.append("loadedFromExists", loadedFromExists)
+
         const response = await fetch(path, { method: "POST", body })
         return await response.json()  
     }
