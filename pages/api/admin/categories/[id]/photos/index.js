@@ -77,61 +77,69 @@ export default async function CategoriesPhotos(req, res) {
 
         // Parsing form data
         const form = new formidable.IncomingForm()
-        form.parse(req, async function(err, fields, files) {
+        async function formParse() {
+            const parsed = await new Promise(function(resolve, reject) {
+                form.parse(req, async function(err, fields, files) {
 
-            const { order, loadedFromExists: photoId } = fields
-            const { originalUploadable, thumbnailUploadable } = files
-            let originalUUID, thumbnailUUID = null
-
-            if (photoId === "") {
-
-                try {
-                    const { photosPath, photosThumbnailsPath } = galleryAPIService.PATHS
-    
-                    const photosPathAbs = makePath(photosPath, process.env.DATA_DIR)
-                    const photosThumbnailsPathAbs = makePath(photosThumbnailsPath, process.env.DATA_DIR)
-    
-                    originalUUID = saveFile(originalUploadable, photosPathAbs)
-                    thumbnailUUID = saveFile(thumbnailUploadable, photosThumbnailsPathAbs)
-                } catch (e) {
-                    console.log(e)
-                    res.status(500).json(resultError(e.toString()))
-                    return
-                }
-
-                if (originalUUID != null && thumbnailUUID != null) {
-                    try {
-                        await add({
-                            ...fields,
-                            originalUUID,
-                            thumbnailUUID,
-                            originalFileName: originalUploadable.originalFilename,
-                            thumbnailFileName: thumbnailUploadable.originalFilename,
-                            category
-                        })
-                    } catch (e) {
-                        res.status(500).json(resultError(e.toString()))
-                        return
+                    const { order, loadedFromExists: photoId } = fields
+                    const { originalUploadable, thumbnailUploadable } = files
+                    let originalUUID, thumbnailUUID = null
+        
+                    if (photoId === "") {
+        
+                        try {
+                            const { photosPath, photosThumbnailsPath } = galleryAPIService.PATHS
+            
+                            const photosPathAbs = makePath(photosPath, process.env.DATA_DIR)
+                            const photosThumbnailsPathAbs = makePath(photosThumbnailsPath, process.env.DATA_DIR)
+            
+                            originalUUID = saveFile(originalUploadable, photosPathAbs)
+                            thumbnailUUID = saveFile(thumbnailUploadable, photosThumbnailsPathAbs)
+                        } catch (e) {
+                            console.log(e)
+                            res.status(500).json(resultError(e.toString()))
+                            resolve(res)
+                        }
+        
+                        if (originalUUID != null && thumbnailUUID != null) {
+                            try {
+                                await add({
+                                    ...fields,
+                                    originalUUID,
+                                    thumbnailUUID,
+                                    originalFileName: originalUploadable.originalFilename,
+                                    thumbnailFileName: thumbnailUploadable.originalFilename,
+                                    category
+                                })
+                                res.status(200).json(resultOK())
+                            } catch (e) {
+                                res.status(500).json(resultError(e.toString()))
+                            } finally {
+                                resolve(res)
+                            }
+                        } else {
+                            console.log(uploaded)
+                            res.status(500).json(resultError("Cannot upload files."))
+                            resolve(res)
+                        }
+                    } else {
+                        try {
+                            await addFromExists({category, order, photoId})
+                            res.status(200).json(resultOK())
+                        } catch (e) {
+                            console.log(e)
+                            res.status(500).json(resultError(e.toString()))
+                        } finally {
+                            resolve(res)
+                        }
                     }
+                })
+            })
 
-                    response = res.status(200).json(resultOK())
-                } else {
-                    console.log(uploaded)
-                    response = res.status(500).json(resultError("Cannot upload files."))
-                }
-            } else {
-                try {
-                    await addFromExists({category, order, photoId})
-                } catch (e) {
-                    console.log(e)
-                    res.status(500).json(resultError(e.toString()))
-                    return
-                }
+            return parsed
+        }
 
-                res.status(200).json(resultOK())
-                return
-            }
-        })
+        await formParse()
 
     } else if (req.method === "PUT") {
         const galleryAPIService = GalleryAPIServiceFactory.getInstance()
@@ -147,95 +155,107 @@ export default async function CategoriesPhotos(req, res) {
             })
             
             if (!category) {
-                return res.status(404).json(resultError("Category not found"))
+                res.status(404).json(resultError("Category not found"))
+                return
             }
         } catch (e) {
             await prisma.$disconnect()
-            return res.status(500).json(resultError())
+            res.status(500).json(resultError())
+            return
         }
 
         // Parsing form data
         const form = new formidable.IncomingForm()
-        form.parse(req, async function(err, fields, files) {
+        async function formParse() {
+            const parsed = await new Promise(function(resolve, reject) {
+                form.parse(req, async function(err, fields, files) {
             
-            const { linkId, name, description, order } = fields
-            const { originalUploadable, thumbnailUploadable } = files
-            const content = {}
-            let photoLink
-
-            // Get link data
-            try {
-                photoLink = await prisma.CategoryPhotoLink.findUnique({
-                    where: { id: convertUUIDStringToBuffered(linkId) }
+                    const { linkId, name, description, order } = fields
+                    const { originalUploadable, thumbnailUploadable } = files
+                    const content = {}
+                    let photoLink
+        
+                    // Get link data
+                    try {
+                        photoLink = await prisma.CategoryPhotoLink.findUnique({
+                            where: { id: convertUUIDStringToBuffered(linkId) }
+                        })
+                        
+                        if (!photoLink) {
+                            res.status(404).json(resultError("Photo not found"))
+                            resolve(res)
+                        }
+                    } catch (e) {
+                        await prisma.$disconnect()
+                        res.status(500).json(resultError())
+                        resolve(res)
+                    }
+        
+                    // Update basic photo fields
+                    if (originalUploadable != null) {
+                        let originalUUID
+                        const photosPathAbs = makePath(photosPath, process.env.DATA_DIR)
+                        try {
+                            originalUUID = saveFile(originalUploadable, photosPathAbs)
+                        } catch (e) {
+                            res.status(500).json(resultError(e.toString()))
+                            resolve(res)
+                        }
+        
+                        content.originalFileName = originalUploadable.originalFilename
+                        content.originalUUID = originalUUID
+                    }
+        
+                    if (thumbnailUploadable != null) {
+                        let thumbnailUUID
+                        const photosThumbnailsPathAbs = makePath(photosThumbnailsPath, process.env.DATA_DIR)
+                        try {
+                            thumbnailUUID = saveFile(thumbnailUploadable, photosThumbnailsPathAbs)
+                        } catch (e) {
+                            res.status(500).json(resultError(e.toString()))
+                            resolve(res)
+                        }
+        
+                        content.thumbnailFileName = thumbnailUploadable.originalFilename
+                        content.thumbnailUUID = thumbnailUUID
+                    }
+        
+                    statements.push(prisma.Photo.update({
+                        where: { id: photoLink.photoId },
+                        data: { name, description, ...content }
+                    }))
+        
+                    // Sorting photo links
+                    const links = await prisma.CategoryPhotoLink.findMany({ where: { categoryId: category.id } })
+                    const linksOrdered = move(
+                        linkId,
+                        order,
+                        links.map(link => {
+                            link.id = convertUUIDBufferedToString(link.id)
+                            return link
+                        }))
+        
+                    for (let link of linksOrdered) {
+                        link.id = convertUUIDStringToBuffered(link.id)
+                        statements.push(prisma.CategoryPhotoLink.update({
+                            where: { id: link.id },
+                            data: {...link}
+                        }))
+                    }
+        
+                    try {
+                        await prisma.$transaction(statements)
+                        return res.status(200).json(resultOK())
+                    } catch (e) {
+                        res.status(500).json(resultError(e.toString()))
+                    } finally {
+                        resolve(res)
+                    }
                 })
-                
-                if (!photoLink) {
-                    return res.status(404).json(resultError("Photo not found"))
-                }
-            } catch (e) {
-                await prisma.$disconnect()
-                return res.status(500).json(resultError())
-            }
+            })
+        }
 
-            // Update basic photo fields
-            if (originalUploadable != null) {
-                let originalUUID
-                const photosPathAbs = makePath(photosPath, process.env.DATA_DIR)
-                try {
-                    originalUUID = saveFile(originalUploadable, photosPathAbs)
-                } catch (e) {
-                    return res.status(500).json(resultError(e.toString()))
-                }
-
-                content.originalFileName = originalUploadable.originalFilename
-                content.originalUUID = originalUUID
-            }
-
-            if (thumbnailUploadable != null) {
-                let thumbnailUUID
-                const photosThumbnailsPathAbs = makePath(photosThumbnailsPath, process.env.DATA_DIR)
-                try {
-                    thumbnailUUID = saveFile(thumbnailUploadable, photosThumbnailsPathAbs)
-                } catch (e) {
-                    return res.status(500).json(resultError(e.toString()))
-                }
-
-                content.thumbnailFileName = thumbnailUploadable.originalFilename
-                content.thumbnailUUID = thumbnailUUID
-            }
-
-            statements.push(prisma.Photo.update({
-                where: { id: photoLink.photoId },
-                data: { name, description, ...content }
-            }))
-
-            // Sorting photo links
-            const links = await prisma.CategoryPhotoLink.findMany({ where: { categoryId: category.id } })
-            const linksOrdered = move(
-                linkId,
-                order,
-                links.map(link => {
-                    link.id = convertUUIDBufferedToString(link.id)
-                    return link
-                }))
-
-            for (let link of linksOrdered) {
-                link.id = convertUUIDStringToBuffered(link.id)
-                statements.push(prisma.CategoryPhotoLink.update({
-                    where: { id: link.id },
-                    data: {...link}
-                }))
-            }
-
-            try {
-                await prisma.$transaction(statements)
-            } catch (e) {
-                return res.status(500).json(resultError(e.toString()))
-            }
-            
-            return res.status(200).json(resultOK())
-
-        })
+        await formParse()
     }
 
 }
